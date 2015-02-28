@@ -23,10 +23,10 @@ namespace Assets.Code.Generators
             TilePrefabs[2] = Resources.Load("Tiles/Tile_Mountains", typeof(GameObject)) as GameObject;
         }
 
-        // Return tile prefab within the given parameters
-        public GameObject GetTilePrefab(int elevation)
+        // Return a tile prefab based on the data given
+        public GameObject GetTilePrefab(float elevation)
         {
-            return TilePrefabs[elevation];
+            return TilePrefabs[0];
         }
     }
 }

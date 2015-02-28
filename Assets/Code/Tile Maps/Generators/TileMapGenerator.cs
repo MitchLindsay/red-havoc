@@ -26,8 +26,8 @@ namespace Assets.Code.Generators
         // Destroys the tile map gameobject and all tile gameobjects associated with it
         private void DestroyMap()
         {
-            GameObject[] tileMapObjects = GameObject.FindGameObjectsWithTag("TileMap");
             GameObject[] tileObjects = GameObject.FindGameObjectsWithTag("Tile");
+            GameObject[] tileMapObjects = GameObject.FindGameObjectsWithTag("TileMap");
 
             foreach (GameObject tileObject in tileObjects)
                 DestroyImmediate(tileObject);
@@ -55,8 +55,13 @@ namespace Assets.Code.Generators
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    // Get tile prefab from the tile selector within the given parameters
-                    GameObject tilePrefab = tileSelector.GetTilePrefab(0);
+                    // Generate perlin noise to determine which tile to use
+                    float noise = Mathf.PerlinNoise(x / mapWidth, y / mapHeight);
+
+                    Debug.Log("Pos: " + x + ", " + y + ". Noise: " + noise);
+
+                    // Get tile prefab from the tile selector with the given noise value
+                    GameObject tilePrefab = tileSelector.GetTilePrefab(noise);
                     // Initialize tile object from the prefab
                     GameObject tileObject = GameObject.Instantiate(tilePrefab) as GameObject;
                     // Get the tile data from the prefab
