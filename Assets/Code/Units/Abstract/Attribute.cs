@@ -33,6 +33,12 @@ namespace Assets.Code.Units.Abstract
             }
         }
 
+        public void RemoveAllModifiers()
+        {
+            Modifiers = new List<AttributeModifier>();
+            CalculateFinalValue();
+        }
+
         private void CalculateFinalValue()
         {
             FinalValue = BaseValue;
