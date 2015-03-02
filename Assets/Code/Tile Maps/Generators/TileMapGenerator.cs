@@ -47,8 +47,11 @@ namespace Assets.Code.Generators
             TileMap tileMap = tileMapObject.AddComponent<TileMap>();
             Tile[,] tiles = new Tile[mapWidth, mapHeight];
 
-            // Initialize tile selector
-            TileSelector tileSelector = new TileSelector();
+            // Initialize the noise generator
+            NoiseGenerator noiseGenerator = new NoiseGenerator(mapWidth, mapHeight);
+
+            // Initialize tile prefab selector
+            TilePrefabSelector tilePrefabSelector = new TilePrefabSelector();
 
             // Loop through each position in the tile map and create tile object
             for (int y = 0; y < mapHeight; y++)
@@ -56,12 +59,10 @@ namespace Assets.Code.Generators
                 for (int x = 0; x < mapWidth; x++)
                 {
                     // Generate perlin noise to determine which tile to use
-                    float noise = Mathf.PerlinNoise(x / mapWidth, y / mapHeight);
-
-                    Debug.Log("Pos: " + x + ", " + y + ". Noise: " + noise);
+                    float noiseValue = noiseGenerator.GetNoise(x, y);
 
                     // Get tile prefab from the tile selector with the given noise value
-                    GameObject tilePrefab = tileSelector.GetTilePrefab(noise);
+                    GameObject tilePrefab = tilePrefabSelector.GetTilePrefab(noiseValue);
                     // Initialize tile object from the prefab
                     GameObject tileObject = GameObject.Instantiate(tilePrefab) as GameObject;
                     // Get the tile data from the prefab

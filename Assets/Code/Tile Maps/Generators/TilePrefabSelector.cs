@@ -2,13 +2,13 @@
 
 namespace Assets.Code.Generators
 {
-    public class TileSelector
+    public class TilePrefabSelector
     {
         // Array containing the tile prefabs
         public GameObject[] TilePrefabs { get; private set; }
 
         // Constructor
-        public TileSelector()
+        public TilePrefabSelector()
         {
             SetTilePrefabs();
         }
