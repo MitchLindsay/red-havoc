@@ -17,29 +17,29 @@ namespace Assets.Code.Units.Entities
         [HideInInspector]
         public int Health = 10;
 
-        // Base max health value of the unit type, edited through Unity interface
-        public int BaseMaxHealth = 10;
-        // Base attack value of the unit type, edited through Unity interface
-        public int BaseAttack = 10;
-        // Base attack range value of the unit type, edited through Unity interface
-        public int BaseAttackRange = 1;
-        // Base movement value of the unit type, edited through Unity interface
-        public int BaseMovement = 10;
+        // Max health value of the unit type, edited through Unity interface
+        public int MaxHealth = 10;
+        // Attack value of the unit type, edited through Unity interface
+        public int Attack = 10;
+        // Attack range value of the unit type, edited through Unity interface
+        public int AttackRange = 1;
+        // Movement value of the unit type, edited through Unity interface
+        public int Movement = 10;
 
         // Unit attributes
-        public Attribute MaxHealth { get; set; }
-        public Attribute Attack { get; set; }
-        public Attribute AttackRange { get; set; }
-        public Attribute Movement { get; set; }
+        public Attribute MaxHealth_Attribute { get; set; }
+        public Attribute Attack_Attribute { get; set; }
+        public Attribute AttackRange_Attribute { get; set; }
+        public Attribute Movement_Attribute { get; set; }
 
         void Start()
         {
-            this.MaxHealth = new Attribute(BaseMaxHealth);
-            this.Attack = new Attribute(BaseAttack);
-            this.AttackRange = new Attribute(BaseAttackRange);
-            this.Movement = new Attribute(BaseMovement);
+            this.MaxHealth_Attribute = new Attribute(MaxHealth);
+            this.Attack_Attribute = new Attribute(Attack);
+            this.AttackRange_Attribute = new Attribute(AttackRange);
+            this.Movement_Attribute = new Attribute(Movement);
 
-            this.Health = MaxHealth.FinalValue;
+            this.Health = MaxHealth_Attribute.FinalValue;
         }
     }
 }

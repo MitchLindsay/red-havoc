@@ -17,10 +17,16 @@ namespace Assets.Code.Generators
             }
         }
 
+        // Map seed, edited through Unity interface
+        public int MapSeed = 1;
+        // Map dimensions, edited through Unity interface
+        public int MapWidth = 10;
+        public int MapHeight = 10;
+
         void Start()
         {
             DestroyMap();
-            GenerateMap(1, 10, 10);
+            GenerateMap(MapSeed, MapWidth, MapHeight);
         }
 
         // Destroys the tile map gameobject and all tile gameobjects associated with it

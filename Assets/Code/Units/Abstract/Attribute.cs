@@ -51,40 +51,30 @@ namespace Assets.Code.Units.Abstract
         private void CalculateFinalValue()
         {
             // Create a temporary value to store the calculations
-            float tempValue = 0.0f;
+            float tempValue = BaseValue;
 
-            // If modifiers exist, apply them
-            if (Modifiers.Count > 0)
+            // Loop through each modifier in the list and apply them
+            foreach (AttributeModifier modifier in Modifiers)
             {
-                // Loop through each modifier in the list and apply them
-                foreach (AttributeModifier modifier in Modifiers)
+                switch (modifier.ModifierType)
                 {
-                    switch (modifier.ModifierType)
-                    {
-                        // Add the modifier to the base value
-                        case ModifierType.Additive:
-                            tempValue += (BaseValue + modifier.ModifierValue);
-                            break;
-                        // Multiply the modifier by the base value
-                        case ModifierType.Multiplicative:
-                            tempValue += (BaseValue * modifier.ModifierValue);
-                            break;
-                        default:
-                        // Do nothing
-                        case ModifierType.None:
-                            tempValue += 0;
-                            break;
-                    }
+                    // Add the modifier to the base value
+                    case ModifierType.Additive:
+                        tempValue += modifier.ModifierValue;
+                        break;
+                    // Multiply the modifier by the base value
+                    case ModifierType.Multiplicative:
+                        tempValue *= modifier.ModifierValue;
+                        break;
+                    // Do nothing
+                    case ModifierType.None:
+                    default:
+                        break;
                 }
+            }
 
-                // Convert the temporary value to a whole number, then set it to the final value
-                FinalValue = (int)tempValue;
-            }
-            else
-            {
-                // If there are no modifiers, set final value to the base value of the attribute
-                FinalValue = BaseValue;
-            }
+            // Convert the temporary value to a whole number, then set it to the final value
+            FinalValue = (int)tempValue;
         }
     }
 }
