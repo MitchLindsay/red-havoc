@@ -38,7 +38,7 @@ namespace Assets.Code.Units.Entities
             // Only add the unit if it is not already controlled
             if (!Units.Contains(unit))
             {
-                SetUnitColor(unit);
+                SetUnitColor(unit, UnitColor);
                 Units.Add(unit);
             }
         }
@@ -58,7 +58,7 @@ namespace Assets.Code.Units.Entities
             // Only remove the unit if it is currently controlled
             if (Units.Contains(unit))
             {
-                ResetUnitColor(unit);
+                SetUnitColor(unit, Color.white);
                 Units.Remove(unit);
             }
         }
@@ -69,20 +69,12 @@ namespace Assets.Code.Units.Entities
             Units = new List<Unit>();
         }
 
-        // Changes a unit's color to match the controller color
-        public void SetUnitColor(Unit unit)
+        // Changes a unit's color
+        public void SetUnitColor(Unit unit, Color color)
         {
             // Check if unit exists
             if (unit != null)
-                unit.GetComponent<SpriteRenderer>().color = UnitColor;
-        }
-
-        // Changes a unit's color to the default color
-        public void ResetUnitColor(Unit unit)
-        {
-            // Check if unit exists
-            if (unit != null)
-                unit.GetComponent<SpriteRenderer>().color = Color.white;
+                unit.GetComponent<SpriteRenderer>().color = color;
         }
     }
 }
