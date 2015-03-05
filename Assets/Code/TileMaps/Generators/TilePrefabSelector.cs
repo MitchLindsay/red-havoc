@@ -19,7 +19,7 @@ namespace Assets.Code.TileMaps.Generators
             TilePrefabs = new GameObject[3];
 
             TilePrefabs[0] = Resources.Load("Tiles/Tile_Plains", typeof(GameObject)) as GameObject;
-            TilePrefabs[1] = Resources.Load("Tiles/Tile_Hills", typeof(GameObject)) as GameObject;
+            TilePrefabs[1] = Resources.Load("Tiles/Tile_Rocks", typeof(GameObject)) as GameObject;
             TilePrefabs[2] = Resources.Load("Tiles/Tile_Mountains", typeof(GameObject)) as GameObject;
         }
 
