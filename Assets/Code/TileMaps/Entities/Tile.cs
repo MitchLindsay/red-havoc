@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-namespace Assets.Code.Entities
+namespace Assets.Code.TileMaps.Entities
 {
     [RequireComponent (typeof(SpriteRenderer))]
     public class Tile : MonoBehaviour

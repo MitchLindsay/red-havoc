@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Code.Entities
+namespace Assets.Code.TileMaps.Entities
 {
     public class TileMap : MonoBehaviour
     {

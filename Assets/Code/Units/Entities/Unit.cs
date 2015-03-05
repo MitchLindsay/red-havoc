@@ -18,28 +18,28 @@ namespace Assets.Code.Units.Entities
         public int Health = 10;
 
         // Max health value of the unit type, edited through Unity interface
-        public int MaxHealth = 10;
+        public int BaseMaxHealth = 10;
         // Attack value of the unit type, edited through Unity interface
-        public int Attack = 10;
+        public int BaseAttack = 10;
         // Attack range value of the unit type, edited through Unity interface
-        public int AttackRange = 1;
+        public int BaseAttackRange = 1;
         // Movement value of the unit type, edited through Unity interface
-        public int Movement = 10;
+        public int BaseMovement = 10;
 
         // Unit attributes
-        public Attribute MaxHealth_Attribute { get; set; }
-        public Attribute Attack_Attribute { get; set; }
-        public Attribute AttackRange_Attribute { get; set; }
-        public Attribute Movement_Attribute { get; set; }
+        public Attribute MaxHealth { get; set; }
+        public Attribute Attack { get; set; }
+        public Attribute AttackRange { get; set; }
+        public Attribute Movement { get; set; }
 
         void Start()
         {
-            this.MaxHealth_Attribute = new Attribute(MaxHealth);
-            this.Attack_Attribute = new Attribute(Attack);
-            this.AttackRange_Attribute = new Attribute(AttackRange);
-            this.Movement_Attribute = new Attribute(Movement);
+            this.MaxHealth = new Attribute("Max Health", BaseMaxHealth);
+            this.Attack = new Attribute("Attack", BaseAttack);
+            this.AttackRange = new Attribute("Attack Range", BaseAttackRange);
+            this.Movement = new Attribute("Movement", BaseMovement);
 
-            this.Health = MaxHealth_Attribute.FinalValue;
+            this.Health = MaxHealth.ModifiedValue;
         }
     }
 }

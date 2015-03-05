@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Code.Generators
+namespace Assets.Code.TileMaps.Generators
 {
     public class TilePrefabSelector
     {

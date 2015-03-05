@@ -4,17 +4,20 @@ namespace Assets.Code.Units.Abstract
 {
     public class Attribute
     {
+        // Name of the attribute
+        public string AttributeName { get; private set; }
         // Unmodified value of the attribute
         public int BaseValue { get; private set; }
         // Modified value of the attribute
-        public int FinalValue { get; private set; }
+        public int ModifiedValue { get; private set; }
         // List of applied modifiers
         public List<AttributeModifier> Modifiers { get; private set; }
 
-        public Attribute(int baseValue)
+        public Attribute(string attributeName, int baseValue)
         {
+            this.AttributeName = attributeName;
             this.BaseValue = baseValue;
-            this.FinalValue = baseValue;
+            this.ModifiedValue = baseValue;
             this.Modifiers = new List<AttributeModifier>();
         }
 
@@ -25,7 +28,7 @@ namespace Assets.Code.Units.Abstract
             if (!Modifiers.Contains(modifier))
             {
                 Modifiers.Add(modifier);
-                CalculateFinalValue();
+                CalculateModifiedValue();
             }
         }
 
@@ -36,7 +39,7 @@ namespace Assets.Code.Units.Abstract
             if (Modifiers.Contains(modifier))
             {
                 Modifiers.Remove(modifier);
-                CalculateFinalValue();
+                CalculateModifiedValue();
             }
         }
 
@@ -44,11 +47,11 @@ namespace Assets.Code.Units.Abstract
         public void RemoveAllModifiers()
         {
             Modifiers = new List<AttributeModifier>();
-            CalculateFinalValue();
+            CalculateModifiedValue();
         }
 
-        // Calculates the final value using the list of modifiers
-        private void CalculateFinalValue()
+        // Calculates the modified value using the list of modifiers
+        private void CalculateModifiedValue()
         {
             // Create a temporary value to store the calculations
             float tempValue = BaseValue;
@@ -59,22 +62,22 @@ namespace Assets.Code.Units.Abstract
                 switch (modifier.ModifierType)
                 {
                     // Add the modifier to the base value
-                    case ModifierType.Additive:
+                    case AttributeModifierType.Additive:
                         tempValue += modifier.ModifierValue;
                         break;
                     // Multiply the modifier by the base value
-                    case ModifierType.Multiplicative:
+                    case AttributeModifierType.Multiplicative:
                         tempValue *= modifier.ModifierValue;
                         break;
                     // Do nothing
-                    case ModifierType.None:
+                    case AttributeModifierType.None:
                     default:
                         break;
                 }
             }
 
-            // Convert the temporary value to a whole number, then set it to the final value
-            FinalValue = (int)tempValue;
+            // Convert the temporary value to a whole number, then set it to the modified value
+            ModifiedValue = (int)tempValue;
         }
     }
 }

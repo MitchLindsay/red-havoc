@@ -1,7 +1,7 @@
-﻿using Assets.Code.Entities;
+﻿using Assets.Code.TileMaps.Entities;
 using UnityEngine;
 
-namespace Assets.Code.Generators
+namespace Assets.Code.TileMaps.Generators
 {
     public class TileMapGenerator : MonoBehaviour
     {
@@ -48,6 +48,7 @@ namespace Assets.Code.Generators
             // Create tile map object and set its position to zero
             GameObject tileMapObject = new GameObject("Tile Map");
             tileMapObject.transform.position = Vector3.zero;
+            tileMapObject.tag = "TileMap";
 
             // Create tile map and array of tiles
             TileMap tileMap = tileMapObject.AddComponent<TileMap>();
