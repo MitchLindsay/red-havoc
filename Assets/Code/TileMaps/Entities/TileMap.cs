@@ -2,6 +2,7 @@
 
 namespace Assets.Code.TileMaps.Entities
 {
+    // TileMap.cs - A single tile map, a collection of tiles
     public class TileMap : MonoBehaviour
     {
         // Key used for the map generation algorithm

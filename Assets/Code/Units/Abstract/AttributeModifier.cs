@@ -8,6 +8,7 @@ namespace Assets.Code.Units.Abstract
         Multiplicative
     }
 
+    // AttributeModifier.cs - A modifier of a unit attribute
     public class AttributeModifier
     {
         // Type of modifier

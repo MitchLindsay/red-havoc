@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Assets.Code.TileMaps.Entities
 {
+    // Tile.cs - A single tile
     [RequireComponent (typeof(SpriteRenderer))]
     public class Tile : MonoBehaviour
     {

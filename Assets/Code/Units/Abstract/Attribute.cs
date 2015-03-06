@@ -2,6 +2,7 @@
 
 namespace Assets.Code.Units.Abstract
 {
+    // Attribute.cs - A single attribute of a unit
     public class Attribute
     {
         // Name of the attribute

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Assets.Code.TileMaps.Generators
 {
+    // TileMapGenerator.cs - Generates tile maps
     public class TileMapGenerator : MonoBehaviour
     {
         // Singleton declaration

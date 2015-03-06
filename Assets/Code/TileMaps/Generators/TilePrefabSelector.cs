@@ -2,6 +2,7 @@
 
 namespace Assets.Code.TileMaps.Generators
 {
+    // TilePrefabSelector.cs - Stores all of the tile prefab data, chooses a tile given an elevation
     public class TilePrefabSelector
     {
         // Array containing the tile prefabs

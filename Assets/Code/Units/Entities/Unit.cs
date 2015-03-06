@@ -3,16 +3,9 @@ using UnityEngine;
 
 namespace Assets.Code.Units.Entities
 {
-    [RequireComponent (typeof(SpriteRenderer))]
-    public class Unit : MonoBehaviour
+    // Unit.cs - A single military unit
+    public class Unit : Entity
     {
-        // Unique identifier for the unit
-        [HideInInspector]
-        public int UnitID = -1;
-
-        // Name of the unit type, edited through Unity interface
-        public string UnitName = "Unit";
-
         // Current health of the unit
         [HideInInspector]
         public int Health = 10;
