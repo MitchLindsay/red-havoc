@@ -1,5 +1,6 @@
 ﻿using Assets.Code.TileMaps.Entities;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Code.TileMaps.Generators
 {
@@ -23,6 +24,11 @@ namespace Assets.Code.TileMaps.Generators
         // Map dimensions, edited through Unity interface
         public int MapWidth = 10;
         public int MapHeight = 10;
+
+        // GUI element that displays tile name
+        public Text TileNameLabel;
+        // GUI element that displays tile graphic
+        public Image TileGraphicImage;
 
         void Start()
         {
@@ -80,6 +86,10 @@ namespace Assets.Code.TileMaps.Generators
                     tileObject.name = tilePrefab.name + " (" + x + ", " + y + ")";
                     tileObject.transform.parent = tileMapObject.transform;
                     tileObject.transform.position = new Vector3(x, y, 0);
+
+                    // Link GUI elements to tile
+                    tile.TileNameLabel = TileNameLabel;
+                    tile.TileGraphicImage = TileGraphicImage;
 
                     // Update the tiles array
                     tiles[x, y] = tile;

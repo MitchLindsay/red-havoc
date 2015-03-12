@@ -27,7 +27,7 @@ namespace Assets.Code.TileMaps.Generators
         // Return a tile prefab based on the data given
         public GameObject GetTilePrefab(float elevation)
         {
-            return TilePrefabs[0];
+            return TilePrefabs[1];
         }
     }
 }

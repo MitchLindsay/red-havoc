@@ -13,7 +13,7 @@ namespace Assets.Code.GUI.Mouse
         public int XCoordinateInt { get; private set; }
         // Current Y coordinte of the mouse cursor in world space
         public int YCoordianteInt { get; private set; }
-        // Label of the mouse cursor's coordinates, edited through the Unity interface
+        // GUI label of the mouse cursor's coordinates, edited through the Unity interface
         public Text CoordinatesLabel;
 
         void Update()
