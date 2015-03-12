@@ -7,6 +7,10 @@ namespace Assets.Code.TileMaps.Generators
     // TileMapGenerator.cs - Generates tile maps
     public class TileMapGenerator : MonoBehaviour
     {
+        // Event handler for when map generation complete
+        public delegate void MapGenerationHandler(int width, int height);
+        public static event MapGenerationHandler OnGenerationComplete;
+
         // Singleton declaration
         private static TileMapGenerator instance;
         public static TileMapGenerator Instance
@@ -98,6 +102,10 @@ namespace Assets.Code.TileMaps.Generators
 
             // Set tile map data
             tileMap.SetMapData(mapSeed, mapWidth, mapHeight, tiles);
+
+            // Call event since map generation is complete
+            if (OnGenerationComplete != null)
+                OnGenerationComplete(mapWidth, mapHeight);
         }
     }
 }

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Code.GUI.Mouse
+namespace Assets.Code.GUI.WorldSpace
 {
     // MouseCursor.cs
     public class MouseCursor : MonoBehaviour

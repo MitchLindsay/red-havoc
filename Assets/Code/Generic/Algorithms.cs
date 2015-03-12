@@ -16,5 +16,13 @@ namespace Assets.Code.Generic
         {
             return Camera.main.WorldToScreenPoint(position);
         }
+
+        // Returns true if a number is even, false is a number is not
+        public static bool IsNumberEven(int number)
+        {
+            if (number % 2 == 0)
+                return true;
+            return false;
+        }
     }
 }
