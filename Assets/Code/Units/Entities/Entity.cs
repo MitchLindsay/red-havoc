@@ -4,6 +4,7 @@ namespace Assets.Code.Units.Entities
 {
     // Entity.cs - A container class for units and structures
     [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(BoxCollider2D))]
     public abstract class Entity : MonoBehaviour
     {
         // Unique identifier of the entity
