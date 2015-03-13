@@ -8,91 +8,54 @@ namespace Assets.Code.GUI.WorldSpace
     // Grid.cs - Uses Vectrosity to draw a grid over the tile map
     public class Grid : MonoBehaviour
     {
-        // Flag to check if the grid is visible
-        public bool IsVisible { get; private set; }
-        // Flag to check if the grid is drawn to the screen
-        public bool IsEnabled { get; private set; }
-
-        // Dimensions of the grid
-        public int GridWidth { get; private set; }
-        public int GridHeight { get; private set; }
-
         // Vector line for the grid
-        public VectorLine GridLine { get; private set; }
-        // Array containing coordinates for the vector line
-        public Vector3[] GridLinePoints { get; private set; }
+        private VectorLine gridLine;
 
+        // Listen for events when object is created
         void OnEnable()
         {
-            TileMapGenerator.OnGenerationComplete += SetGrid;
+            TileMapGenerator.OnGenerationComplete += CreateGrid;
         }
 
+        // Stop listening for events if object is destroyed
         void OnDestroy()
         {
-            TileMapGenerator.OnGenerationComplete -= SetGrid;
+            TileMapGenerator.OnGenerationComplete -= CreateGrid;
         }
 
-        void Start()
+        // Creates and draws the grid
+        private void CreateGrid(int width, int height)
         {
-            SetVisible(true);
-            SetEnabled(true);
-        }
+            // Calculate number of grid points
+            int numPoints = width * height;
+            // Create the grid line
+            gridLine = new VectorLine("Grid", new Vector3[numPoints], null, 1.0f);
 
-        void Update()
-        {
-            if (IsEnabled && GridLine != null)
-            {
-                VectorLine.canvas.sortingOrder = -1;
-                VectorLine.SetCanvasCamera(Camera.main);
-
-                DrawGrid();
-            }
-        }
-
-        private void SetVisible(bool isVisible)
-        {
-            IsVisible = isVisible;
-            GridLine.active = isVisible;
-        }
-
-        private void SetEnabled(bool isEnabled)
-        {
-            IsEnabled = isEnabled;
-        }
-
-        private void SetGrid(int width, int height)
-        {
-            GridWidth = width;
-            GridHeight = height;
-
-            int lineSize = GridWidth * GridHeight;
-
-            if (Algorithms.IsNumberEven(lineSize))
-                GridLinePoints = new Vector3[lineSize];
-            else
-                GridLinePoints = new Vector3[lineSize + 1];
-
-            GridLine = new VectorLine("Grid", GridLinePoints, null, 1.0f);
-            GridLine.rectTransform.anchoredPosition = new Vector2(0.5f, 0.5f);
-        }
-
-        private void DrawGrid()
-        {
+            // Loop through each point of the grid
             int index = 0;
-
-            for (int x = 0; x < GridWidth; x++)
+            for (int x = 0; x < width; x++)
             {
-                GridLinePoints[index++] = new Vector2(x, 0.0f);
-                GridLinePoints[index++] = new Vector2(x, GridHeight);
+                gridLine.points3[index++] = new Vector3(x, 0.0f, 0.0f);
+                gridLine.points3[index++] = new Vector3(x, height, 0.0f);
+            }
+            for (int y = 0; y < height; y++)
+            {
+                gridLine.points3[index++] = new Vector3(0.0f, y, 0.0f);
+                gridLine.points3[index++] = new Vector3(width, y, 0.0f);
             }
 
-            for (int y = 0; y < GridHeight; y++)
-            {
-                GridLinePoints[index++] = new Vector2(0.0f, y);
-                GridLinePoints[index++] = new Vector2(GridWidth, y);
-            }
+            // Set canvas to pixel perfect
+            VectorLine.canvas3D.pixelPerfect = true;
 
-            GridLine.Draw();
+            // Change canvas sorting order (underneath units, but above tiles)
+            VectorLine.canvas3D.sortingLayerName = "Tiles";
+            VectorLine.canvas3D.sortingOrder = 1;
+
+            // Set grid color to black
+            gridLine.SetColor(Color.black);
+
+            // Draw grid
+            gridLine.Draw3D();
         }
     }
 }

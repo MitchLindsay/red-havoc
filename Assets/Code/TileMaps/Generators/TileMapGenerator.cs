@@ -30,9 +30,9 @@ namespace Assets.Code.TileMaps.Generators
         public int MapHeight = 10;
 
         // GUI element that displays tile name
-        public Text TileNameLabel;
+        public Text TileGUIText;
         // GUI element that displays tile graphic
-        public Image TileGraphicImage;
+        public Image TileGUIImage;
 
         void Start()
         {
@@ -92,8 +92,8 @@ namespace Assets.Code.TileMaps.Generators
                     tileObject.transform.position = new Vector3(x, y, 0);
 
                     // Link GUI elements to tile
-                    tile.TileNameLabel = TileNameLabel;
-                    tile.TileGraphicImage = TileGraphicImage;
+                    tile.TileGUIText = TileGUIText;
+                    tile.TileGUIImage = TileGUIImage;
 
                     // Update the tiles array
                     tiles[x, y] = tile;

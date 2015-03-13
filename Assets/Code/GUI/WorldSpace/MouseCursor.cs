@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Vectrosity;
 
 namespace Assets.Code.GUI.WorldSpace
 {
@@ -9,17 +10,27 @@ namespace Assets.Code.GUI.WorldSpace
     {
         // Current location of the mouse cursor in world space
         public Vector2 Coordinates { get; private set; }
-        // Current X coordinate of the mouse cursor in world space
+
+        // Current coordinates in world space, stored as ints
         public int XCoordinateInt { get; private set; }
-        // Current Y coordinte of the mouse cursor in world space
         public int YCoordianteInt { get; private set; }
+
         // GUI label of the mouse cursor's coordinates, edited through the Unity interface
-        public Text CoordinatesLabel;
+        public Text CoordinatesGUIText;
+
+        // Vector line for the cursor selection box
+        private VectorLine cursorSelectionLine;
+
+        void Start()
+        {
+            CreateCursorSelection();
+        }
 
         void Update()
         {
             UpdateCoordinates(Input.mousePosition);
-            UpdateCoordinatesLabel();
+            UpdateCoordinatesGUIText();
+            DrawCursorSelection();
         }
          
         // Updates the mouse cursor's coordinates, using generic calculations
@@ -32,9 +43,29 @@ namespace Assets.Code.GUI.WorldSpace
         }
 
         // Updates the mouse cursor's coordinates text
-        private void UpdateCoordinatesLabel()
+        private void UpdateCoordinatesGUIText()
         {
-            CoordinatesLabel.text = "Coordinates: " + "(" + XCoordinateInt.ToString() +", " + YCoordianteInt.ToString() + ")";
+            CoordinatesGUIText.text = "Coordinates: " + "(" + XCoordinateInt.ToString() +", " + YCoordianteInt.ToString() + ")";
+        }
+
+        // Creates the curstor selection box
+        private void CreateCursorSelection()
+        {
+            // Initailize the vector line
+            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, 1.0f, LineType.Continuous, Joins.Weld);
+
+            // Set the sorting order (underneath units, above tiles, above grid)
+            VectorLine.canvas3D.sortingLayerName = "Tile";
+            VectorLine.canvas3D.sortingOrder = 2;
+        }
+
+        // Updates the position of the cursor selection box
+        private void DrawCursorSelection()
+        {
+            // Create a rectangle for the selection box
+            cursorSelectionLine.MakeRect(new Rect((float)XCoordinateInt, (float)YCoordianteInt, 1.0f, 1.0f));
+            // Draw the vector line
+            cursorSelectionLine.Draw3D();
         }
     }
 }

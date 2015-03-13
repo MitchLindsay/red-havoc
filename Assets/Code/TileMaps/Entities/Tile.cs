@@ -19,17 +19,17 @@ namespace Assets.Code.TileMaps.Entities
         public Sprite TileGraphic = null;
 
         // GUI label for the tile name
-        public Text TileNameLabel;
+        public Text TileGUIText;
         // GUI image for the tile graphic
-        public Image TileGraphicImage;
+        public Image TileGUIImage;
 
         void OnMouseOver()
         {
-            if (TileNameLabel != null)
-                TileNameLabel.text = "Tile: " + TileName;
+            if (TileGUIText != null)
+                TileGUIText.text = "Tile: " + TileName;
 
-            if (TileGraphicImage != null && TileGraphic != null)
-                TileGraphicImage.sprite = TileGraphic;
+            if (TileGUIImage != null && TileGraphic != null)
+                TileGUIImage.sprite = TileGraphic;
         }
     }
 }
