@@ -28,17 +28,23 @@ namespace Assets.Code.GUI.WorldSpace
         {
             // Calculate number of grid points
             int numPoints = width * height;
+
+            // Vectrosity lines cannot have a number of points that is odd
+            // Check if the number of points is odd, if it is, add 1 to it
+            if (Algorithms.IsNumberOdd(numPoints))
+                numPoints += 1;
+
             // Create the grid line
             gridLine = new VectorLine("Grid", new Vector3[numPoints], null, 1.0f);
-
+            
             // Loop through each point of the grid
             int index = 0;
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < width + 1; x++)
             {
                 gridLine.points3[index++] = new Vector3(x, 0.0f, 0.0f);
                 gridLine.points3[index++] = new Vector3(x, height, 0.0f);
             }
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height + 1; y++)
             {
                 gridLine.points3[index++] = new Vector3(0.0f, y, 0.0f);
                 gridLine.points3[index++] = new Vector3(width, y, 0.0f);
@@ -55,7 +61,7 @@ namespace Assets.Code.GUI.WorldSpace
             gridLine.SetColor(Color.black);
 
             // Draw grid
-            gridLine.Draw3D();
+            gridLine.Draw3DAuto();
         }
     }
 }

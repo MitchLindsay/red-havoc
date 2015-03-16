@@ -17,10 +17,10 @@ namespace Assets.Code.Generic
             return Camera.main.WorldToScreenPoint(position);
         }
 
-        // Returns true if a number is even, false is a number is not
-        public static bool IsNumberEven(int number)
+        // Returns true if a number (above zero) is odd, false is a number is not
+        public static bool IsNumberOdd(int number)
         {
-            if (number % 2 == 0)
+            if (number > 0 && number % 2 != 0)
                 return true;
             return false;
         }

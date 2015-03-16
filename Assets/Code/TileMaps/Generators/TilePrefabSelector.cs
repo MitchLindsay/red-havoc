@@ -27,7 +27,8 @@ namespace Assets.Code.TileMaps.Generators
         // Return a tile prefab based on the data given
         public GameObject GetTilePrefab(float elevation)
         {
-            return TilePrefabs[1];
+            int randomNum = Random.Range(0, 3);
+            return TilePrefabs[randomNum];
         }
     }
 }
