@@ -71,7 +71,7 @@ namespace Assets.Code.Controllers.CameraControllers
             movementBounds.height = areaHeight;
         }
         
-        // Drag the camera to the specified location
+        // Drag the camera in a direction when the mouse is moved
         private void DragCamera()
         {
             // Call event since camera is being dragged
@@ -81,6 +81,7 @@ namespace Assets.Code.Controllers.CameraControllers
             // Get inputs from mouse, multiplied by the drag speed
             dragAmountX = Input.GetAxis("Mouse X") * DragSpeed;
             dragAmountY = Input.GetAxis("Mouse Y") * DragSpeed;
+            // ***NOTE*** COULD ADD VARIABLE TO ALLOW FOR INVERTED CONTROLS ***NOTE***
 
             // Apply the drag amount to the camera position
             restrictedCameraPosition.x -= dragAmountX;
