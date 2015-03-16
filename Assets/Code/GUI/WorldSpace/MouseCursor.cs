@@ -1,4 +1,6 @@
-﻿using Assets.Code.Generic;
+﻿using Assets.Code.Controllers.CameraControllers;
+using Assets.Code.Generic;
+using Assets.Code.TileMaps.Generators;
 using UnityEngine;
 using UnityEngine.UI;
 using Vectrosity;
@@ -13,13 +15,14 @@ namespace Assets.Code.GUI.WorldSpace
 
         // Current coordinates in world space, stored as ints
         public int XCoordinateInt { get; private set; }
-        public int YCoordianteInt { get; private set; }
+        public int YCoordinateInt { get; private set; }
 
         // GUI label of the mouse cursor's coordinates, edited through the Unity interface
         public Text CoordinatesGUIText;
 
         // Vector line for the cursor selection box
         private VectorLine cursorSelectionLine;
+
 
         void Start()
         {
@@ -39,13 +42,13 @@ namespace Assets.Code.GUI.WorldSpace
             Coordinates = Algorithms.ConvertPositionToWorldCoordinates(mousePosition);
 
             XCoordinateInt = (int)Coordinates.x;
-            YCoordianteInt = (int)Coordinates.y;
+            YCoordinateInt = (int)Coordinates.y;
         }
 
         // Updates the mouse cursor's coordinates text
         private void UpdateCoordinatesGUIText()
         {
-            CoordinatesGUIText.text = "Coordinates: " + "(" + XCoordinateInt.ToString() +", " + YCoordianteInt.ToString() + ")";
+            CoordinatesGUIText.text = "Coordinates: " + "(" + XCoordinateInt.ToString() +", " + YCoordinateInt.ToString() + ")";
         }
 
         // Creates the curstor selection box
@@ -63,7 +66,7 @@ namespace Assets.Code.GUI.WorldSpace
         private void DrawCursorSelection()
         {
             // Create a rectangle for the selection box
-            cursorSelectionLine.MakeRect(new Rect((float)XCoordinateInt, (float)YCoordianteInt, 1.0f, 1.0f));
+            cursorSelectionLine.MakeRect(new Rect((float)XCoordinateInt, (float)YCoordinateInt, 1.0f, 1.0f));
             // Draw the vector line
             cursorSelectionLine.Draw3D();
         }
