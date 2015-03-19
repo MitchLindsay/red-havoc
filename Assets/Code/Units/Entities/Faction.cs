@@ -30,8 +30,15 @@ namespace Assets.Code.Units.Entities
         // List of controlled structures
         public List<Entity> Structures { get; private set; }
 
-        // GUI element for the faction unit count, edited through Unity interface
-        public Text FactionGUIUnitCount;
+        // Mineral counter
+        [HideInInspector]
+        public int MineralCount = 0;
+
+        // GUI elements, edited through Unity interface
+        public Text UnitCountGUIText;
+        public Text MineralCountGUIText;
+        public Image UnitCountGUIImage;
+        public Image MineralCountGUIImage;
 
         void Start()
         {
@@ -43,8 +50,7 @@ namespace Assets.Code.Units.Entities
 
         void Update()
         {
-            // Update Faction GUI text
-            UpdateFactionGUIUnitCount();
+            UpdateGUI();
         }
 
         // Adds an entity to the list of controlled entities
@@ -112,11 +118,20 @@ namespace Assets.Code.Units.Entities
                 entity.GetComponent<SpriteRenderer>().color = color;
         }
 
-        // Update the faction unit count text displayed on the GUI
-        public void UpdateFactionGUIUnitCount()
+        // Update associated GUI elements
+        public void UpdateGUI()
         {
-            if (FactionGUIUnitCount != null)
-                FactionGUIUnitCount.text = FactionName + " Units: " + Units.Count;
+            if (UnitCountGUIText != null)
+                UnitCountGUIText.text = Units.Count.ToString();
+
+            if (MineralCountGUIText != null)
+                MineralCountGUIText.text = MineralCount.ToString();
+
+            if (UnitCountGUIImage != null)
+                UnitCountGUIImage.color = FactionColor;
+
+            if (MineralCountGUIImage != null)
+                MineralCountGUIImage.color = FactionColor;
         }
     }
 }

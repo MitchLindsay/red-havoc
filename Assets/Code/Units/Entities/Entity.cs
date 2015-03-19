@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Code.Units.Entities
 {
@@ -13,5 +14,12 @@ namespace Assets.Code.Units.Entities
 
         // Name of the entity, edited through unity interface
         public string EntityName = "Entity";
+
+        // Sprite of the entity, edited through Unity interface
+        public Sprite EntityGraphic = null;
+
+        // GUI elements, edited through Unity interface
+        public Text EntityTypeGUIText;
+        public Image EntityTypeGUIImage;
     }
 }

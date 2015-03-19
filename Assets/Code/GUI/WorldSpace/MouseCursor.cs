@@ -17,12 +17,8 @@ namespace Assets.Code.GUI.WorldSpace
         public int XCoordinateInt { get; private set; }
         public int YCoordinateInt { get; private set; }
 
-        // GUI label of the mouse cursor's coordinates, edited through the Unity interface
-        public Text CoordinatesGUIText;
-
         // Vector line for the cursor selection box
         private VectorLine cursorSelectionLine;
-
 
         void Start()
         {
@@ -32,7 +28,6 @@ namespace Assets.Code.GUI.WorldSpace
         void Update()
         {
             UpdateCoordinates(Input.mousePosition);
-            UpdateCoordinatesGUIText();
             DrawCursorSelection();
         }
          
@@ -43,12 +38,6 @@ namespace Assets.Code.GUI.WorldSpace
 
             XCoordinateInt = (int)Coordinates.x;
             YCoordinateInt = (int)Coordinates.y;
-        }
-
-        // Updates the mouse cursor's coordinates text
-        private void UpdateCoordinatesGUIText()
-        {
-            CoordinatesGUIText.text = "Coordinates: " + "(" + XCoordinateInt.ToString() +", " + YCoordinateInt.ToString() + ")";
         }
 
         // Creates the curstor selection box

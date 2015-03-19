@@ -29,10 +29,9 @@ namespace Assets.Code.TileMaps.Generators
         public int MapWidth = 10;
         public int MapHeight = 10;
 
-        // GUI element that displays tile name
-        public Text TileGUIText;
-        // GUI element that displays tile graphic
-        public Image TileGUIImage;
+        // GUI elements, edited through Unity interface
+        public Text TileTypeGUIText;
+        public Image TileTypeGUIImage;
 
         void Start()
         {
@@ -92,8 +91,8 @@ namespace Assets.Code.TileMaps.Generators
                     tileObject.transform.position = new Vector3(x, y, 0);
 
                     // Link GUI elements to tile
-                    tile.TileGUIText = TileGUIText;
-                    tile.TileGUIImage = TileGUIImage;
+                    tile.TileTypeGUIText = TileTypeGUIText;
+                    tile.TileTypeGUIImage = TileTypeGUIImage;
 
                     // Update the tiles array
                     tiles[x, y] = tile;

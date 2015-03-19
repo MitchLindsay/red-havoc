@@ -18,18 +18,17 @@ namespace Assets.Code.TileMaps.Entities
         // Sprite of the tile, edited through Unity interface
         public Sprite TileGraphic = null;
 
-        // GUI label for the tile name
-        public Text TileGUIText;
-        // GUI image for the tile graphic
-        public Image TileGUIImage;
+        // GUI elements, edited through Unity interface
+        public Text TileTypeGUIText;
+        public Image TileTypeGUIImage;
 
         void OnMouseOver()
         {
-            if (TileGUIText != null)
-                TileGUIText.text = "Tile: " + TileName;
+            if (TileTypeGUIText != null)
+                TileTypeGUIText.text = TileName;
 
-            if (TileGUIImage != null && TileGraphic != null)
-                TileGUIImage.sprite = TileGraphic;
+            if (TileTypeGUIImage != null && TileGraphic != null)
+                TileTypeGUIImage.sprite = TileGraphic;
         }
     }
 }
