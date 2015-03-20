@@ -1,38 +1,37 @@
-﻿using Assets.Code.Units.Abstract;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Code.Units.Entities
 {
     // Unit.cs - A single military unit
-    public class Unit : Entity
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(BoxCollider2D))]
+    public class Unit : MonoBehaviour
     {
+        // Unique identifier of the unit
+        [HideInInspector]
+        public int UnitID = -1;
+
+        // Name of the unit, edited through unity interface
+        public string UnitName = "Unit";
+
         // Current health of the unit
         [HideInInspector]
         public int Health = 10;
 
         // Max health value of the unit type, edited through Unity interface
-        public int BaseMaxHealth = 10;
+        public int MaxHealth = 10;
         // Attack value of the unit type, edited through Unity interface
-        public int BaseAttack = 10;
+        public int Attack = 10;
         // Attack range value of the unit type, edited through Unity interface
-        public int BaseAttackRange = 1;
+        public int AttackRange = 1;
+        // Defense value of the unit type, edited through Unity interface
+        public int Defense = 5;
         // Movement value of the unit type, edited through Unity interface
-        public int BaseMovement = 10;
-
-        // Unit attributes
-        public Attribute MaxHealth { get; set; }
-        public Attribute Attack { get; set; }
-        public Attribute AttackRange { get; set; }
-        public Attribute Movement { get; set; }
+        public int Movement = 10;
 
         void Start()
         {
-            this.MaxHealth = new Attribute("Max Health", BaseMaxHealth);
-            this.Attack = new Attribute("Attack", BaseAttack);
-            this.AttackRange = new Attribute("Attack Range", BaseAttackRange);
-            this.Movement = new Attribute("Movement", BaseMovement);
-
-            this.Health = MaxHealth.ModifiedValue;
+            Health = MaxHealth;
         }
     }
 }

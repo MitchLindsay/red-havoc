@@ -15,20 +15,114 @@ namespace Assets.Code.TileMaps.Entities
 
         // Name of the tile type, edited through Unity interface
         public string TileName = "Tile";
-        // Sprite of the tile, edited through Unity interface
-        public Sprite TileGraphic = null;
+
+        // Attribute modifiers, edited through Unity interface
+        public int DefenseBonus = 0;
+        public int MovementBonus = 0;
+        public int HealthRegenBonus = 0;
+
+        // GUI colors, edited through Unity interface
+        public Color GUI_Color_NoBonus;
+        public Color GUI_Color_PositiveBonus;
+        public Color GUI_Color_NegativeBonus;
 
         // GUI elements, edited through Unity interface
-        public Text TileTypeGUIText;
-        public Image TileTypeGUIImage;
+        public Text GUI_Text_TileName;
+        public Text GUI_Text_DefenseBonus;
+        public Text GUI_Text_MovementBonus;
+        public Text GUI_Text_HealthRegenBonus;
+        public Image GUI_Image_DefenseBonus;
+        public Image GUI_Image_MovementBonus;
+        public Image GUI_Image_HealthRegenBonus;
 
         void OnMouseOver()
         {
-            if (TileTypeGUIText != null)
-                TileTypeGUIText.text = TileName;
+            if (GUI_Text_TileName != null)
+                GUI_Text_TileName.text = TileName;
 
-            if (TileTypeGUIImage != null && TileGraphic != null)
-                TileTypeGUIImage.sprite = TileGraphic;
+            if (GUI_Text_DefenseBonus != null)
+                GUI_Text_DefenseBonus.text = Mathf.Abs(DefenseBonus).ToString();
+
+            if (GUI_Text_MovementBonus != null)
+                GUI_Text_MovementBonus.text = Mathf.Abs(MovementBonus).ToString();
+
+            if (GUI_Text_HealthRegenBonus != null)
+                GUI_Text_HealthRegenBonus.text = Mathf.Abs(HealthRegenBonus).ToString();
+
+            if (DefenseBonus < 0)
+            {
+                if (GUI_Image_DefenseBonus != null)
+                    GUI_Image_DefenseBonus.color = GUI_Color_NegativeBonus;
+
+                if (GUI_Text_DefenseBonus != null)
+                    GUI_Text_DefenseBonus.color = GUI_Color_NegativeBonus;
+            }
+            else if (DefenseBonus > 0)
+            {
+                if (GUI_Image_DefenseBonus != null)
+                    GUI_Image_DefenseBonus.color = GUI_Color_PositiveBonus;
+
+                if (GUI_Text_DefenseBonus != null)
+                    GUI_Text_DefenseBonus.color = GUI_Color_PositiveBonus;
+            }
+            else
+            {
+                if (GUI_Image_DefenseBonus != null)
+                    GUI_Image_DefenseBonus.color = GUI_Color_NoBonus;
+
+                if (GUI_Text_DefenseBonus != null)
+                    GUI_Text_DefenseBonus.color = GUI_Color_NoBonus;
+            }
+
+            if (MovementBonus < 0)
+            {
+                if (GUI_Image_MovementBonus != null)
+                    GUI_Image_MovementBonus.color = GUI_Color_NegativeBonus;
+
+                if (GUI_Text_MovementBonus != null)
+                    GUI_Text_MovementBonus.color = GUI_Color_NegativeBonus;
+            }
+            else if (MovementBonus > 0)
+            {
+                if (GUI_Image_MovementBonus != null)
+                    GUI_Image_MovementBonus.color = GUI_Color_PositiveBonus;
+
+                if (GUI_Text_MovementBonus != null)
+                    GUI_Text_MovementBonus.color = GUI_Color_PositiveBonus;
+            }
+            else
+            {
+                if (GUI_Image_MovementBonus != null)
+                    GUI_Image_MovementBonus.color = GUI_Color_NoBonus;
+
+                if (GUI_Text_MovementBonus != null)
+                    GUI_Text_MovementBonus.color = GUI_Color_NoBonus;
+            }
+
+            if (HealthRegenBonus < 0)
+            {
+                if (GUI_Image_HealthRegenBonus != null)
+                    GUI_Image_HealthRegenBonus.color = GUI_Color_NegativeBonus;
+
+                if (GUI_Text_HealthRegenBonus != null)
+                    GUI_Text_HealthRegenBonus.color = GUI_Color_NegativeBonus;
+            }
+            else if (HealthRegenBonus > 0)
+            {
+                if (GUI_Image_HealthRegenBonus != null)
+                    GUI_Image_HealthRegenBonus.color = GUI_Color_PositiveBonus;
+
+                if (GUI_Text_HealthRegenBonus != null)
+                    GUI_Text_HealthRegenBonus.color = GUI_Color_PositiveBonus;
+            }
+            else
+            {
+                if (GUI_Image_HealthRegenBonus != null)
+                    GUI_Image_HealthRegenBonus.color = GUI_Color_NoBonus;
+
+                if (GUI_Text_HealthRegenBonus != null)
+                    GUI_Text_HealthRegenBonus.color = GUI_Color_NoBonus;
+            }
         }
     }
 }

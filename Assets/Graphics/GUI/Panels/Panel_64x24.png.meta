@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 67657bf11cf87264b85a3b160a9b7bef
-timeCreated: 1426781227
+guid: 0f84ca5470eccd24a8fb0fb671d5c8f7
+timeCreated: 1426881553
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -43,10 +43,14 @@ TextureImporter:
   alignment: 6
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 8
   alphaIsTransparency: 1
   textureType: 8
-  buildTargetSettings: []
+  buildTargetSettings:
+  - buildTarget: Web
+    maxTextureSize: 2048
+    textureFormat: -3
+    compressionQuality: 50
   spriteSheet:
     sprites: []
   spritePackingTag: GUI

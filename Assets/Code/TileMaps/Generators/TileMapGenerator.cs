@@ -29,9 +29,19 @@ namespace Assets.Code.TileMaps.Generators
         public int MapWidth = 10;
         public int MapHeight = 10;
 
+        // GUI colors, edited through Unity interface
+        public Color GUI_Color_NoBonus;
+        public Color GUI_Color_PositiveBonus;
+        public Color GUI_Color_NegativeBonus;
+
         // GUI elements, edited through Unity interface
-        public Text TileTypeGUIText;
-        public Image TileTypeGUIImage;
+        public Text GUI_Text_TileName;
+        public Text GUI_Text_DefenseBonus;
+        public Text GUI_Text_MovementBonus;
+        public Text GUI_Text_HealthRegenBonus;
+        public Image GUI_Image_DefenseBonus;
+        public Image GUI_Image_MovementBonus;
+        public Image GUI_Image_HealthRegenBonus;
 
         void Start()
         {
@@ -90,9 +100,19 @@ namespace Assets.Code.TileMaps.Generators
                     tileObject.transform.parent = tileMapObject.transform;
                     tileObject.transform.position = new Vector3(x, y, 0);
 
+                    // Set GUI colors
+                    tile.GUI_Color_NoBonus = GUI_Color_NoBonus;
+                    tile.GUI_Color_PositiveBonus = GUI_Color_PositiveBonus;
+                    tile.GUI_Color_NegativeBonus = GUI_Color_NegativeBonus;
+
                     // Link GUI elements to tile
-                    tile.TileTypeGUIText = TileTypeGUIText;
-                    tile.TileTypeGUIImage = TileTypeGUIImage;
+                    tile.GUI_Text_TileName = GUI_Text_TileName;
+                    tile.GUI_Text_DefenseBonus = GUI_Text_DefenseBonus;
+                    tile.GUI_Text_MovementBonus = GUI_Text_MovementBonus;
+                    tile.GUI_Text_HealthRegenBonus = GUI_Text_HealthRegenBonus;
+                    tile.GUI_Image_DefenseBonus = GUI_Image_DefenseBonus;
+                    tile.GUI_Image_MovementBonus = GUI_Image_MovementBonus;
+                    tile.GUI_Image_HealthRegenBonus = GUI_Image_HealthRegenBonus;
 
                     // Update the tiles array
                     tiles[x, y] = tile;

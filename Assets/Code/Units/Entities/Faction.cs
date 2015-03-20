@@ -23,12 +23,8 @@ namespace Assets.Code.Units.Entities
         // Color of the faction, edited through the unity interface
         public Color FactionColor = Color.white;
 
-        // List of controlled entities
-        public List<Entity> Entities { get; private set; }
         // List of controlled units
-        public List<Entity> Units { get; private set; }
-        // List of controlled structures
-        public List<Entity> Structures { get; private set; }
+        public List<Unit> Units { get; private set; }
 
         // Mineral counter
         [HideInInspector]
@@ -42,96 +38,57 @@ namespace Assets.Code.Units.Entities
 
         void Start()
         {
-            // Remove all entities in the list
-            RemoveAllEntities();
-            // Add all the child entities
-            AddChildEntities();
+            // Remove all units in the list
+            RemoveAllUnits();
+            // Add all the child units
+            AddChildUnits();
         }
 
-        void Update()
+        // Adds an unit to the list of controlled units
+        public void AddUnit(Unit unit)
         {
-            UpdateGUI();
-        }
-
-        // Adds an entity to the list of controlled entities
-        public void AddEntity(Entity entity)
-        {
-            // Only add the entity if it is not already controlled
-            if (!Entities.Contains(entity))
+            // Only add the unit if it is not already controlled
+            if (!Units.Contains(unit))
             {
-                SetColor(entity, FactionColor);
-                Entities.Add(entity);
-
-                if (entity.GetType() == typeof(Unit))
-                    Units.Add(entity);
-                else if (entity.GetType() == typeof(Structure))
-                    Structures.Add(entity);
+                SetColor(unit, FactionColor);
+                Units.Add(unit);
             }
         }
 
-        // Adds all child entities to the list of controlled entities
-        public void AddChildEntities()
+        // Adds all child units to the list of controlled units
+        public void AddChildUnits()
         {
             // Find all controlled units
             Unit[] units = gameObject.GetComponentsInChildren<Unit>();
-            // Find all controlled structures
-            Structure[] structures = gameObject.GetComponentsInChildren<Structure>();
 
             // Add controlled units
             foreach (Unit unit in units)
-                AddEntity(unit);
-
-            // Add controlled structures
-            foreach (Structure structure in structures)
-                AddEntity(structure);
+                AddUnit(unit);
         }
 
-        // Removes a entity from the list of controlled entities
-        public void RemoveUnit(Entity entity)
+        // Removes a unit from the list of controlled units
+        public void RemoveUnit(Unit unit)
         {
-            // Only remove the entity if it is currently controlled
-            if (Entities.Contains(entity))
+            // Only remove the unit if it is currently controlled
+            if (Units.Contains(unit))
             {
-                SetColor(entity, Color.white);
-                Entities.Remove(entity);
-
-                if (Units.Contains(entity))
-                    Units.Remove(entity);
-                else if (Structures.Contains(entity))
-                    Structures.Remove(entity);
+                SetColor(unit, Color.white);
+                Units.Remove(unit);
             }
         }
 
-        // Removes all entities
-        public void RemoveAllEntities()
+        // Removes all units
+        public void RemoveAllUnits()
         {
-            Entities = new List<Entity>();
-            Units = new List<Entity>();
-            Structures = new List<Entity>();
+            Units = new List<Unit>();
         }
 
-        // Changes a entity's color
-        public void SetColor(Entity entity, Color color)
+        // Changes a unit's color
+        public void SetColor(Unit unit, Color color)
         {
-            // Check if entity exists
-            if (entity != null)
-                entity.GetComponent<SpriteRenderer>().color = color;
-        }
-
-        // Update associated GUI elements
-        public void UpdateGUI()
-        {
-            if (UnitCountGUIText != null)
-                UnitCountGUIText.text = Units.Count.ToString();
-
-            if (MineralCountGUIText != null)
-                MineralCountGUIText.text = MineralCount.ToString();
-
-            if (UnitCountGUIImage != null)
-                UnitCountGUIImage.color = FactionColor;
-
-            if (MineralCountGUIImage != null)
-                MineralCountGUIImage.color = FactionColor;
+            // Check if unit exists
+            if (unit != null)
+                unit.GetComponent<SpriteRenderer>().color = color;
         }
     }
 }

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b79790016274bb841a81b0457399de42
-timeCreated: 1425665773
+guid: 89307ab56f46b7f4a96ee0733a5175cd
+timeCreated: 1426881763
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -43,13 +43,13 @@ TextureImporter:
   alignment: 6
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 8
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
     sprites: []
-  spritePackingTag: Structure
+  spritePackingTag: GUI
   userData: 
   assetBundleName: 
   assetBundleVariant: 
