@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Code.GUI.WorldSpace;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,11 @@ namespace Assets.Code.TileMaps.Entities
     [RequireComponent (typeof(BoxCollider2D))]
     public class Tile : MonoBehaviour
     {
-        // Unique identifier for the tile, assigned by the tile map generator
+        // Coordinates of the tile, set by the tile map generator
         [HideInInspector]
-        public int TileID = -1;
+        public int X = -1;
+        [HideInInspector]
+        public int Y = -1;
 
         // Name of the tile type, edited through Unity interface
         public string TileName = "Tile";
@@ -35,94 +38,72 @@ namespace Assets.Code.TileMaps.Entities
         public Image GUI_Image_MovementBonus;
         public Image GUI_Image_HealthRegenBonus;
 
-        void OnMouseOver()
+        // Listen for events when object is created
+        void OnEnable()
         {
-            if (GUI_Text_TileName != null)
-                GUI_Text_TileName.text = TileName;
+            MouseCursor.OnMouseOverTile += SetGUIElements;
+        }
 
-            if (GUI_Text_DefenseBonus != null)
-                GUI_Text_DefenseBonus.text = Mathf.Abs(DefenseBonus).ToString();
+        // Stop listening for events if object is destroyed
+        void OnDestroy()
+        {
+            MouseCursor.OnMouseOverTile -= SetGUIElements;
+        }
 
-            if (GUI_Text_MovementBonus != null)
-                GUI_Text_MovementBonus.text = Mathf.Abs(MovementBonus).ToString();
-
-            if (GUI_Text_HealthRegenBonus != null)
-                GUI_Text_HealthRegenBonus.text = Mathf.Abs(HealthRegenBonus).ToString();
-
-            if (DefenseBonus < 0)
+        private void SetGUIElements(int x, int y)
+        {
+            if (x == X && y == Y)
             {
-                if (GUI_Image_DefenseBonus != null)
-                    GUI_Image_DefenseBonus.color = GUI_Color_NegativeBonus;
+                ChangeGUIText(GUI_Text_TileName, TileName);
+                ChangeGUIText(GUI_Text_DefenseBonus, Mathf.Abs(DefenseBonus).ToString());
+                ChangeGUIText(GUI_Text_MovementBonus, Mathf.Abs(MovementBonus).ToString());
+                ChangeGUIText(GUI_Text_HealthRegenBonus, Mathf.Abs(HealthRegenBonus).ToString());
 
-                if (GUI_Text_DefenseBonus != null)
-                    GUI_Text_DefenseBonus.color = GUI_Color_NegativeBonus;
+                ChangeGUIBonusColors(GUI_Text_DefenseBonus, GUI_Image_DefenseBonus, DefenseBonus);
+                ChangeGUIBonusColors(GUI_Text_MovementBonus, GUI_Image_MovementBonus, MovementBonus);
+                ChangeGUIBonusColors(GUI_Text_HealthRegenBonus, GUI_Image_HealthRegenBonus, HealthRegenBonus);
             }
-            else if (DefenseBonus > 0)
-            {
-                if (GUI_Image_DefenseBonus != null)
-                    GUI_Image_DefenseBonus.color = GUI_Color_PositiveBonus;
+        }
 
-                if (GUI_Text_DefenseBonus != null)
-                    GUI_Text_DefenseBonus.color = GUI_Color_PositiveBonus;
+        // Changes the text in the linked GUI element
+        private void ChangeGUIText(Text guiElement, string tileText)
+        {
+            if (guiElement != null)
+                guiElement.text = tileText;
+        }
+
+        // Changes the color of the text and image of the linked GUI elements
+        private void ChangeGUIBonusColors(Text guiElementText, Image guiElementImage, int bonus)
+        {
+            if (bonus < 0)
+            {
+                ChangeGUIColor(guiElementImage, GUI_Color_NegativeBonus);
+                ChangeGUIColor(guiElementText, GUI_Color_NegativeBonus);
             }
-            else
+            else if (bonus > 0)
             {
-                if (GUI_Image_DefenseBonus != null)
-                    GUI_Image_DefenseBonus.color = GUI_Color_NoBonus;
-
-                if (GUI_Text_DefenseBonus != null)
-                    GUI_Text_DefenseBonus.color = GUI_Color_NoBonus;
-            }
-
-            if (MovementBonus < 0)
-            {
-                if (GUI_Image_MovementBonus != null)
-                    GUI_Image_MovementBonus.color = GUI_Color_NegativeBonus;
-
-                if (GUI_Text_MovementBonus != null)
-                    GUI_Text_MovementBonus.color = GUI_Color_NegativeBonus;
-            }
-            else if (MovementBonus > 0)
-            {
-                if (GUI_Image_MovementBonus != null)
-                    GUI_Image_MovementBonus.color = GUI_Color_PositiveBonus;
-
-                if (GUI_Text_MovementBonus != null)
-                    GUI_Text_MovementBonus.color = GUI_Color_PositiveBonus;
+                ChangeGUIColor(guiElementImage, GUI_Color_PositiveBonus);
+                ChangeGUIColor(guiElementText, GUI_Color_PositiveBonus);
             }
             else
             {
-                if (GUI_Image_MovementBonus != null)
-                    GUI_Image_MovementBonus.color = GUI_Color_NoBonus;
-
-                if (GUI_Text_MovementBonus != null)
-                    GUI_Text_MovementBonus.color = GUI_Color_NoBonus;
+                ChangeGUIColor(guiElementImage, GUI_Color_NoBonus);
+                ChangeGUIColor(guiElementText, GUI_Color_NoBonus);
             }
+        }
 
-            if (HealthRegenBonus < 0)
-            {
-                if (GUI_Image_HealthRegenBonus != null)
-                    GUI_Image_HealthRegenBonus.color = GUI_Color_NegativeBonus;
+        // Changes the color of the linked GUI element
+        private void ChangeGUIColor(Text guiElement, Color color)
+        {
+            if (guiElement != null)
+                guiElement.color = color;
+        }
 
-                if (GUI_Text_HealthRegenBonus != null)
-                    GUI_Text_HealthRegenBonus.color = GUI_Color_NegativeBonus;
-            }
-            else if (HealthRegenBonus > 0)
-            {
-                if (GUI_Image_HealthRegenBonus != null)
-                    GUI_Image_HealthRegenBonus.color = GUI_Color_PositiveBonus;
-
-                if (GUI_Text_HealthRegenBonus != null)
-                    GUI_Text_HealthRegenBonus.color = GUI_Color_PositiveBonus;
-            }
-            else
-            {
-                if (GUI_Image_HealthRegenBonus != null)
-                    GUI_Image_HealthRegenBonus.color = GUI_Color_NoBonus;
-
-                if (GUI_Text_HealthRegenBonus != null)
-                    GUI_Text_HealthRegenBonus.color = GUI_Color_NoBonus;
-            }
+        // Changes the color of the linked GUI element
+        private void ChangeGUIColor(Image guiElement, Color color)
+        {
+            if (guiElement != null)
+                guiElement.color = color;
         }
     }
 }

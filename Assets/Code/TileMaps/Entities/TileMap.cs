@@ -33,23 +33,6 @@ namespace Assets.Code.TileMaps.Entities
             return false;
         }
 
-        // Returns a tile by its unique ID
-        public Tile GetTileByTileID(int tileID)
-        {
-            // Return null if the tile ID is not set
-            if (tileID == -1)
-                return null;
-
-            foreach (Tile tile in Tiles)
-            {
-                if (tile.TileID == tileID)
-                    return tile;
-            }
-
-            // Return null if no tile matches the specified ID
-            return null;
-        }
-
         // Returns a tile by its position in the map
         public Tile GetTileByPosition(int x, int y)
         {

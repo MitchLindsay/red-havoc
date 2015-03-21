@@ -114,6 +114,10 @@ namespace Assets.Code.TileMaps.Generators
                     tile.GUI_Image_MovementBonus = GUI_Image_MovementBonus;
                     tile.GUI_Image_HealthRegenBonus = GUI_Image_HealthRegenBonus;
 
+                    // Update tile coordinates
+                    tile.X = x;
+                    tile.Y = y;
+
                     // Update the tiles array
                     tiles[x, y] = tile;
                 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Code.GUI.WorldSpace;
+using UnityEngine;
 
 namespace Assets.Code.Units.Entities
 {
@@ -7,9 +8,11 @@ namespace Assets.Code.Units.Entities
     [RequireComponent(typeof(BoxCollider2D))]
     public class Unit : MonoBehaviour
     {
-        // Unique identifier of the unit
+        // Coordinates of the unit
         [HideInInspector]
-        public int UnitID = -1;
+        public int X = -1;
+        [HideInInspector]
+        public int Y = -1;
 
         // Name of the unit, edited through unity interface
         public string UnitName = "Unit";
@@ -29,9 +32,36 @@ namespace Assets.Code.Units.Entities
         // Movement value of the unit type, edited through Unity interface
         public int Movement = 10;
 
+        // Listen for events when object is created
+        void OnEnable()
+        {
+            // MouseCursor.OnMouseOverUnit += HandleMouseEvent;
+        }
+
+        // Stop listening for events if object is destroyed
+        void OnDestroy()
+        {
+            // MouseCursor.OnMouseOverUnit -= HandleMouseEvent;
+        }
+
+        void Awake()
+        {
+            X = (int)gameObject.transform.position.x;
+            Y = (int)gameObject.transform.position.y;
+        }
+
         void Start()
         {
             Health = MaxHealth;
         }
+
+        /*
+        // TEST FUNCTION
+        private void HandleMouseEvent(int x, int y)
+        {
+            if (x == X && y == Y)
+                Debug.Log(UnitName + " moused over at " + X + ", " + Y);
+        }
+        */
     }
 }

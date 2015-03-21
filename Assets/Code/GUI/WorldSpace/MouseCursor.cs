@@ -10,12 +10,24 @@ namespace Assets.Code.GUI.WorldSpace
     // MouseCursor.cs
     public class MouseCursor : MonoBehaviour
     {
+        // Event handlers for in-game entity interactions
+        public delegate void MouseOverHandler(int x, int y);
+        public static event MouseOverHandler OnMouseOverUnit;
+        public static event MouseOverHandler OnMouseOverTile;
+
         // Current location of the mouse cursor in world space
         public Vector2 Coordinates { get; private set; }
 
         // Current coordinates in world space, stored as ints
         public int XCoordinateInt { get; private set; }
         public int YCoordinateInt { get; private set; }
+
+        // Layer masks for units and tiles, edited through Unity interface
+        public LayerMask UnitCollisionLayer = -1;
+        public LayerMask TileCollisionLayer = -1;
+
+        // Raycast to check for mouse interactions with in-game entities
+        private RaycastHit2D raycastHit;
 
         // Vector line for the cursor selection box
         private VectorLine cursorSelectionLine;
@@ -29,15 +41,33 @@ namespace Assets.Code.GUI.WorldSpace
         {
             UpdateCoordinates(Input.mousePosition);
             DrawCursorSelection();
+            CheckRaycastForHits();
         }
          
         // Updates the mouse cursor's coordinates, using generic calculations
         private void UpdateCoordinates(Vector2 mousePosition)
         {
             Coordinates = Algorithms.ConvertPositionToWorldCoordinates(mousePosition);
+            transform.position = Coordinates;
 
             XCoordinateInt = (int)Coordinates.x;
             YCoordinateInt = (int)Coordinates.y;
+        }
+
+        // Check the raycast to see if it collided with any units or tiles
+        private void CheckRaycastForHits()
+        {
+            // Check for tile collisions
+            raycastHit = Physics2D.Raycast(transform.position, -Vector2.up, Mathf.Infinity, TileCollisionLayer);
+            // If tile was moused over, send current coordinates
+            if (raycastHit.collider != null && OnMouseOverTile != null)
+                OnMouseOverTile(XCoordinateInt, YCoordinateInt);
+
+            // Check for unit collisions
+            raycastHit = Physics2D.Raycast(transform.position, -Vector2.up, Mathf.Infinity, UnitCollisionLayer);
+            // If unit was moused over, send current coordinates
+            if (raycastHit.collider != null && OnMouseOverUnit != null)
+                OnMouseOverUnit(XCoordinateInt, YCoordinateInt);
         }
 
         // Creates the curstor selection box
