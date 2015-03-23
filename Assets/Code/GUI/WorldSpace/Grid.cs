@@ -8,6 +8,9 @@ namespace Assets.Code.GUI.WorldSpace
     // Grid.cs - Uses Vectrosity to draw a grid over the tile map
     public class Grid : MonoBehaviour
     {
+        // Alpha value, set in Unity interface
+        public float Alpha = 1.0f;
+
         // Vector line for the grid
         private VectorLine gridLine;
 
@@ -58,7 +61,7 @@ namespace Assets.Code.GUI.WorldSpace
             VectorLine.canvas3D.sortingOrder = 1;
 
             // Set grid color to black
-            gridLine.SetColor(Color.black);
+            gridLine.SetColor(new Color(0.0f, 0.0f, 0.0f, Alpha));
 
             // Draw grid
             gridLine.Draw3DAuto();
