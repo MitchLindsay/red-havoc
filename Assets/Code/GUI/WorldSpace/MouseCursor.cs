@@ -11,7 +11,7 @@ namespace Assets.Code.GUI.WorldSpace
     public class MouseCursor : MonoBehaviour
     {
         // Event handlers for in-game entity interactions
-        public delegate void MouseOverHandler(int x, int y);
+        public delegate void MouseOverHandler(GameObject gameObject, int x, int y);
         public static event MouseOverHandler OnMouseOverUnit;
         public static event MouseOverHandler OnMouseOverTile;
 
@@ -58,16 +58,26 @@ namespace Assets.Code.GUI.WorldSpace
         private void CheckRaycastForHits()
         {
             // Check for tile collisions
-            raycastHit = Physics2D.Raycast(transform.position, -Vector2.up, Mathf.Infinity, TileCollisionLayer);
+            raycastHit = Physics2D.Raycast(transform.position, Vector2.up, 0.0f, TileCollisionLayer);
             // If tile was moused over, send current coordinates
-            if (raycastHit.collider != null && OnMouseOverTile != null)
-                OnMouseOverTile(XCoordinateInt, YCoordinateInt);
+            if (OnMouseOverTile != null)
+            {
+                if (raycastHit.collider != null)
+                    OnMouseOverTile(raycastHit.collider.gameObject, XCoordinateInt, YCoordinateInt);
+                else
+                    OnMouseOverTile(null, XCoordinateInt, YCoordinateInt);
+            }
 
             // Check for unit collisions
-            raycastHit = Physics2D.Raycast(transform.position, -Vector2.up, Mathf.Infinity, UnitCollisionLayer);
+            raycastHit = Physics2D.Raycast(transform.position, Vector2.up, 0.0f, UnitCollisionLayer);
             // If unit was moused over, send current coordinates
-            if (raycastHit.collider != null && OnMouseOverUnit != null)
-                OnMouseOverUnit(XCoordinateInt, YCoordinateInt);
+            if (OnMouseOverUnit != null)
+            {
+                if (raycastHit.collider != null)
+                    OnMouseOverUnit(raycastHit.collider.gameObject, XCoordinateInt, YCoordinateInt);
+                else
+                    OnMouseOverUnit(null, XCoordinateInt, YCoordinateInt);
+            }
         }
 
         // Creates the curstor selection box

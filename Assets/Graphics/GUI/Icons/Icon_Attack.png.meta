@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 0f84ca5470eccd24a8fb0fb671d5c8f7
-timeCreated: 1426881553
+guid: 71367e93fecb626438857a2426397272
+timeCreated: 1427134269
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -46,11 +46,7 @@ TextureImporter:
   spritePixelsToUnits: 8
   alphaIsTransparency: 1
   textureType: 8
-  buildTargetSettings:
-  - buildTarget: Web
-    maxTextureSize: 2048
-    textureFormat: -3
-    compressionQuality: 50
+  buildTargetSettings: []
   spriteSheet:
     sprites: []
   spritePackingTag: GUI
