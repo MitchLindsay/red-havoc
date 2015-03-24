@@ -32,6 +32,8 @@ namespace Assets.Code.GUI.WorldSpace
         // Vector line for the cursor selection box
         private VectorLine cursorSelectionLine;
 
+        // Cursor width, set in Unity interface
+        public float CursorWidth = 4.0f;
         // Cursor color, set in Unity interface
         public Color CursorColor = Color.white;
 
@@ -93,7 +95,7 @@ namespace Assets.Code.GUI.WorldSpace
         private void CreateCursorSelection()
         {
             // Initailize the vector line
-            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, 2.0f, LineType.Continuous, Joins.Weld);
+            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, CursorWidth, LineType.Continuous, Joins.Weld);
 
             // Set the sorting order (underneath units, above tiles, above grid)
             VectorLine.canvas3D.sortingLayerName = "Tile";
