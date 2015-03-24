@@ -32,6 +32,9 @@ namespace Assets.Code.GUI.WorldSpace
         // Vector line for the cursor selection box
         private VectorLine cursorSelectionLine;
 
+        // Cursor color, set in Unity interface
+        public Color CursorColor = Color.white;
+
         void Start()
         {
             CreateCursorSelection();
@@ -74,9 +77,15 @@ namespace Assets.Code.GUI.WorldSpace
             if (OnMouseOverUnit != null)
             {
                 if (raycastHit.collider != null)
+                {
                     OnMouseOverUnit(raycastHit.collider.gameObject, XCoordinateInt, YCoordinateInt);
+                    SetCursorSelectionColor(raycastHit.collider.gameObject.GetComponent<SpriteRenderer>().color);
+                }
                 else
+                {
                     OnMouseOverUnit(null, XCoordinateInt, YCoordinateInt);
+                    SetCursorSelectionColor(Color.white);
+                }
             }
         }
 
@@ -84,7 +93,7 @@ namespace Assets.Code.GUI.WorldSpace
         private void CreateCursorSelection()
         {
             // Initailize the vector line
-            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, 1.0f, LineType.Continuous, Joins.Weld);
+            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, 2.0f, LineType.Continuous, Joins.Weld);
 
             // Set the sorting order (underneath units, above tiles, above grid)
             VectorLine.canvas3D.sortingLayerName = "Tile";
@@ -97,7 +106,14 @@ namespace Assets.Code.GUI.WorldSpace
             // Create a rectangle for the selection box
             cursorSelectionLine.MakeRect(new Rect((float)XCoordinateInt, (float)YCoordinateInt, 1.0f, 1.0f));
             // Draw the vector line
+            cursorSelectionLine.color = CursorColor;
             cursorSelectionLine.Draw3D();
+        }
+
+        // Change the color of the cursor selection box
+        private void SetCursorSelectionColor(Color color)
+        {
+            CursorColor = color;
         }
     }
 }

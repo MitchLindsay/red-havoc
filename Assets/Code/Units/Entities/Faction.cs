@@ -14,6 +14,10 @@ namespace Assets.Code.Units.Entities
     // Faction.cs - Represents an individual player, contains entities controlled by the faction
     public class Faction : MonoBehaviour
     {
+        // Event handler for when initial units are added to faction
+        public delegate void InitialUnitsHandler();
+        public static event InitialUnitsHandler OnInitialUnitAdditionComplete;
+
         // Faction name, edited through the unity interface
         public string FactionName = "Faction";
 
@@ -26,15 +30,9 @@ namespace Assets.Code.Units.Entities
         // List of controlled units
         public List<Unit> Units { get; private set; }
 
-        // Mineral counter
+        // Resource count
         [HideInInspector]
-        public int MineralCount = 0;
-
-        // GUI elements, edited through Unity interface
-        public Text UnitCountGUIText;
-        public Text MineralCountGUIText;
-        public Image UnitCountGUIImage;
-        public Image MineralCountGUIImage;
+        public int Resources = 0;
 
         void Start()
         {
@@ -42,6 +40,9 @@ namespace Assets.Code.Units.Entities
             RemoveAllUnits();
             // Add all the child units
             AddChildUnits();
+
+            if (OnInitialUnitAdditionComplete != null)
+                OnInitialUnitAdditionComplete();
         }
 
         // Adds an unit to the list of controlled units

@@ -12,6 +12,7 @@ namespace Assets.Code.GUI.ScreenSpace
 
         // GUI text, set in Unity interface
         public Text Text_UnitInfo_Name;
+        public Text Text_UnitInfo_Health;
         public Text Text_UnitInfo_Attack;
         public Text Text_UnitInfo_Defense;
         public Text Text_UnitInfo_Movement;
@@ -49,6 +50,7 @@ namespace Assets.Code.GUI.ScreenSpace
                     Panel_UnitInfo.SetActive(true);
 
                     SetText(Text_UnitInfo_Name, Unit.UnitName);
+                    SetText(Text_UnitInfo_Health, Unit.Health.ToString() + "/" + Unit.MaxHealth.ToString() + " HP");
                     SetText(Text_UnitInfo_Attack, Unit.Attack.ToString());
                     SetText(Text_UnitInfo_Defense, Unit.Defense.ToString());
                     SetText(Text_UnitInfo_Movement, Unit.Movement.ToString());
