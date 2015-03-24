@@ -10,6 +10,11 @@ namespace Assets.Code.GUI.ScreenSpace
         // Referenced GameObject
         public GameObject Panel_UnitInfo;
 
+        // GUI colors, set in Unity interface
+        public Color Color_PositiveValue;
+        public Color Color_NegativeValue;
+        public Color Color_NeutralValue;
+
         // GUI text, set in Unity interface
         public Text Text_UnitInfo_Name;
         public Text Text_UnitInfo_Health;
@@ -49,11 +54,15 @@ namespace Assets.Code.GUI.ScreenSpace
                 {
                     Panel_UnitInfo.SetActive(true);
 
+                    CheckStatAgainstBaseStat(Text_UnitInfo_Attack, Unit.Attack, Unit.ModifiedAttack);
+                    CheckStatAgainstBaseStat(Text_UnitInfo_Defense, Unit.Defense, Unit.ModifiedDefense);
+                    CheckStatAgainstBaseStat(Text_UnitInfo_Movement, Unit.Movement, Unit.ModifiedMovement);
+
                     SetText(Text_UnitInfo_Name, Unit.UnitName);
-                    SetText(Text_UnitInfo_Health, Unit.Health.ToString() + "/" + Unit.MaxHealth.ToString() + " HP");
-                    SetText(Text_UnitInfo_Attack, Unit.Attack.ToString());
-                    SetText(Text_UnitInfo_Defense, Unit.Defense.ToString());
-                    SetText(Text_UnitInfo_Movement, Unit.Movement.ToString());
+                    SetText(Text_UnitInfo_Health, Unit.Health.ToString() + "/" + Unit.ModifiedMaxHealth.ToString() + " HP");
+                    SetText(Text_UnitInfo_Attack, Unit.ModifiedAttack.ToString());
+                    SetText(Text_UnitInfo_Defense, Unit.ModifiedDefense.ToString());
+                    SetText(Text_UnitInfo_Movement, Unit.ModifiedMovement.ToString());
 
                     SetImage(Image_UnitInfo_Type, sprite);
                     ShowImage(Image_UnitInfo_Health);
@@ -83,6 +92,16 @@ namespace Assets.Code.GUI.ScreenSpace
 
             SetImage(Image_UnitInfo_Type, null);
             HideImage(Image_UnitInfo_Health);
+        }
+
+        private void CheckStatAgainstBaseStat(Text textElement, int baseStat, int modifiedStat)
+        {
+            if (modifiedStat > baseStat)
+                SetColor(textElement, Color_PositiveValue);
+            else if (modifiedStat < baseStat)
+                SetColor(textElement, Color_NegativeValue);
+            else
+                SetColor(textElement, Color_NeutralValue);
         }
 
         // Set GUI text

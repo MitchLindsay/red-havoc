@@ -1,4 +1,5 @@
 ﻿using Assets.Code.GUI.WorldSpace;
+using Assets.Code.TileMaps.Entities;
 using UnityEngine;
 
 namespace Assets.Code.Units.Entities
@@ -8,12 +9,6 @@ namespace Assets.Code.Units.Entities
     [RequireComponent(typeof(BoxCollider2D))]
     public class Unit : MonoBehaviour
     {
-        // Coordinates of the unit
-        [HideInInspector]
-        public int X = -1;
-        [HideInInspector]
-        public int Y = -1;
-
         // Name of the unit, edited through unity interface
         public string UnitName = "Unit";
 
@@ -31,37 +26,60 @@ namespace Assets.Code.Units.Entities
         public int Defense = 5;
         // Movement value of the unit type, edited through Unity interface
         public int Movement = 10;
+        // Health regenerated per turn, edited through Unity interface
+        public int HealthRegen = 0;
 
-        // Listen for events when object is created
-        void OnEnable()
-        {
-            // MouseCursor.OnMouseOverUnit += HandleMouseEvent;
-        }
+        // Modified stats
+        public int ModifiedMaxHealth { get; private set; }
+        public int ModifiedAttack { get; private set; }
+        public int ModifiedAttackRange { get; private set; }
+        public int ModifiedDefense { get; private set; }
+        public int ModifiedMovement { get; private set; }
+        public int ModifiedHealthRegen { get; private set; }
 
-        // Stop listening for events if object is destroyed
-        void OnDestroy()
-        {
-            // MouseCursor.OnMouseOverUnit -= HandleMouseEvent;
-        }
+        // Raycast to check for collisions
+        private RaycastHit2D raycastHit;
 
-        void Awake()
-        {
-            X = (int)gameObject.transform.position.x;
-            Y = (int)gameObject.transform.position.y;
-        }
+        // Layer masks for units and tiles, edited through Unity interface
+        public LayerMask UnitCollisionLayer = -1;
+        public LayerMask TileCollisionLayer = -1;
 
         void Start()
         {
             Health = MaxHealth;
+            ModifiedMaxHealth = MaxHealth;
+            ModifiedAttack = Attack;
+            ModifiedAttackRange = AttackRange;
+            ModifiedDefense = Defense;
+            ModifiedMovement = Movement;
+            ModifiedHealthRegen = HealthRegen;
         }
 
-        /*
-        // TEST FUNCTION
-        private void HandleMouseEvent(int x, int y)
+        void Update()
         {
-            if (x == X && y == Y)
-                Debug.Log(UnitName + " moused over at " + X + ", " + Y);
+            CheckRaycastForHits();
         }
-        */
+
+        private void CheckRaycastForHits()
+        {
+            // Check for tile collisions
+            raycastHit = Physics2D.Raycast(transform.position + new Vector3(0.5f, 0.5f, 0.0f), Vector2.up, 0.0f, TileCollisionLayer);
+
+            Tile tile = null;
+            // If tile collision detected
+            if (raycastHit.collider != null)
+            {
+                tile = raycastHit.collider.gameObject.GetComponent<Tile>();
+                if (tile != null)
+                    ApplyTileStatBonuses(tile.DefenseBonus, tile.MovementBonus, tile.HealthRegenBonus);
+            }
+        }
+
+        private void ApplyTileStatBonuses(int defenseBonus, int movementBonus, int healthRegenBonus)
+        {
+            ModifiedDefense = Defense + defenseBonus;
+            ModifiedMovement = Movement + movementBonus;
+            ModifiedHealthRegen = HealthRegen + healthRegenBonus;
+        }
     }
 }

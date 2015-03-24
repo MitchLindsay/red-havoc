@@ -40,7 +40,7 @@ namespace Assets.Code.GUI.WorldSpace
 
         void Start()
         {
-            Cursor.visible = false;
+            // Cursor.visible = false;
             CreateCursorSelection();
         }
 

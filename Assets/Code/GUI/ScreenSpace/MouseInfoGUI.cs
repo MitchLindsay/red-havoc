@@ -18,7 +18,7 @@ namespace Assets.Code.GUI.ScreenSpace
             if (MouseCursor != null)
             {
                 SetText(MouseCursor.XCoordinateInt, MouseCursor.YCoordinateInt);
-                SetColor(MouseCursor.CursorColor);
+                // SetColor(MouseCursor.CursorColor);
             }
         }
 
