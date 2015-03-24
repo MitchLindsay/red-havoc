@@ -30,7 +30,7 @@ namespace Assets.Code.GUI.ScreenSpace
 
         private void SetColor(Color color)
         {
-            if (Image_Mouse_Coordinates != null && color != null)
+            if (Image_Mouse_Coordinates != null)
                 Image_Mouse_Coordinates.color = color;
         }
     }

@@ -40,7 +40,7 @@ namespace Assets.Code.GUI.ScreenSpace
         // Set image colors to the faction color
         private void SetColor()
         {
-            if (Image_PlayerInfo_Units != null && Image_PlayerInfo_Resources != null && Faction_Player.FactionColor != null)
+            if (Image_PlayerInfo_Units != null && Image_PlayerInfo_Resources != null)
             {
                 Image_PlayerInfo_Units.color = Faction_Player.FactionColor;
                 Image_PlayerInfo_Resources.color = Faction_Player.FactionColor;
@@ -57,7 +57,7 @@ namespace Assets.Code.GUI.ScreenSpace
         // Set GUI element to match faction resource count
         private void SetResources()
         {
-            if (Text_PlayerInfo_Resources != null && Faction_Player.Resources != null)
+            if (Text_PlayerInfo_Resources != null)
                 Text_PlayerInfo_Resources.text = Faction_Player.Resources.ToString();
         }
     }

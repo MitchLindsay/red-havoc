@@ -8,6 +8,7 @@ using Vectrosity;
 namespace Assets.Code.GUI.WorldSpace
 {
     // MouseCursor.cs
+    [RequireComponent (typeof(SpriteRenderer))]
     public class MouseCursor : MonoBehaviour
     {
         // Event handlers for in-game entity interactions
@@ -32,22 +33,24 @@ namespace Assets.Code.GUI.WorldSpace
         // Vector line for the cursor selection box
         private VectorLine cursorSelectionLine;
 
-        // Cursor width, set in Unity interface
-        public float CursorWidth = 4.0f;
         // Cursor color, set in Unity interface
         public Color CursorColor = Color.white;
+        // Cursor width, set in Unity interface
+        public float SelectionBoxWidth = 4.0f;
 
         void Start()
         {
+            Cursor.visible = false;
             CreateCursorSelection();
         }
 
         void Update()
         {
             UpdateCoordinates(Input.mousePosition);
-            DrawCursorSelection();
+            DrawCursor();
             CheckRaycastForHits();
         }
+
          
         // Updates the mouse cursor's coordinates, using generic calculations
         private void UpdateCoordinates(Vector2 mousePosition)
@@ -81,12 +84,12 @@ namespace Assets.Code.GUI.WorldSpace
                 if (raycastHit.collider != null)
                 {
                     OnMouseOverUnit(raycastHit.collider.gameObject, XCoordinateInt, YCoordinateInt);
-                    SetCursorSelectionColor(raycastHit.collider.gameObject.GetComponent<SpriteRenderer>().color);
+                    SetColor(raycastHit.collider.gameObject.GetComponent<SpriteRenderer>().color);
                 }
                 else
                 {
                     OnMouseOverUnit(null, XCoordinateInt, YCoordinateInt);
-                    SetCursorSelectionColor(Color.white);
+                    SetColor(Color.white);
                 }
             }
         }
@@ -95,25 +98,26 @@ namespace Assets.Code.GUI.WorldSpace
         private void CreateCursorSelection()
         {
             // Initailize the vector line
-            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, CursorWidth, LineType.Continuous, Joins.Weld);
+            cursorSelectionLine = new VectorLine("Cursor Selection", new Vector3[5], null, SelectionBoxWidth, LineType.Continuous, Joins.Weld);
 
             // Set the sorting order (underneath units, above tiles, above grid)
             VectorLine.canvas3D.sortingLayerName = "Tile";
             VectorLine.canvas3D.sortingOrder = 2;
         }
 
-        // Updates the position of the cursor selection box
-        private void DrawCursorSelection()
+        // Updates the position of the cursor
+        private void DrawCursor()
         {
             // Create a rectangle for the selection box
             cursorSelectionLine.MakeRect(new Rect((float)XCoordinateInt, (float)YCoordinateInt, 1.0f, 1.0f));
             // Draw the vector line
+            gameObject.GetComponent<SpriteRenderer>().color = CursorColor;
             cursorSelectionLine.color = CursorColor;
             cursorSelectionLine.Draw3D();
         }
 
-        // Change the color of the cursor selection box
-        private void SetCursorSelectionColor(Color color)
+        // Change the color of the cursor
+        private void SetColor(Color color)
         {
             CursorColor = color;
         }
