@@ -7,14 +7,10 @@ namespace Assets.Code.Generic
     public abstract class Entity : MonoBehaviour
     {
         public string EntityName = "Entity";
-
-        [HideInInspector]
-        public bool CollisionsEnabled = false;
         public LayerMask TileLayerMask = 0;
         public LayerMask UnitLayerMask = 0;
 
         private Vector3 raycastOffset = new Vector3(0.5f, 0.0f, 0.0f);
-
         private RaycastHit2D raycastHit;
 
         public void CheckForCollisions<TEntity>(LayerMask layerMask)
@@ -29,15 +25,5 @@ namespace Assets.Code.Generic
         }
 
         public virtual void HandleCollision<TEntity>(GameObject collidedGameObject) { }
-
-        public virtual void EnableCollisions()
-        {
-            CollisionsEnabled = true;
-        }
-
-        public virtual void DisableCollisions()
-        {
-            CollisionsEnabled = false;
-        }
     }
 }

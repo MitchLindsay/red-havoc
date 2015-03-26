@@ -1,5 +1,6 @@
 ﻿using Assets.Code.GUI.WorldSpace;
 using Assets.Code.TileMaps.Generators;
+using System.Collections;
 using UnityEngine;
 
 namespace Assets.Code.Controllers.CameraControllers
@@ -7,8 +8,11 @@ namespace Assets.Code.Controllers.CameraControllers
     public class InGameCamera : MonoBehaviour
     {   
         public delegate void CameraDragHandler();
+        public delegate void CameraPanHandler();
         public static event CameraDragHandler OnCameraDragStart;
         public static event CameraDragHandler OnCameraDragStop;
+        public static event CameraPanHandler OnPanStart;
+        public static event CameraPanHandler OnPanStop;
 
         private bool dragEnabled = true;
         private float dragAmountX = 0.0f;
@@ -23,14 +27,12 @@ namespace Assets.Code.Controllers.CameraControllers
         {
             TileMapGenerator.OnGenerationComplete += SetMovementBounds;
             MouseCursor.OnMouseClickUnit += SetFocusToGameObject;
-            MouseCursor.OnMouseClickTile += ReleaseFocusFromGameObject;
         }
 
         void OnDestroy()
         {
             TileMapGenerator.OnGenerationComplete -= SetMovementBounds;
             MouseCursor.OnMouseClickUnit -= SetFocusToGameObject;
-            MouseCursor.OnMouseClickTile -= ReleaseFocusFromGameObject;
         }
 
         void Start()
@@ -88,22 +90,47 @@ namespace Assets.Code.Controllers.CameraControllers
         {
             if (gameObject != null)
             {
-                dragEnabled = false;
-
                 int x = (int)gameObject.transform.position.x;
                 int y = (int)gameObject.transform.position.y;
 
-                // TODO: Pan camera to position
-                restrictedCameraPosition.x = x;
-                restrictedCameraPosition.y = y;
+                Pan(new Vector2(x, y), 0.5f);
             }
-            else
-                ReleaseFocusFromGameObject(null);
         }
 
-        private void ReleaseFocusFromGameObject(GameObject gameObject = null)
+        private void Pan(Vector2 destination, float duration)
         {
-            dragEnabled = true;
+            dragEnabled = false;
+
+            if (OnPanStart != null)
+                OnPanStart();
+
+            Job panJob = Job.Make(PanCoroutine(destination, duration), true);
+
+            panJob.JobComplete += (wasKilled) =>
+            {
+                if (OnPanStart != null)
+                {
+                    dragEnabled = true;
+                    OnPanStop();
+                }
+            };
+        }
+
+        private IEnumerator PanCoroutine(Vector2 destination, float duration)
+        {
+            restrictedCameraPosition = Camera.main.transform.position;
+
+            float timeElapsed = 0.0f;
+            Vector3 startPosition = restrictedCameraPosition;
+
+            while (timeElapsed < 1.0f)
+            {
+                timeElapsed += Time.deltaTime * (Time.timeScale / duration);
+                restrictedCameraPosition = Vector3.Lerp(startPosition, destination, timeElapsed);
+
+                RestrictCameraMovement();
+                yield return null;
+            }
         }
     }
 }

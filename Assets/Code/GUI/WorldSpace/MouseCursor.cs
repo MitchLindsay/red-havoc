@@ -1,4 +1,5 @@
-﻿using Assets.Code.Generic;
+﻿using Assets.Code.Controllers.CameraControllers;
+using Assets.Code.Generic;
 using Assets.Code.TileMaps.Entities;
 using Assets.Code.Units.Entities;
 using UnityEngine;
@@ -15,27 +16,50 @@ namespace Assets.Code.GUI.WorldSpace
         public static event MouseClickHandler OnMouseClickTile;
         public static event MouseClickHandler OnMouseClickUnit;
 
+        [HideInInspector]
+        public bool CursorEnabled = false;
         public Vector2 Coordinates { get; private set; }
 
         private VectorLine cursorHighlight = null;
         private Color cursorHighlightColor = Color.white;
 
+        void OnEnable()
+        {
+            InGameCamera.OnPanStart += DisableCursor;
+            InGameCamera.OnPanStop += EnableCursor;
+        }
+
+        void OnDestroy()
+        {
+            InGameCamera.OnPanStart -= DisableCursor;
+            InGameCamera.OnPanStop -= EnableCursor;
+        }
+
         void Start()
         {
             InitializeCursorHighlight();
-            EnableCollisions();
+            EnableCursor();
         }
 
         void Update()
         {
-            SetCoordinates(GetMouseCoordinates());
-            DrawCursorHighlight();
-
-            if (CollisionsEnabled)
+            if (CursorEnabled)
             {
+                SetCoordinates(GetMouseCoordinates());
+                DrawCursorHighlight();
                 CheckForCollisions<Tile>(TileLayerMask);
                 CheckForCollisions<Unit>(UnitLayerMask);
             }
+        }
+
+        private void EnableCursor()
+        {
+            CursorEnabled = true;
+        }
+
+        private void DisableCursor()
+        {
+            CursorEnabled = false;
         }
 
         private void InitializeCursorHighlight()
@@ -89,8 +113,10 @@ namespace Assets.Code.GUI.WorldSpace
 
             if (OnMouseClickUnit != null && Input.GetMouseButton(0))
             {
+                if (collidedGameObject != null)
+                    DisableCursor();
+
                 OnMouseClickUnit(collidedGameObject);
-                DisableCollisions();
             }
 
             if (collidedGameObject != null)
