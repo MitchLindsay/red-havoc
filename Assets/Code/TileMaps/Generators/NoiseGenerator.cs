@@ -2,7 +2,6 @@
 
 namespace Assets.Code.TileMaps.Generators
 {
-    // NoiseGenerator.cs - Generates noise used to generate tile maps
     public class NoiseGenerator
     {
         public int MapWidth { get; private set; }

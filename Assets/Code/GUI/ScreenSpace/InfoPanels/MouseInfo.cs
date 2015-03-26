@@ -22,12 +22,12 @@ namespace Assets.Code.GUI.ScreenSpace
             {
                 if (MouseCursor != null)
                 {
-                    InfoPanel.SetActive(true);
+                    ShowInfo();
 
                     SetTextElement(Coordinates, MouseCursor.Coordinates.x.ToString() + ", " + MouseCursor.Coordinates.y.ToString());
                 }
                 else
-                    InfoPanel.SetActive(false);
+                    HideInfo();
             }
         }
     }

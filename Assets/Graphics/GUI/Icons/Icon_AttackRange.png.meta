@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 71367e93fecb626438857a2426397272
-timeCreated: 1427134269
+guid: 49d1daeec1923ba4e98eb58989ce95f9
+timeCreated: 1427398447
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -49,7 +49,7 @@ TextureImporter:
   buildTargetSettings:
   - buildTarget: Web
     maxTextureSize: 1024
-    textureFormat: -3
+    textureFormat: -1
     compressionQuality: 50
   spriteSheet:
     sprites: []

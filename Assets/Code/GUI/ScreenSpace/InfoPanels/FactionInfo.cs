@@ -25,7 +25,7 @@ namespace Assets.Code.GUI.ScreenSpace
             {
                 if (Faction != null)
                 {
-                    InfoPanel.SetActive(true);
+                    ShowInfo();
 
                     SetTextElement(Units, Faction.Units.Count.ToString());
                     SetTextElement(Resources, Faction.Resources.ToString());
@@ -34,7 +34,7 @@ namespace Assets.Code.GUI.ScreenSpace
                     SetElementColor(ResourcesIcon, Faction.FactionColor);
                 }
                 else
-                    InfoPanel.SetActive(false);
+                    HideInfo();
             }
         }
     }

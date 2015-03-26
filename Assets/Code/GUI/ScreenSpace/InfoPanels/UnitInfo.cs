@@ -41,7 +41,7 @@ namespace Assets.Code.GUI.ScreenSpace
 
                     if (unit != null && sprite != null)
                     {
-                        InfoPanel.SetActive(true);
+                        ShowInfo();
 
                         SetStatColorByModifier(Attack, unit.Attack.BaseValue, unit.Attack.ModifiedValue);
                         SetStatColorByModifier(Defense, unit.Defense.BaseValue, unit.Defense.ModifiedValue);
@@ -61,10 +61,10 @@ namespace Assets.Code.GUI.ScreenSpace
                         SetElementColor(MovementIcon, factionColor);
                     }
                     else
-                        InfoPanel.SetActive(false);
+                        HideInfo();
                 }
                 else
-                    InfoPanel.SetActive(false);
+                    HideInfo();
             }
         }
 

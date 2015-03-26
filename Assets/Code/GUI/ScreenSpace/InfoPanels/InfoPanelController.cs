@@ -15,6 +15,21 @@ namespace Assets.Code.GUI.ScreenSpace
         public virtual void SetInfo() { }
         public virtual void SetInfo(GameObject gameObject) { }
 
+        public void ShowInfo()
+        {
+            InfoPanel.SetActive(true);
+        }
+
+        public void HideInfo()
+        {
+            InfoPanel.SetActive(false);
+        }
+
+        public void HideInfo(GameObject gameObject)
+        {
+            InfoPanel.SetActive(false);
+        }
+
         public void SetTextElement(Text element, string info)
         {
             if (element != null && info != null)

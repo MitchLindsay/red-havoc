@@ -8,6 +8,8 @@ namespace Assets.Code.Generic
     {
         public string EntityName = "Entity";
 
+        [HideInInspector]
+        public bool CollisionsEnabled = false;
         public LayerMask TileLayerMask = 0;
         public LayerMask UnitLayerMask = 0;
 
@@ -27,5 +29,15 @@ namespace Assets.Code.Generic
         }
 
         public virtual void HandleCollision<TEntity>(GameObject collidedGameObject) { }
+
+        public virtual void EnableCollisions()
+        {
+            CollisionsEnabled = true;
+        }
+
+        public virtual void DisableCollisions()
+        {
+            CollisionsEnabled = false;
+        }
     }
 }

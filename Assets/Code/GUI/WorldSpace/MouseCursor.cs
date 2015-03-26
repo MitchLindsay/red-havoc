@@ -9,8 +9,11 @@ namespace Assets.Code.GUI.WorldSpace
     public class MouseCursor : Entity
     {
         public delegate void MouseOverHandler(GameObject gameObject);
+        public delegate void MouseClickHandler(GameObject gameObject);
         public static event MouseOverHandler OnMouseOverTile;
         public static event MouseOverHandler OnMouseOverUnit;
+        public static event MouseClickHandler OnMouseClickTile;
+        public static event MouseClickHandler OnMouseClickUnit;
 
         public Vector2 Coordinates { get; private set; }
 
@@ -20,14 +23,19 @@ namespace Assets.Code.GUI.WorldSpace
         void Start()
         {
             InitializeCursorHighlight();
+            EnableCollisions();
         }
 
         void Update()
         {
-            SetCoordinates();
+            SetCoordinates(GetMouseCoordinates());
             DrawCursorHighlight();
-            CheckForCollisions<Tile>(TileLayerMask);
-            CheckForCollisions<Unit>(UnitLayerMask);
+
+            if (CollisionsEnabled)
+            {
+                CheckForCollisions<Tile>(TileLayerMask);
+                CheckForCollisions<Unit>(UnitLayerMask);
+            }
         }
 
         private void InitializeCursorHighlight()
@@ -38,10 +46,14 @@ namespace Assets.Code.GUI.WorldSpace
             VectorLine.canvas3D.sortingOrder = 2;
         }
 
-        private void SetCoordinates()
+        private Vector2 GetMouseCoordinates()
         {
-            Coordinates = Algorithms.ConvertPositionToWorldCoordinates(Input.mousePosition);
-            Coordinates = new Vector2((int)Coordinates.x, (int)Coordinates.y);
+            return Algorithms.ConvertPositionToWorldCoordinates(Input.mousePosition);
+        }
+
+        private void SetCoordinates(Vector2 inputCoordinates)
+        {
+            Coordinates = new Vector2((int)inputCoordinates.x, (int)inputCoordinates.y);
             gameObject.transform.position = Coordinates;
         }
 
@@ -54,22 +66,37 @@ namespace Assets.Code.GUI.WorldSpace
 
         public override void HandleCollision<TEntity>(GameObject collidedGameObject)
         {
-            if (typeof(TEntity) == typeof(Tile))
-            {
-                if (OnMouseOverTile != null)
-                    OnMouseOverTile(collidedGameObject);
-            }
-
             if (typeof(TEntity) == typeof(Unit))
-            {
-                if (OnMouseOverUnit != null)
-                    OnMouseOverUnit(collidedGameObject);
+                HandleUnitCollision(collidedGameObject);
 
-                if (collidedGameObject != null)
-                    cursorHighlightColor = collidedGameObject.GetComponent<SpriteRenderer>().color;
-                else
-                    cursorHighlightColor = Color.white;
+            if (typeof(TEntity) == typeof(Tile))
+                HandleTileCollision(collidedGameObject);
+        }
+
+        private void HandleTileCollision(GameObject collidedGameObject)
+        {
+            if (OnMouseOverTile != null)
+                OnMouseOverTile(collidedGameObject);
+
+            if (OnMouseClickTile != null && Input.GetMouseButton(0))
+                OnMouseClickTile(collidedGameObject);
+        }
+
+        private void HandleUnitCollision(GameObject collidedGameObject)
+        {
+            if (OnMouseOverUnit != null)
+                OnMouseOverUnit(collidedGameObject);
+
+            if (OnMouseClickUnit != null && Input.GetMouseButton(0))
+            {
+                OnMouseClickUnit(collidedGameObject);
+                DisableCollisions();
             }
+
+            if (collidedGameObject != null)
+                cursorHighlightColor = collidedGameObject.GetComponent<SpriteRenderer>().color;
+            else
+                cursorHighlightColor = Color.white;
         }
     }
 }

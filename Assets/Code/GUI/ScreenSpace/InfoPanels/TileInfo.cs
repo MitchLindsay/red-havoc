@@ -38,7 +38,7 @@ namespace Assets.Code.GUI.ScreenSpace
 
                     if (tile != null && sprite != null)
                     {
-                        InfoPanel.SetActive(true);
+                        ShowInfo();
                         SetTextElement(TileName, tile.EntityName);
 
                         SetStatBonusElement(HealthRegenBonus, HealthRegenBonusIcon, tile.HealthRegenBonus);
@@ -48,10 +48,10 @@ namespace Assets.Code.GUI.ScreenSpace
                         SetImageElement(TileGraphic, sprite);
                     }
                     else
-                        InfoPanel.SetActive(false);
+                        HideInfo();
                 }
                 else
-                    InfoPanel.SetActive(false);
+                    HideInfo();
             }
         }
 
