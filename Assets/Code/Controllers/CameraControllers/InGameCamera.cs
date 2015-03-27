@@ -14,11 +14,12 @@ namespace Assets.Code.Controllers.CameraControllers
         public static event CameraPanHandler OnPanStart;
         public static event CameraPanHandler OnPanStop;
 
+        public float PanSpeed = 0.4f;
+        public float DragSpeed = 0.4f;
+        
         private bool dragEnabled = true;
         private float dragAmountX = 0.0f;
         private float dragAmountY = 0.0f;
-
-        public float DragSpeed = 0.4f;
 
         private Rect movementBounds = new Rect();
         private Vector3 restrictedCameraPosition = Vector3.zero;
@@ -26,13 +27,13 @@ namespace Assets.Code.Controllers.CameraControllers
         void OnEnable()
         {
             TileMapGenerator.OnGenerationComplete += SetMovementBounds;
-            MouseCursor.OnMouseClickUnit += SetFocusToGameObject;
+            MouseCursor.OnMouseClickUnit += PanToGameObject;
         }
 
         void OnDestroy()
         {
             TileMapGenerator.OnGenerationComplete -= SetMovementBounds;
-            MouseCursor.OnMouseClickUnit -= SetFocusToGameObject;
+            MouseCursor.OnMouseClickUnit -= PanToGameObject;
         }
 
         void Start()
@@ -86,25 +87,14 @@ namespace Assets.Code.Controllers.CameraControllers
             Camera.main.transform.position = restrictedCameraPosition;
         }
 
-        private void SetFocusToGameObject(GameObject gameObject)
-        {
-            if (gameObject != null)
-            {
-                int x = (int)gameObject.transform.position.x;
-                int y = (int)gameObject.transform.position.y;
-
-                Pan(new Vector2(x, y), 0.5f);
-            }
-        }
-
-        private void Pan(Vector2 destination, float duration)
+        private void Pan(Vector2 destination, float speed)
         {
             dragEnabled = false;
 
             if (OnPanStart != null)
                 OnPanStart();
 
-            Job panJob = Job.Make(PanCoroutine(destination, duration), true);
+            Job panJob = Job.Make(PanCoroutine(destination, speed), true);
 
             panJob.JobComplete += (wasKilled) =>
             {
@@ -116,7 +106,7 @@ namespace Assets.Code.Controllers.CameraControllers
             };
         }
 
-        private IEnumerator PanCoroutine(Vector2 destination, float duration)
+        private IEnumerator PanCoroutine(Vector2 destination, float speed)
         {
             restrictedCameraPosition = Camera.main.transform.position;
 
@@ -125,11 +115,22 @@ namespace Assets.Code.Controllers.CameraControllers
 
             while (timeElapsed < 1.0f)
             {
-                timeElapsed += Time.deltaTime * (Time.timeScale / duration);
+                timeElapsed += Time.deltaTime * (Time.timeScale / speed);
                 restrictedCameraPosition = Vector3.Lerp(startPosition, destination, timeElapsed);
 
                 RestrictCameraMovement();
                 yield return null;
+            }
+        }
+
+        private void PanToGameObject(GameObject gameObject)
+        {
+            if (gameObject != null)
+            {
+                int x = (int)gameObject.transform.position.x;
+                int y = (int)gameObject.transform.position.y;
+
+                Pan(new Vector2(x, y), PanSpeed);
             }
         }
     }

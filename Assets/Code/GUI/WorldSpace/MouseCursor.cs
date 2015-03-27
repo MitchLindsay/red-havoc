@@ -54,12 +54,16 @@ namespace Assets.Code.GUI.WorldSpace
 
         private void EnableCursor()
         {
+            Cursor.visible = true;
             CursorEnabled = true;
+            cursorHighlight.active = true;
         }
 
         private void DisableCursor()
         {
+            Cursor.visible = false;
             CursorEnabled = false;
+            cursorHighlight.active = false;
         }
 
         private void InitializeCursorHighlight()

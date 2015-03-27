@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Generic;
+using Assets.Code.GUI.WorldSpace;
 using Assets.Code.TileMaps.Entities;
 using Assets.Code.Units.Stats;
 using System;
@@ -24,6 +25,18 @@ namespace Assets.Code.Units.Entities
         public Stat AttackRange { get; private set; }
         public Stat Defense { get; private set; }
         public Stat Movement { get; private set; }
+
+        void OnEnable()
+        {
+            MouseCursor.OnMouseClickUnit += ShowTraversableRegion;
+            MouseCursor.OnMouseClickTile += HideTraversableRegion;
+        }
+
+        void OnDestroy()
+        {
+            MouseCursor.OnMouseClickUnit -= ShowTraversableRegion;
+            MouseCursor.OnMouseClickTile -= HideTraversableRegion;
+        }
 
         void Start()
         {
@@ -61,6 +74,19 @@ namespace Assets.Code.Units.Entities
             HealthRegen.AddModifier(tile.HealthRegenModifier);
             Defense.AddModifier(tile.DefenseModifier);
             Movement.AddModifier(tile.MovementModifier);
+        }
+
+        private void ShowTraversableRegion(GameObject gameObject)
+        {
+            if (gameObject == this.gameObject)
+            {
+
+            }
+        }
+
+        private void HideTraversableRegion(GameObject gameObject = null)
+        {
+
         }
     }
 }

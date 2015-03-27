@@ -73,11 +73,11 @@ namespace Assets.Code.GUI.ScreenSpace
                         SetElementColor(UnitGraphic, factionColor);
                         SetElementColor(FactionBar, factionColor);
                     }
-                    //else
-                        //HideInfo();
+                    else
+                        HideInfo();
                 }
-                //else
-                    //HideInfo();
+                else
+                   HideInfo();
             }
         }
 

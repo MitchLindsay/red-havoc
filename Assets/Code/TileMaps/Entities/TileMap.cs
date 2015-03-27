@@ -1,4 +1,5 @@
 ﻿using Assets.Code.GUI.WorldSpace;
+using Assets.Code.TileMaps.Pathfinding;
 using UnityEngine;
 
 namespace Assets.Code.TileMaps.Entities
@@ -9,6 +10,7 @@ namespace Assets.Code.TileMaps.Entities
         public int MapWidth { get; private set; }
         public int MapHeight { get; private set; }
         public Tile[,] Tiles { get; private set; }
+        public Pathfinder Pathfinder { get; private set; }
 
         public void SetMapData(int mapSeed, int mapWidth, int mapHeight, Tile[,] tiles)
         {
@@ -16,6 +18,7 @@ namespace Assets.Code.TileMaps.Entities
             this.MapWidth = mapWidth;
             this.MapHeight = mapHeight;
             this.Tiles = tiles;
+            this.Pathfinder = new Pathfinder(this);
         }
 
         private bool IsPositionWithinMapBounds(int x, int y)
@@ -44,9 +47,9 @@ namespace Assets.Code.TileMaps.Entities
 
             Tile[] neighbors = new Tile[4];
             neighbors[0] = GetTileByPosition(x, y + 1); // Up
-            neighbors[0] = GetTileByPosition(x + 1, y); // Right
-            neighbors[0] = GetTileByPosition(x, y - 1); // Down
-            neighbors[0] = GetTileByPosition(x - 1, y); // Left
+            neighbors[1] = GetTileByPosition(x + 1, y); // Right
+            neighbors[2] = GetTileByPosition(x, y - 1); // Down
+            neighbors[3] = GetTileByPosition(x - 1, y); // Left
 
             return neighbors;
         }
