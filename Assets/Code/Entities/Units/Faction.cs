@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Code.Entities.Units
 {
@@ -13,12 +12,10 @@ namespace Assets.Code.Entities.Units
 
     public class Faction : MonoBehaviour
     {
-        public delegate void InitialUnitsHandler();
-        public static event InitialUnitsHandler OnInitialUnitAdditionComplete;
-
         public string FactionName = "Faction";
         public FactionController FactionController = FactionController.None;
         public Color FactionColor = Color.white;
+        public int TurnPriority = 0;
         public List<Unit> Units { get; private set; }
 
         [HideInInspector]
@@ -28,9 +25,6 @@ namespace Assets.Code.Entities.Units
         {
             RemoveAllUnits();
             AddChildUnits();
-
-            if (OnInitialUnitAdditionComplete != null)
-                OnInitialUnitAdditionComplete();
         }
 
         public void AddUnit(Unit unit)

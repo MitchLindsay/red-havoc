@@ -1,13 +1,31 @@
-﻿using Assets.Code.Entities.Stats;
-using Assets.Code.Entities.TileMaps;
-using Assets.Code.Generic.GameObjects;
+﻿using Assets.Code.Entities.Abstract;
+using Assets.Code.Entities.Stats;
+using Assets.Code.Entities.Tiles;
+using Assets.Code.Libraries;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Code.Entities.Units
 {
+    public enum UnitCommand
+    {
+        Capture,
+        Attack,
+        Move,
+        Wait,
+        None
+    }
+
     public class Unit : Entity
     {
+        public delegate void MoveHandler();
+        public static event MoveHandler OnMoveStart;
+        public static event MoveHandler OnMoveStop;
+
+        public float MoveSpeed = 0.4f;
+
         [HideInInspector]
         public int Health = 10;
 
@@ -52,15 +70,35 @@ namespace Assets.Code.Entities.Units
             if (typeof(TEntity) == typeof(Tile) && collidedGameObject != null)
             {
                 Tile tile = collidedGameObject.GetComponent<Tile>();
-                ApplyTileStatModifiers(tile);
+
+                HealthRegen.AddModifier(tile.HealthRegenModifier);
+                Defense.AddModifier(tile.DefenseModifier);
+                Movement.AddModifier(tile.MovementModifier);
             }
         }
 
-        private void ApplyTileStatModifiers(Tile tile)
+        private void Move(List<Vector2> destinationPath, float speed)
         {
-            HealthRegen.AddModifier(tile.HealthRegenModifier);
-            Defense.AddModifier(tile.DefenseModifier);
-            Movement.AddModifier(tile.MovementModifier);
+            if (OnMoveStart != null)
+                OnMoveStart();
+
+            Job moveJob = Job.Make(MoveCoroutine(destinationPath, speed), true);
+
+            moveJob.JobComplete += (wasKilled) =>
+            {
+                if (OnMoveStop != null)
+                    OnMoveStop();
+            };
+        }
+
+        private IEnumerator MoveCoroutine(List<Vector2> destinationPath, float speed)
+        {
+            yield return null;
+        }
+
+        public void MoveToPosition(Vector2 position)
+        {
+            Move(null, MoveSpeed);
         }
     }
 }
