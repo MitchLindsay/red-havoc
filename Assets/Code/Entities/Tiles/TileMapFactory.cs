@@ -1,4 +1,5 @@
-﻿using Assets.Code.Entities.Abstract;
+﻿using Assets.Code.Controllers.States;
+using Assets.Code.Entities.Abstract;
 using UnityEngine;
 
 namespace Assets.Code.Entities.Tiles
@@ -16,7 +17,7 @@ namespace Assets.Code.Entities.Tiles
         private GameObject tileObj;
         private Tile tile;
 
-        void Start()
+        void Awake()
         {
             SetPrefabs();
             Destroy();
@@ -58,9 +59,9 @@ namespace Assets.Code.Entities.Tiles
         {
             tilePrefabs = new GameObject[3];
 
-            tilePrefabs[0] = Resources.Load("Tiles/Tile_Plains", typeof(GameObject)) as GameObject;
-            tilePrefabs[1] = Resources.Load("Tiles/Tile_Rocks", typeof(GameObject)) as GameObject;
-            tilePrefabs[2] = Resources.Load("Tiles/Tile_Mountains", typeof(GameObject)) as GameObject;
+            tilePrefabs[0] = Resources.Load("Tiles/Tile, Plains", typeof(GameObject)) as GameObject;
+            tilePrefabs[1] = Resources.Load("Tiles/Tile, Rocks", typeof(GameObject)) as GameObject;
+            tilePrefabs[2] = Resources.Load("Tiles/Tile, Mountains", typeof(GameObject)) as GameObject;
         }
 
         private GameObject GetPrefab()

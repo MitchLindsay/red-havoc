@@ -52,6 +52,7 @@ namespace Assets.Code.Controllers.States
         private void StartTurn(int turnCount, Faction activeFaction)
         {
             Debug.Log("Turn " + turnCount + " : " + activeFaction.FactionName);
+            activeFaction.ActivateAllUnits();
             stateMachine.FireTrigger(StateTrigger.TurnChanged);
         }
     }

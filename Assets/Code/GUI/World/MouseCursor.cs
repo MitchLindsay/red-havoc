@@ -129,7 +129,14 @@ namespace Assets.Code.GUI.World
             }
 
             if (collidedGameObject != null)
-                cursorHighlightColor = collidedGameObject.GetComponent<SpriteRenderer>().color;
+            {
+                Unit unit = collidedGameObject.GetComponent<Unit>();
+
+                if (unit != null)
+                    cursorHighlightColor = unit.Faction.ActiveColor;
+                else
+                    cursorHighlightColor = Color.white;
+            }
             else
                 cursorHighlightColor = Color.white;
         }
