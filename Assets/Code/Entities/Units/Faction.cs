@@ -14,6 +14,9 @@ namespace Assets.Code.Entities.Units
 
     public class Faction : MonoBehaviour
     {
+        [HideInInspector]
+        public bool IsActive = false;
+
         public string FactionName = "Faction";
         public FactionController FactionController = FactionController.None;
         public Color ActiveColor = Color.white;

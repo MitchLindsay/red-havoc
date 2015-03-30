@@ -66,8 +66,12 @@ namespace Assets.Code.Controllers.States
         private void SetUnitActiveCommands(Unit unit)
         {
             Faction faction = unit.Faction;
-            UnitCommand waitCommand = faction.GetCommand(UnitCommandType.Wait);
-            unit.AddActiveCommand(waitCommand);
+
+            if (faction.IsActive)
+            {
+                UnitCommand waitCommand = faction.GetCommand(UnitCommandType.Wait);
+                unit.AddActiveCommand(waitCommand);
+            }
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Assets.Code.Controllers
             if (factionIndex >= factions.GetLength(0))
                 factionIndex = 0;
 
-            activeFaction = factions[factionIndex];
+            SetFactionToActive(factions[factionIndex]);
             factionIndex++;
 
             if (OnFactionChangeComplete != null)
@@ -65,6 +65,22 @@ namespace Assets.Code.Controllers
             {
                 return faction1.TurnPriority.CompareTo(faction2.TurnPriority);
             });
+        }
+
+        private void SetFactionToActive(Faction faction)
+        {
+            SetAllFactionsToInactive();
+
+            faction.IsActive = true;
+            activeFaction = faction;
+        }
+
+        private void SetAllFactionsToInactive()
+        {
+            foreach (Faction faction in factions)
+                faction.IsActive = false;
+
+            activeFaction = null;
         }
     }
 }
