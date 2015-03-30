@@ -12,6 +12,7 @@ namespace Assets.Code.Entities.Units
     public class Unit : Entity
     {
         public Faction Faction { get; private set; }
+        public List<UnitCommand> ActiveCommands { get; private set; }
 
         [HideInInspector]
         public bool IsActive = false;
@@ -32,9 +33,10 @@ namespace Assets.Code.Entities.Units
         public Stat Defense { get; private set; }
         public Stat Movement { get; private set; }
 
-        void Start()
+        void Awake()
         {
             InitializeStats();
+            RemoveAllActiveCommands();
         }
 
         void Update()
@@ -69,6 +71,32 @@ namespace Assets.Code.Entities.Units
         public void SetFaction(Faction faction)
         {
             this.Faction = faction;
+        }
+
+        public void AddActiveCommand(UnitCommand command)
+        {
+            if (command != null && !ActiveCommands.Contains(command))
+                ActiveCommands.Add(command);
+        }
+
+        public void RemoveActiveCommand(UnitCommand command)
+        {
+            if (ActiveCommands.Contains(command))
+                ActiveCommands.Remove(command);
+        }
+
+        public void RemoveAllActiveCommands()
+        {
+            ActiveCommands = new List<UnitCommand>();
+        }
+
+        public bool IsCommandAvailable(UnitCommandType commandType)
+        {
+            UnitCommand command = Faction.GetCommand(commandType);
+            if (command != null && ActiveCommands.Contains(command))
+                return true;
+
+            return false;
         }
     }
 }

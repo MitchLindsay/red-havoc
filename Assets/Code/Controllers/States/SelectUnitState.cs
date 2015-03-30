@@ -1,4 +1,6 @@
 ﻿using Assets.Code.Controllers.Abstract;
+using Assets.Code.Entities.Units;
+using Assets.Code.Entities.Units.Commands;
 using Assets.Code.GUI.World;
 using UnityEngine;
 
@@ -48,11 +50,24 @@ namespace Assets.Code.Controllers.States
         {
             if (gameObject != null)
             {
-                if (OnUnitSelect != null)
-                    OnUnitSelect(gameObject);
+                Unit unit = gameObject.GetComponent<Unit>();
+                if (unit != null)
+                {
+                    SetUnitActiveCommands(unit);
 
-                stateMachine.FireTrigger(StateTrigger.UnitSelected);
+                    if (OnUnitSelect != null)
+                        OnUnitSelect(gameObject);
+
+                    stateMachine.FireTrigger(StateTrigger.UnitSelected);
+                }
             }
+        }
+
+        private void SetUnitActiveCommands(Unit unit)
+        {
+            Faction faction = unit.Faction;
+            UnitCommand waitCommand = faction.GetCommand(UnitCommandType.Wait);
+            unit.AddActiveCommand(waitCommand);
         }
     }
 }

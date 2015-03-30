@@ -14,6 +14,13 @@ namespace Assets.Code.Entities.Units
     public abstract class UnitCommand
     {
         public UnitCommandType CommandType { get; protected set; }
+        protected Faction faction;
+
+        internal void SetFaction(Faction faction)
+        {
+            this.faction = faction;
+            Initialize();
+        }
 
         public virtual void Initialize() { }
         public virtual void Execute() { }

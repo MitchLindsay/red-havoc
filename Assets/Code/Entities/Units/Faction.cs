@@ -94,7 +94,10 @@ namespace Assets.Code.Entities.Units
         public void AddCommand(UnitCommand command)
         {
             if (command != null && !Commands.Contains(command))
+            {
+                command.SetFaction(this);
                 Commands.Add(command);
+            }
         }
 
         public void RemoveCommand(UnitCommand command)
@@ -121,26 +124,34 @@ namespace Assets.Code.Entities.Units
 
         public void ExecuteCaptureCommand(Unit unit, Tile tile)
         {
-            UnitCommand waitCommand = GetCommand(UnitCommandType.Capture);
-            waitCommand.Execute(unit.gameObject, tile.gameObject);
+            UnitCommand capturecommand = GetCommand(UnitCommandType.Capture);
+
+            if (unit.ActiveCommands.Contains(capturecommand))
+                capturecommand.Execute(unit.gameObject, tile.gameObject);
         }
 
         public void ExecuteAttackCommand(Unit attacker, Unit defender)
         {
-            UnitCommand waitCommand = GetCommand(UnitCommandType.Attack);
-            waitCommand.Execute(attacker.gameObject, defender.gameObject);
+            UnitCommand attackCommand = GetCommand(UnitCommandType.Attack);
+
+            if (attacker.ActiveCommands.Contains(attackCommand))
+                attackCommand.Execute(attacker.gameObject, defender.gameObject);
         }
 
         public void ExecuteMoveCommand(Unit unit, Tile tile)
         {
-            UnitCommand waitCommand = GetCommand(UnitCommandType.Move);
-            waitCommand.Execute(unit.gameObject, tile.gameObject);
+            UnitCommand moveCommand = GetCommand(UnitCommandType.Move);
+
+            if (unit.ActiveCommands.Contains(moveCommand))
+                moveCommand.Execute(unit.gameObject, tile.gameObject);
         }
 
         public void ExecuteWaitCommand(Unit unit)
         {
             UnitCommand waitCommand = GetCommand(UnitCommandType.Wait);
-            waitCommand.Execute(unit.gameObject);
+
+            if (unit.ActiveCommands.Contains(waitCommand))
+                waitCommand.Execute(unit.gameObject);
         }
 
         public void ActivateUnit(Unit unit)
