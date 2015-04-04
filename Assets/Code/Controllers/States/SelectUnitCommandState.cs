@@ -1,4 +1,6 @@
 ﻿using Assets.Code.Controllers.Abstract;
+using Assets.Code.Entities.Units;
+using Assets.Code.GUI.Screen.Command;
 using Assets.Code.GUI.World;
 using UnityEngine;
 
@@ -21,6 +23,7 @@ namespace Assets.Code.Controllers.States
         public override void OnEntry()
         {
             MouseCursor.OnMouseClickTile += DeselectUnit;
+            CommandListWindow.OnCommandButtonClick += InitiateCommand;
 
             if (OnStateEntry != null)
                 OnStateEntry();
@@ -39,6 +42,7 @@ namespace Assets.Code.Controllers.States
         public override void OnExit()
         {
             MouseCursor.OnMouseClickTile -= DeselectUnit;
+            CommandListWindow.OnCommandButtonClick -= InitiateCommand;
 
             if (OnStateExit != null)
                 OnStateExit();
@@ -53,6 +57,11 @@ namespace Assets.Code.Controllers.States
 
                 stateMachine.FireTrigger(StateTrigger.UnitDeselected);
             }
+        }
+
+        private void InitiateCommand(Unit unit, UnitCommandType commandType)
+        {
+            stateMachine.FireTrigger(StateTrigger.UnitCommandSelected);
         }
     }
 }

@@ -75,5 +75,27 @@ namespace Assets.Code.Generic.GUI.Abstract
             if (element != null)
                 element.color = color;
         }
+
+        public void EnableButton(Button button)
+        {
+            button.interactable = true;
+        }
+
+        public void DisableButton(Button button)
+        {
+            button.interactable = false;
+        }
+
+        public void EnableButtonWithText(Button button, Text text)
+        {
+            EnableButton(button);
+            SetColor(text, Color.white);
+        }
+
+        public void DisableButtonWithText(Button button, Text text)
+        {
+            DisableButton(button);
+            SetColor(text, new Color(1.0f, 1.0f, 1.0f, 0.5f));
+        }
     }
 }

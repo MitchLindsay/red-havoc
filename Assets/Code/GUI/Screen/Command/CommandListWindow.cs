@@ -9,17 +9,17 @@ namespace Assets.Code.GUI.Screen.Command
 {
     public class CommandListWindow : Window
     {
-        private float commandBackgroundSize = 28.0f;
-        private RectTransform windowRectTransform;
+        public delegate void ButtonClickHandler(Unit unit, UnitCommandType commandType);
+        public static event ButtonClickHandler OnCommandButtonClick;
 
-        public Text CaptureCommandName;
-        public Text AttackCommandName;
-        public Text MoveCommandName;
-        public Text WaitCommandName;
-        public Image CaptureCommandBackground;
-        public Image AttackCommandBackground;
-        public Image MoveCommandBackground;
-        public Image WaitCommandBackground;
+        public Button CaptureCommandButton;
+        public Button AttackCommandButton;
+        public Button MoveCommandButton;
+        public Button WaitCommandButton;
+        public Text CaptureCommandText;
+        public Text AttackCommandText;
+        public Text MoveCommandText;
+        public Text WaitCommandText;
 
         void OnEnable()
         {
@@ -41,40 +41,35 @@ namespace Assets.Code.GUI.Screen.Command
 
             if (unit != null && unit.ActiveCommands.Count > 0)
             {
-                if (unit.IsCommandAvailable(UnitCommandType.Capture))
-                    ShowCommand(CaptureCommandName, CaptureCommandBackground);
-                else
-                    HideCommand(CaptureCommandName, CaptureCommandBackground);
+                SetButtonAvailability(CaptureCommandButton, CaptureCommandText, unit, UnitCommandType.Capture);
+                SetButtonAvailability(AttackCommandButton, AttackCommandText, unit, UnitCommandType.Attack);
+                SetButtonAvailability(MoveCommandButton, MoveCommandText, unit, UnitCommandType.Move);
+                SetButtonAvailability(WaitCommandButton, WaitCommandText, unit, UnitCommandType.Wait);
 
-                if (unit.IsCommandAvailable(UnitCommandType.Attack))
-                    ShowCommand(AttackCommandName, AttackCommandBackground);
-                else
-                    HideCommand(AttackCommandName, AttackCommandBackground);
-
-                if (unit.IsCommandAvailable(UnitCommandType.Move))
-                    ShowCommand(MoveCommandName, MoveCommandBackground);
-                else
-                    HideCommand(MoveCommandName, MoveCommandBackground);
-
-                if (unit.IsCommandAvailable(UnitCommandType.Wait))
-                    ShowCommand(WaitCommandName, WaitCommandBackground);
-                else
-                    HideCommand(WaitCommandName, WaitCommandBackground);
+                AddButtonListener(CaptureCommandButton, unit, UnitCommandType.Capture);
+                AddButtonListener(AttackCommandButton, unit, UnitCommandType.Attack);
+                AddButtonListener(MoveCommandButton, unit, UnitCommandType.Move);
+                AddButtonListener(WaitCommandButton, unit, UnitCommandType.Wait);
             }
             else
                 Hide();
         }
 
-        private void ShowCommand(Text commandText, Image commandBackground)
+        private void SetButtonAvailability(Button button, Text buttonText, Unit unit, UnitCommandType commandType)
         {
-            commandText.gameObject.SetActive(true);
-            commandBackground.gameObject.SetActive(true);
+            if (unit.IsCommandAvailable(commandType))
+                EnableButtonWithText(button, buttonText);
+            else
+                DisableButtonWithText(button, buttonText);
         }
 
-        private void HideCommand(Text commandText, Image commandBackground)
+        private void AddButtonListener(Button button, Unit unit, UnitCommandType commandType)
         {
-            commandText.gameObject.SetActive(false);
-            commandBackground.gameObject.SetActive(false);
+            button.onClick.AddListener(() =>
+                {
+                    if (OnCommandButtonClick != null)
+                        OnCommandButtonClick(unit, commandType);
+                });
         }
     }
 }

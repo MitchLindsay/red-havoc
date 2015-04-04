@@ -22,6 +22,8 @@ namespace Assets.Code.Entities.Units.Commands
             {
                 Unit unit = unitObj.GetComponent<Unit>();
 
+
+
                 if (unit != null)
                     Debug.Log(unit.EntityName + " waited");
             }
