@@ -14,25 +14,19 @@ namespace Assets.Code.GUI.Screen.Command
 
         public Button CaptureCommandButton;
         public Button AttackCommandButton;
-        public Button MoveCommandButton;
         public Button WaitCommandButton;
         public Text CaptureCommandText;
         public Text AttackCommandText;
-        public Text MoveCommandText;
         public Text WaitCommandText;
 
         void OnEnable()
         {
             StartBattleState.OnStateEntry += Hide;
-            SelectUnitState.OnUnitSelect += OnWindow;
-            SelectUnitCommandState.OnUnitDeselect += Hide;
         }
 
         void OnDestroy()
         {
             StartBattleState.OnStateEntry -= Hide;
-            SelectUnitState.OnUnitSelect -= OnWindow;
-            SelectUnitCommandState.OnUnitDeselect -= Hide;
         }
 
         public override void DisplayGUI(GameObject unitObj)
@@ -43,12 +37,10 @@ namespace Assets.Code.GUI.Screen.Command
             {
                 SetButtonAvailability(CaptureCommandButton, CaptureCommandText, unit, UnitCommandType.Capture);
                 SetButtonAvailability(AttackCommandButton, AttackCommandText, unit, UnitCommandType.Attack);
-                SetButtonAvailability(MoveCommandButton, MoveCommandText, unit, UnitCommandType.Move);
                 SetButtonAvailability(WaitCommandButton, WaitCommandText, unit, UnitCommandType.Wait);
 
                 AddButtonListener(CaptureCommandButton, unit, UnitCommandType.Capture);
                 AddButtonListener(AttackCommandButton, unit, UnitCommandType.Attack);
-                AddButtonListener(MoveCommandButton, unit, UnitCommandType.Move);
                 AddButtonListener(WaitCommandButton, unit, UnitCommandType.Wait);
             }
             else

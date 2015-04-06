@@ -14,6 +14,9 @@ namespace Assets.Code.Controllers.Abstract
         UnitCommandExecuted = 6,
         BattleEnded = 7,
         UnitDeselected = 8,
+        UnitMoved = 9,
+        UnitCommandCancelled = 10,
+        UnitMoveCancelled = 11,
     }
 
     public enum StateID
@@ -26,6 +29,7 @@ namespace Assets.Code.Controllers.Abstract
         ConfirmingUnitCommand = 5,
         ExecutingUnitCommand = 6,
         EndingBattle = 7,
+        MovingUnit = 8,
     }
 
     public abstract class State

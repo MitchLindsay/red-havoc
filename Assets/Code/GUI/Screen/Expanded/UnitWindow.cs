@@ -28,14 +28,12 @@ namespace Assets.Code.GUI.Screen.Expanded
         {
             StartBattleState.OnStateEntry += Hide;
             SelectUnitState.OnUnitSelect += OnWindow;
-            SelectUnitCommandState.OnUnitDeselect += Hide;
         }
 
         void OnDestroy()
         {
             StartBattleState.OnStateEntry -= Hide;
             SelectUnitState.OnUnitSelect -= OnWindow;
-            SelectUnitCommandState.OnUnitDeselect -= Hide;
         }
 
         public override void DisplayGUI(GameObject unitObj)

@@ -29,10 +29,10 @@ namespace Assets.Code.Entities.Abstract
 
         public TNode[] Neighbors(TNode node)
         {
-            Vector2 position = GetPositionByNode(node);
-
-            if (position == default(Vector2))
+            if (node == null)
                 return null;
+
+            Vector2 position = GetPositionByNode(node);
 
             int x = (int)position.x;
             int y = (int)position.y;

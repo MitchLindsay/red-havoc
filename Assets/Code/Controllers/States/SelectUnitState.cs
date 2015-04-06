@@ -53,24 +53,11 @@ namespace Assets.Code.Controllers.States
                 Unit unit = gameObject.GetComponent<Unit>();
                 if (unit != null)
                 {
-                    SetUnitActiveCommands(unit);
-
                     if (OnUnitSelect != null)
                         OnUnitSelect(gameObject);
 
                     stateMachine.FireTrigger(StateTrigger.UnitSelected);
                 }
-            }
-        }
-
-        private void SetUnitActiveCommands(Unit unit)
-        {
-            Faction faction = unit.Faction;
-
-            if (faction.IsActive)
-            {
-                UnitCommand waitCommand = faction.GetCommand(UnitCommandType.Wait);
-                unit.AddActiveCommand(waitCommand);
             }
         }
     }

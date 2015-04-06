@@ -37,14 +37,19 @@ namespace Assets.Code.Controllers
             changeTurnState.AddTrigger(StateTrigger.TurnChanged, StateID.SelectingUnit);
 
             SelectUnitState selectUnitState = new SelectUnitState();
-            selectUnitState.AddTrigger(StateTrigger.UnitSelected, StateID.SelectingUnitCommand);
+            selectUnitState.AddTrigger(StateTrigger.UnitSelected, StateID.MovingUnit);
+
+            MoveUnitState moveUnitState = new MoveUnitState();
+            moveUnitState.AddTrigger(StateTrigger.UnitMoved, StateID.SelectingUnitCommand);
+            moveUnitState.AddTrigger(StateTrigger.UnitDeselected, StateID.SelectingUnit);
 
             SelectUnitCommandState selectUnitCommandState = new SelectUnitCommandState();
             selectUnitCommandState.AddTrigger(StateTrigger.UnitCommandSelected, StateID.ConfirmingUnitCommand);
-            selectUnitCommandState.AddTrigger(StateTrigger.UnitDeselected, StateID.SelectingUnit);
+            selectUnitCommandState.AddTrigger(StateTrigger.UnitMoveCancelled, StateID.MovingUnit);
 
             ConfirmUnitCommandState confirmUnitCommandState = new ConfirmUnitCommandState();
             confirmUnitCommandState.AddTrigger(StateTrigger.UnitCommandConfirmed, StateID.ExecutingUnitCommand);
+            confirmUnitCommandState.AddTrigger(StateTrigger.UnitCommandCancelled, StateID.ConfirmingUnitCommand);
 
             ExecuteUnitCommandState executeUnitCommandState = new ExecuteUnitCommandState();
             executeUnitCommandState.AddTrigger(StateTrigger.UnitCommandExecuted, StateID.SelectingUnit);
@@ -55,6 +60,7 @@ namespace Assets.Code.Controllers
             AddState(startBattleState);
             AddState(changeTurnState);
             AddState(selectUnitState);
+            AddState(moveUnitState);
             AddState(selectUnitCommandState);
             AddState(confirmUnitCommandState);
             AddState(executeUnitCommandState);

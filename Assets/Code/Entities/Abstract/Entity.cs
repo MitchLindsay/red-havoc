@@ -7,6 +7,7 @@ namespace Assets.Code.Entities.Abstract
     public abstract class Entity : MonoBehaviour
     {
         public string EntityName = "Entity";
+        public LayerMask NodeLayerMask = 0;
         public LayerMask TileLayerMask = 0;
         public LayerMask UnitLayerMask = 0;
 

@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Controllers;
 using Assets.Code.Controllers.States;
 using Assets.Code.Entities.Abstract;
+using Assets.Code.Entities.Pathfinding;
 using Assets.Code.Entities.Tiles;
 using Assets.Code.Entities.Units;
 using Assets.Code.Libraries;
@@ -13,8 +14,10 @@ namespace Assets.Code.GUI.World
     {
         public delegate void MouseOverHandler(GameObject gameObject);
         public delegate void MouseClickHandler(GameObject gameObject);
+        public static event MouseOverHandler OnMouseOverNode;
         public static event MouseOverHandler OnMouseOverTile;
         public static event MouseOverHandler OnMouseOverUnit;
+        public static event MouseClickHandler OnMouseClickNode;
         public static event MouseClickHandler OnMouseClickTile;
         public static event MouseClickHandler OnMouseClickUnit;
 
@@ -52,6 +55,7 @@ namespace Assets.Code.GUI.World
             {
                 SetCoordinates(GetMouseCoordinates());
                 DrawCursorHighlight();
+                CheckForCollisions<Node>(NodeLayerMask);
                 CheckForCollisions<Tile>(TileLayerMask);
                 CheckForCollisions<Unit>(UnitLayerMask);
             }
@@ -102,8 +106,20 @@ namespace Assets.Code.GUI.World
             if (typeof(TEntity) == typeof(Unit))
                 HandleUnitCollision(collidedGameObject);
 
+            if (typeof(TEntity) == typeof(Node))
+                HandleNodeCollisions(collidedGameObject);
+
             if (typeof(TEntity) == typeof(Tile))
                 HandleTileCollision(collidedGameObject);
+        }
+
+        private void HandleNodeCollisions(GameObject collidedGameObject)
+        {
+            if (OnMouseOverNode != null)
+                OnMouseOverNode(collidedGameObject);
+
+            if (OnMouseClickNode != null && Input.GetMouseButton(0))
+                OnMouseClickNode(collidedGameObject);
         }
 
         private void HandleTileCollision(GameObject collidedGameObject)
