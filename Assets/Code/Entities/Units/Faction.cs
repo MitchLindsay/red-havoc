@@ -126,6 +126,14 @@ namespace Assets.Code.Entities.Units
             return null;
         }
 
+        public void ExecuteMoveCommand(Unit unit, Tile tile)
+        {
+            UnitCommand moveCommand = GetCommand(UnitCommandType.Move);
+
+            if (unit.ActiveCommands.Contains(moveCommand))
+                moveCommand.Execute(unit.gameObject, tile.gameObject);
+        }
+
         public void ExecuteCaptureCommand(Unit unit, Tile tile)
         {
             UnitCommand capturecommand = GetCommand(UnitCommandType.Capture);
@@ -140,14 +148,6 @@ namespace Assets.Code.Entities.Units
 
             if (attacker.ActiveCommands.Contains(attackCommand))
                 attackCommand.Execute(attacker.gameObject, defender.gameObject);
-        }
-
-        public void ExecuteMoveCommand(Unit unit, Tile tile)
-        {
-            UnitCommand moveCommand = GetCommand(UnitCommandType.Move);
-
-            if (unit.ActiveCommands.Contains(moveCommand))
-                moveCommand.Execute(unit.gameObject, tile.gameObject);
         }
 
         public void ExecuteWaitCommand(Unit unit)

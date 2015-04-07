@@ -17,14 +17,15 @@ namespace Assets.Code.Entities.Pathfinding
         public Color32 ColorOutOfReach = new Color32(229, 61, 61, 150);
         public Color32 ColorNeutral = new Color32(255, 255, 255, 0);
 
+        private bool pathfindingEnabled = false;
         private Node startNode = null;
         private Node goalNode = null;
         private HashSet<Node> area = null;
 
-        private HashSet<Node> explored = new HashSet<Node>();
-        private Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-        private Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
-        private Node[] neighbors = new Node[4];
+        private HashSet<Node> explored;
+        private Dictionary<Node, Node> cameFrom;
+        private Dictionary<Node, int> costSoFar;
+        private Node[] neighbors;
         private Node current;
         private int newCost;
         private int priority;
@@ -32,6 +33,8 @@ namespace Assets.Code.Entities.Pathfinding
         void OnEnable()
         {
             SelectUnitState.OnUnitSelect += ShowArea;
+            MoveUnitState.OnStateEntry += EnablePathfinding;
+            MoveUnitState.OnStateExit += DisablePathfinding;
             MoveUnitState.OnUnitDeselect += HideArea;
             MouseCursor.OnMouseOverNode += ShowPath;
         }
@@ -39,8 +42,20 @@ namespace Assets.Code.Entities.Pathfinding
         void OnDestroy()
         {
             SelectUnitState.OnUnitSelect -= ShowArea;
+            MoveUnitState.OnStateEntry -= EnablePathfinding;
+            MoveUnitState.OnStateExit -= DisablePathfinding;
             MoveUnitState.OnUnitDeselect -= HideArea;
             MouseCursor.OnMouseOverNode -= ShowPath;
+        }
+
+        private void EnablePathfinding()
+        {
+            pathfindingEnabled = true;
+        }
+
+        private void DisablePathfinding()
+        {
+            pathfindingEnabled = false;
         }
 
         private void ShowArea(GameObject startObject)
@@ -80,21 +95,21 @@ namespace Assets.Code.Entities.Pathfinding
 
         private void ShowPath(GameObject goalObject)
         {
-            if (goalObject != null)
+            if (pathfindingEnabled && goalObject != null)
             {
                 goalNode = goalObject.GetComponent<Node>();
+
                 List<Node> path = AStarSearch(startNode, goalNode, area);
+                List<Vector2> pathPositions = new List<Vector2>();
 
                 if (path != null)
                 {
-                    List<Vector2> pathPositions = new List<Vector2>();
-
                     for (int i = 0; i < path.Count; i++)
                         pathPositions.Add(path[i].transform.position);
-
-                    if (OnPathGenerateComplete != null)
-                        OnPathGenerateComplete(pathPositions);
                 }
+
+                if (OnPathGenerateComplete != null)
+                    OnPathGenerateComplete(pathPositions);
             }
         }
 
@@ -109,7 +124,7 @@ namespace Assets.Code.Entities.Pathfinding
             explored = new HashSet<Node>();
             explored.Add(start);
 
-            costSoFar = new Dictionary<Node, int>();
+            Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
             costSoFar.Add(start, 0);
 
             while (reachable.Count > 0)
@@ -165,12 +180,17 @@ namespace Assets.Code.Entities.Pathfinding
                         continue;
 
                     newCost = costSoFar[current] + neighbor.MoveCost;
-                    if (!costSoFar.ContainsKey(neighbor) || newCost < costSoFar[neighbor])
+
+                    if (!costSoFar.ContainsKey(neighbor) || (newCost < costSoFar[neighbor]))
                     {
-                        costSoFar.Add(neighbor, newCost);
                         priority = newCost + Heuristic(neighbor, goal);
                         reachable.Enqueue(neighbor, priority);
-                        cameFrom.Add(neighbor, current);
+
+                        if (!costSoFar.ContainsKey(neighbor))
+                            costSoFar.Add(neighbor, newCost);
+
+                        if (!cameFrom.ContainsKey(neighbor))
+                            cameFrom.Add(neighbor, current);
                     }
                 }
             }

@@ -140,12 +140,7 @@ namespace Assets.Code.GUI.World
                 OnMouseOverUnit(collidedGameObject);
 
             if (OnMouseClickUnit != null && Input.GetMouseButton(0))
-            {
-                if (collidedGameObject != null)
-                    DisableCursor();
-
                 OnMouseClickUnit(collidedGameObject);
-            }
 
             if (collidedGameObject != null)
             {

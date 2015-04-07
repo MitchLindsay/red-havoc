@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Controllers.States;
 using Assets.Code.Entities.Units;
 using Assets.Code.Generic.GUI.Abstract;
+using Assets.Code.GUI.World;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,14 +28,16 @@ namespace Assets.Code.GUI.Screen.Expanded
         void OnEnable()
         {
             StartBattleState.OnStateEntry += Hide;
-            SelectUnitState.OnUnitSelect += OnWindow;
+            MouseCursor.OnMouseClickUnit += OnWindow;
+            SelectUnitState.OnUnitDeselect += Hide;
             MoveUnitState.OnUnitDeselect += Hide;
         }
 
         void OnDestroy()
         {
             StartBattleState.OnStateEntry -= Hide;
-            SelectUnitState.OnUnitSelect -= OnWindow;
+            MouseCursor.OnMouseClickUnit -= OnWindow;
+            SelectUnitState.OnUnitDeselect -= Hide;
             MoveUnitState.OnUnitDeselect -= Hide;
         }
 

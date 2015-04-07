@@ -15,6 +15,9 @@ namespace Assets.Code.Controllers.States
         public delegate void SelectUnitHandler(GameObject gameObject);
         public static event SelectUnitHandler OnUnitSelect;
 
+        public delegate void DeselectUnitHandler();
+        public static event DeselectUnitHandler OnUnitDeselect;
+
         public override void OnInitialized()
         {
             this.StateID = StateID.SelectingUnit;
@@ -30,7 +33,8 @@ namespace Assets.Code.Controllers.States
 
         public override void Reason()
         {
-
+            if (Input.GetKey(KeyCode.Escape))
+                DeselectUnit();
         }
 
         public override void Update(float deltaTime)
@@ -51,7 +55,7 @@ namespace Assets.Code.Controllers.States
             if (gameObject != null)
             {
                 Unit unit = gameObject.GetComponent<Unit>();
-                if (unit != null)
+                if (unit != null && unit.IsActive)
                 {
                     if (OnUnitSelect != null)
                         OnUnitSelect(gameObject);
@@ -59,6 +63,12 @@ namespace Assets.Code.Controllers.States
                     stateMachine.FireTrigger(StateTrigger.UnitSelected);
                 }
             }
+        }
+
+        private void DeselectUnit()
+        {
+            if (OnUnitDeselect != null)
+                OnUnitDeselect();
         }
     }
 }

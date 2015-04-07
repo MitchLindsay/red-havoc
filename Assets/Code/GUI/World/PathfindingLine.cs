@@ -13,17 +13,19 @@ namespace Assets.Code.GUI.World
 
         void OnEnable()
         {
+            SelectUnitState.OnStateEntry += Hide;
             Pathfinder.OnPathGenerateComplete += Generate;
         }
 
         void OnDestroy()
         {
+            SelectUnitState.OnStateEntry -= Hide;
             Pathfinder.OnPathGenerateComplete -= Generate;
         }
 
         void Start()
         {
-            pathfindingLine = new VectorLine("Pathfinding Line", new Vector3[0], null, 2.0f, LineType.Continuous);
+            pathfindingLine = new VectorLine("Pathfinding Line", new Vector3[0], null, 3.0f, LineType.Continuous);
 
             VectorLine.canvas3D.pixelPerfect = true;
             VectorLine.canvas3D.sortingLayerName = "Pathfinding";
@@ -38,11 +40,7 @@ namespace Assets.Code.GUI.World
             {
                 Show();
 
-                int numPoints = path.Count;
-                if (Algorithms.IsNumberOdd(numPoints))
-                    numPoints += 1;
-
-                pathfindingLine.Resize(numPoints);
+                pathfindingLine.Resize(path.Count);
                 for (int i = 0; i < path.Count; i++)
                 {
                     path[i] += new Vector2(0.5f, 0.5f);
