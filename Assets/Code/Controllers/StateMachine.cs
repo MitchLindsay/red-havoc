@@ -118,7 +118,7 @@ namespace Assets.Code.Controllers
                         currentState = state;
                         currentState.OnEntry();
 
-                        Debug.Log("Entered " + currentState.StateID);
+                        Debug.Log("Entered " + currentStateID + " state");
                         break;
                     }
                 }

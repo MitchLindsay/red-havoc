@@ -16,7 +16,6 @@ namespace Assets.Code.Entities.Abstract
 
         public void CheckForCollisions<TEntity>(LayerMask layerMask)
         {
-            Debug.DrawRay(transform.position + raycastOffset, Vector2.up, Color.red);
             raycastHit = Physics2D.Raycast(transform.position + raycastOffset, Vector2.up, 1.0f, layerMask);
 
             if (raycastHit.collider != null)

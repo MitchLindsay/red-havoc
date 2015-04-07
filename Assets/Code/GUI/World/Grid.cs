@@ -8,7 +8,7 @@ namespace Assets.Code.GUI.World
     public class Grid : MonoBehaviour
     {
         public bool GridEnabled = true;
-        public float Alpha = 1.0f;
+        public float Alpha = 0.5f;
         private VectorLine gridLine;
 
         void OnEnable()

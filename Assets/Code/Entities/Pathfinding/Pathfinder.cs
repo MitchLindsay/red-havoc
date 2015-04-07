@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Controllers.States;
 using Assets.Code.Entities.Abstract;
+using Assets.Code.Entities.Units;
 using Assets.Code.GUI.World;
 using Assets.Code.Libraries;
 using System.Collections.Generic;
@@ -7,114 +8,189 @@ using UnityEngine;
 
 namespace Assets.Code.Entities.Pathfinding
 {
-    public class Pathfinder : Graph<Node> 
+    public class Pathfinder : Graph<Node>
     {
-        public delegate void PathGenerationHandler(List<Vector2> path);
-        public static event PathGenerationHandler OnPathGenerationComplete;
+        public delegate void PathGenerateHandler(List<Vector2> path);
+        public static event PathGenerateHandler OnPathGenerateComplete;
 
-        private Vector2 startPosition;
-        private Vector2 goalPosition;
-        private Dictionary<Node, Node> cameFrom;
-        private Dictionary<Node, int> costSoFar;
+        public Color32 ColorTraversable = new Color32(61, 118, 229, 150);
+        public Color32 ColorOutOfReach = new Color32(229, 61, 61, 150);
+        public Color32 ColorNeutral = new Color32(255, 255, 255, 0);
+
+        private Node startNode = null;
+        private Node goalNode = null;
+        private HashSet<Node> area = null;
+
+        private HashSet<Node> explored = new HashSet<Node>();
+        private Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
+        private Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
+        private Node[] neighbors = new Node[4];
+        private Node current;
+        private int newCost;
+        private int priority;
 
         void OnEnable()
         {
-            SelectUnitState.OnUnitSelect += SetStartPosition;
-            MouseCursor.OnMouseOverNode += SetGoalPosition;
-            MoveUnitState.OnNodeChange += FindPath;
+            SelectUnitState.OnUnitSelect += ShowArea;
+            MoveUnitState.OnUnitDeselect += HideArea;
+            MouseCursor.OnMouseOverNode += ShowPath;
         }
 
         void OnDestroy()
         {
-            SelectUnitState.OnUnitSelect -= SetStartPosition;
-            MouseCursor.OnMouseOverNode -= SetGoalPosition;
-            MoveUnitState.OnNodeChange -= FindPath;
+            SelectUnitState.OnUnitSelect -= ShowArea;
+            MoveUnitState.OnUnitDeselect -= HideArea;
+            MouseCursor.OnMouseOverNode -= ShowPath;
         }
 
-        private void SetStartPosition(GameObject gameObject)
+        private void ShowArea(GameObject startObject)
         {
-            if (gameObject != null)
-                startPosition = gameObject.transform.position;
-            else
-                startPosition = new Vector2(-1.0f, -1.0f);
+            if (startObject != null)
+            {
+                Unit unit = startObject.GetComponent<Unit>();
+                if (unit != null)
+                {
+                    startNode = GetNodeByPosition(unit.transform.position);
+                    int distance = unit.Movement.ModifiedValue;
+
+                    HashSet<Node> tempArea = BreadthFirstSearch(startNode, distance);
+                    Node[] neighbors;
+
+                    foreach (Node node in tempArea)
+                    {
+                        node.SetColor(ColorTraversable);
+                        neighbors = Neighbors(node);
+                        foreach (Node neighbor in neighbors)
+                        {
+                            if (neighbor != null && !tempArea.Contains(neighbor))
+                                neighbor.SetColor(ColorOutOfReach);
+                        }
+                    }
+
+                    area = tempArea;
+                }
+            }
         }
 
-        private void SetGoalPosition(GameObject gameObject)
+        private void HideArea()
         {
-            if (gameObject != null)
-                goalPosition = gameObject.transform.position;
-            else
-                goalPosition = new Vector2(-1.0f, -1.0f);
+            foreach (Node node in Nodes)
+                node.SetColor(ColorNeutral);
         }
 
-        public void FindPath()
+        private void ShowPath(GameObject goalObject)
         {
-            Node start = GetNodeByPosition(startPosition);
-            Node goal = GetNodeByPosition(goalPosition);
+            if (goalObject != null)
+            {
+                goalNode = goalObject.GetComponent<Node>();
+                List<Node> path = AStarSearch(startNode, goalNode, area);
 
-            if (start == null || goal == null || !goal.CanBeGoal)
-                GeneratePath(null);
+                if (path != null)
+                {
+                    List<Vector2> pathPositions = new List<Vector2>();
 
-            cameFrom = new Dictionary<Node, Node>();
-            costSoFar = new Dictionary<Node, int>();
+                    for (int i = 0; i < path.Count; i++)
+                        pathPositions.Add(path[i].transform.position);
 
-            PriorityQueue<int, Node> reachable = new PriorityQueue<int,Node>();
-            reachable.Enqueue(0, start);
+                    if (OnPathGenerateComplete != null)
+                        OnPathGenerateComplete(pathPositions);
+                }
+            }
+        }
 
-            HashSet<Node> explored = new HashSet<Node>();
+        private HashSet<Node> BreadthFirstSearch(Node start, int distance)
+        {
+            if (start == null || distance <= 0)
+                return null;
+
+            Queue<Node> reachable = new Queue<Node>();
+            reachable.Enqueue(start);
+
+            explored = new HashSet<Node>();
             explored.Add(start);
 
-            cameFrom.Add(start, null);
+            costSoFar = new Dictionary<Node, int>();
             costSoFar.Add(start, 0);
 
-            while (!reachable.IsEmpty)
+            while (reachable.Count > 0)
             {
-                Node current = reachable.Dequeue();
+                current = reachable.Dequeue();
                 explored.Add(current);
 
-                if (current == goal)
-                    GeneratePath(goal);
-
-                foreach (Node neighbor in Neighbors(current))
+                neighbors = Neighbors(current);
+                foreach (Node neighbor in neighbors)
                 {
                     if (neighbor == null || explored.Contains(neighbor) || !neighbor.Traversable)
                         continue;
 
-                    int newCost = costSoFar[current] + neighbor.MoveCost;
+                    newCost = costSoFar[current] + neighbor.MoveCost;
+                    costSoFar[neighbor] = newCost;
+
+                    if (newCost <= distance)
+                    {
+                        explored.Add(neighbor);
+                        reachable.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            return explored;
+        }
+
+        private List<Node> AStarSearch(Node start, Node goal, HashSet<Node> area)
+        {
+            if (start == null || goal == null || !goal.CanBeGoal || start == goal || area == null || !area.Contains(goal))
+                return null;
+
+            PriorityQueue<Node> reachable = new PriorityQueue<Node>();
+            reachable.Enqueue(start, 0);
+
+            cameFrom = new Dictionary<Node, Node>();
+            cameFrom.Add(start, null);
+
+            costSoFar = new Dictionary<Node, int>();
+            costSoFar.Add(start, 0);
+
+            while (!reachable.Empty)
+            {
+                current = reachable.Dequeue();
+
+                if (current == goal)
+                    return GeneratePath(cameFrom, goal);
+
+                neighbors = Neighbors(current);
+                foreach (Node neighbor in neighbors)
+                {
+                    if (!area.Contains(neighbor))
+                        continue;
+
+                    newCost = costSoFar[current] + neighbor.MoveCost;
                     if (!costSoFar.ContainsKey(neighbor) || newCost < costSoFar[neighbor])
                     {
                         costSoFar.Add(neighbor, newCost);
-                        int priority = newCost + Heuristic(neighbor, goal);
-
-                        reachable.Enqueue(priority, neighbor);
+                        priority = newCost + Heuristic(neighbor, goal);
+                        reachable.Enqueue(neighbor, priority);
                         cameFrom.Add(neighbor, current);
                     }
                 }
             }
 
-            GeneratePath(null);
+            return null;
         }
 
-        private void GeneratePath(Node goal)
+        private List<Node> GeneratePath(Dictionary<Node, Node> cameFrom, Node goal)
         {
-            List<Vector2> path = null;
+            List<Node> path = new List<Node>();
             Node temp = goal;
 
-            if (goal != null)
+            while (temp != null)
             {
-                path = new List<Vector2>();
-
-                while (temp != null)
-                {
-                    path.Add(temp.transform.position);
-                    temp = cameFrom[temp];
-                }
-
-                path.Reverse();
+                path.Add(temp);
+                temp = cameFrom[temp];
             }
 
-            if (OnPathGenerationComplete != null)
-                OnPathGenerationComplete(path);
+            path.Reverse();
+            return path;
         }
 
         private int Heuristic(Node nodeA, Node nodeB)

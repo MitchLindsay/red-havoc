@@ -1,43 +1,85 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Code.Libraries
 {
-    public class PriorityQueue<TKey, TValue>
+    public class PriorityQueue<T>
     {
-        private SortedDictionary<TKey, Queue<TValue>> list = new SortedDictionary<TKey, Queue<TValue>>();
+        private SortedDictionary<int, Queue<T>> dictionary;
+        private int count;
 
-        public void Enqueue(TKey key, TValue value)
+        public PriorityQueue()
         {
-            Queue<TValue> queue;
+            this.dictionary = new SortedDictionary<int, Queue<T>>();
+            this.count = 0;
+        }
 
-            if (!list.TryGetValue(key, out queue))
+        public void Enqueue(T item, int priority)
+        {
+            if (!dictionary.ContainsKey(priority))
+                dictionary.Add(priority, new Queue<T>());
+
+            dictionary[priority].Enqueue(item);
+            count++;
+        }
+
+        public T Dequeue(int priority)
+        {
+            count--;
+            return dictionary[priority].Dequeue();
+        }
+
+        public T Dequeue()
+        {
+            if (Empty)
+                return default(T);
+
+            foreach (Queue<T> queue in dictionary.Values)
             {
-                queue = new Queue<TValue>();
-                list.Add(key, queue);
+                if (queue.Count > 0)
+                {
+                    count--;
+                    return queue.Dequeue();
+                }
             }
-            queue.Enqueue(value);
+
+            return default(T);
         }
 
-        public TValue Dequeue()
+        public T Peek()
         {
-            var pair = list.First();
-            var value = pair.Value.Dequeue();
+            if (Empty)
+                return default(T);
 
-            if (pair.Value.Count == 0)
-                list.Remove(pair.Key);
+            foreach (Queue<T> queue in dictionary.Values)
+            {
+                if (queue.Count > 0)
+                    return queue.Peek();
+            }
 
-            return value;
+            return default(T);
         }
 
-        public bool IsEmpty
+        public bool Contains(T item)
         {
-            get { return !list.Any(); }
+            foreach (Queue<T> queue in dictionary.Values)
+            {
+                if (queue.Contains(item))
+                    return true;
+            }
+
+            return false;
         }
 
         public int Count
         {
-            get { return list.Count(); }
+            get { return count; } 
+        }
+
+        public bool Empty
+        {
+            get { return (count == 0); }
         }
     }
 }

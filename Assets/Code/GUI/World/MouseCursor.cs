@@ -12,14 +12,17 @@ namespace Assets.Code.GUI.World
 {
     public class MouseCursor : Entity
     {
-        public delegate void MouseOverHandler(GameObject gameObject);
-        public delegate void MouseClickHandler(GameObject gameObject);
-        public static event MouseOverHandler OnMouseOverNode;
-        public static event MouseOverHandler OnMouseOverTile;
-        public static event MouseOverHandler OnMouseOverUnit;
-        public static event MouseClickHandler OnMouseClickNode;
-        public static event MouseClickHandler OnMouseClickTile;
-        public static event MouseClickHandler OnMouseClickUnit;
+        public delegate void NodeHandler(GameObject gameObject);
+        public static event NodeHandler OnMouseOverNode;
+        public static event NodeHandler OnMouseClickNode;
+
+        public delegate void TileHandler(GameObject gameObject);
+        public static event TileHandler OnMouseOverTile;
+        public static event TileHandler OnMouseClickTile;
+
+        public delegate void UnitHandler(GameObject gameObject);
+        public static event UnitHandler OnMouseOverUnit;
+        public static event UnitHandler OnMouseClickUnit;
 
         [HideInInspector]
         public bool CursorEnabled = false;
@@ -79,7 +82,7 @@ namespace Assets.Code.GUI.World
         {
             cursorHighlight = new VectorLine("Cursor Highlight", new Vector3[5], null, 4.0f, LineType.Continuous, Joins.Weld);
 
-            VectorLine.canvas3D.sortingLayerName = "Tiles";
+            VectorLine.canvas3D.sortingLayerName = "Pathfinding";
             VectorLine.canvas3D.sortingOrder = 1;
         }
 
@@ -149,7 +152,7 @@ namespace Assets.Code.GUI.World
                 Unit unit = collidedGameObject.GetComponent<Unit>();
 
                 if (unit != null)
-                    cursorHighlightColor = unit.Faction.ActiveColor;
+                    cursorHighlightColor = Color.yellow;
                 else
                     cursorHighlightColor = Color.white;
             }

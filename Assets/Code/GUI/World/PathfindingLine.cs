@@ -1,4 +1,5 @@
-﻿using Assets.Code.Entities.Pathfinding;
+﻿using Assets.Code.Controllers.States;
+using Assets.Code.Entities.Pathfinding;
 using Assets.Code.Libraries;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,35 +13,42 @@ namespace Assets.Code.GUI.World
 
         void OnEnable()
         {
-            Pathfinder.OnPathGenerationComplete += Generate;
+            Pathfinder.OnPathGenerateComplete += Generate;
         }
 
         void OnDestroy()
         {
-            Pathfinder.OnPathGenerationComplete -= Generate;
+            Pathfinder.OnPathGenerateComplete -= Generate;
+        }
+
+        void Start()
+        {
+            pathfindingLine = new VectorLine("Pathfinding Line", new Vector3[0], null, 2.0f, LineType.Continuous);
+
+            VectorLine.canvas3D.pixelPerfect = true;
+            VectorLine.canvas3D.sortingLayerName = "Pathfinding";
+            VectorLine.canvas3D.sortingOrder = 1;
+
+            pathfindingLine.SetColor(Color.white);
         }
 
         private void Generate(List<Vector2> path)
         {
             if (path != null)
             {
-             
                 Show();
 
                 int numPoints = path.Count;
                 if (Algorithms.IsNumberOdd(numPoints))
                     numPoints += 1;
 
-                pathfindingLine = new VectorLine("Pathfinding Line", new Vector3[numPoints], null, 1.0f);
-
+                pathfindingLine.Resize(numPoints);
                 for (int i = 0; i < path.Count; i++)
+                {
+                    path[i] += new Vector2(0.5f, 0.5f);
                     pathfindingLine.points3[i] = path[i];
+                }
 
-                VectorLine.canvas3D.pixelPerfect = true;
-                VectorLine.canvas3D.sortingLayerName = "Pathfinding";
-                VectorLine.canvas3D.sortingOrder = 1;
-
-                pathfindingLine.SetColor(Color.white);
                 pathfindingLine.Draw3DAuto();
             }
             else
