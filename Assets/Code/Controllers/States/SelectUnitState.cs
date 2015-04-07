@@ -55,12 +55,12 @@ namespace Assets.Code.Controllers.States
             if (gameObject != null)
             {
                 Unit unit = gameObject.GetComponent<Unit>();
-                if (unit != null && unit.IsActive)
+                if (unit != null)
                 {
+                    stateMachine.FireTrigger(StateTrigger.UnitSelected);
+
                     if (OnUnitSelect != null)
                         OnUnitSelect(gameObject);
-
-                    stateMachine.FireTrigger(StateTrigger.UnitSelected);
                 }
             }
         }

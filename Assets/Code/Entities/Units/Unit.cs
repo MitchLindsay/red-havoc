@@ -11,6 +11,11 @@ namespace Assets.Code.Entities.Units
 {
     public class Unit : Entity
     {
+        public delegate void MoveStartHandler(Vector2 destination);
+        public delegate void MoveStopHandler();
+        public static event MoveStartHandler OnMoveStart;
+        public static event MoveStopHandler OnMoveStop;
+
         public Faction Faction { get; private set; }
         public List<UnitCommand> ActiveCommands { get; private set; }
 
@@ -18,6 +23,8 @@ namespace Assets.Code.Entities.Units
         public bool IsActive = false;
         [HideInInspector]
         public int Health = 10;
+
+        public float MoveSpeed = 2.0f;
 
         public int BaseHealth = 10;
         public int BaseHealthRegen = 0;
@@ -98,5 +105,46 @@ namespace Assets.Code.Entities.Units
 
             return false;
         }
+
+        public void Move(List<Vector2> path)
+        {
+            if (path != null)
+            {
+                if (OnMoveStart != null)
+                    OnMoveStart(path[path.Count - 1]);
+
+                Job moveJob = Job.Make(MoveCoroutine(path, MoveSpeed), true);
+
+                moveJob.JobComplete += (wasKilled) =>
+                {
+                    if (OnMoveStop != null)
+                        OnMoveStop();
+                };
+            }
+        }
+
+        private IEnumerator MoveCoroutine(List<Vector2> path, float speed)
+        {
+            Vector2 unitPosition = gameObject.transform.position;
+
+            for (int i = 0; i < path.Count; i++)
+            {
+                float timeElapsed = 0.0f;
+                Vector3 destination = path[i] - new Vector2(0.5f, 0.5f);
+                Vector3 startPosition = unitPosition;
+
+                while (timeElapsed < 1.0f)
+                {
+                    timeElapsed += Time.deltaTime * (Time.timeScale / speed);
+                    unitPosition = Vector3.Lerp(startPosition, destination, timeElapsed);
+
+                    gameObject.transform.position = unitPosition;
+                    yield return null;
+                }
+            }
+
+            yield return null;
+        }
+
     }
 }

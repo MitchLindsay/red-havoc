@@ -37,6 +37,7 @@ namespace Assets.Code.Entities.Pathfinding
             MoveUnitState.OnStateExit += DisablePathfinding;
             MoveUnitState.OnUnitDeselect += HideArea;
             MouseCursor.OnMouseOverNode += ShowPath;
+            SelectUnitCommandState.OnStateEntry += HideArea;
         }
 
         void OnDestroy()
@@ -46,6 +47,7 @@ namespace Assets.Code.Entities.Pathfinding
             MoveUnitState.OnStateExit -= DisablePathfinding;
             MoveUnitState.OnUnitDeselect -= HideArea;
             MouseCursor.OnMouseOverNode -= ShowPath;
+            SelectUnitCommandState.OnStateEntry -= HideArea;
         }
 
         private void EnablePathfinding()
@@ -71,18 +73,29 @@ namespace Assets.Code.Entities.Pathfinding
                     HashSet<Node> tempArea = BreadthFirstSearch(startNode, distance);
                     Node[] neighbors;
 
-                    foreach (Node node in tempArea)
+                    if (unit.IsActive)
                     {
-                        node.SetColor(ColorTraversable);
-                        neighbors = Neighbors(node);
-                        foreach (Node neighbor in neighbors)
+                        foreach (Node node in tempArea)
                         {
-                            if (neighbor != null && !tempArea.Contains(neighbor))
-                                neighbor.SetColor(ColorOutOfReach);
+                            node.SetColor(ColorTraversable);
+                            neighbors = Neighbors(node);
+                            foreach (Node neighbor in neighbors)
+                            {
+                                if (neighbor != null && !tempArea.Contains(neighbor))
+                                    neighbor.SetColor(ColorOutOfReach);
+                            }
                         }
-                    }
 
-                    area = tempArea;
+                        area = tempArea;
+                    }
+                    else
+                    {
+                        foreach (Node node in tempArea)
+                            node.SetColor(ColorOutOfReach);
+
+                        startNode = null;
+                        area = null;
+                    }
                 }
             }
         }
@@ -124,7 +137,7 @@ namespace Assets.Code.Entities.Pathfinding
             explored = new HashSet<Node>();
             explored.Add(start);
 
-            Dictionary<Node, int> costSoFar = new Dictionary<Node, int>();
+            costSoFar = new Dictionary<Node, int>();
             costSoFar.Add(start, 0);
 
             while (reachable.Count > 0)

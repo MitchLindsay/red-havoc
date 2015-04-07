@@ -28,7 +28,7 @@ namespace Assets.Code.GUI.Screen.Expanded
         void OnEnable()
         {
             StartBattleState.OnStateEntry += Hide;
-            MouseCursor.OnMouseClickUnit += OnWindow;
+            SelectUnitState.OnUnitSelect += OnWindow;
             SelectUnitState.OnUnitDeselect += Hide;
             MoveUnitState.OnUnitDeselect += Hide;
         }

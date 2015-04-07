@@ -7,8 +7,7 @@ namespace Assets.Code.Entities.Units
         Null = 0,
         Capture = 1,
         Attack = 2,
-        Move = 3,
-        Wait = 4,
+        Wait = 3,
     }
 
     public abstract class UnitCommand

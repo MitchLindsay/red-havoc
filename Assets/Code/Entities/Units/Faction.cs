@@ -1,4 +1,5 @@
-﻿using Assets.Code.Entities.Tiles;
+﻿using Assets.Code.Controllers.States;
+using Assets.Code.Entities.Tiles;
 using Assets.Code.Entities.Units.Commands;
 using Assets.Code.GUI.Screen.Command;
 using System.Collections.Generic;
@@ -28,6 +29,16 @@ namespace Assets.Code.Entities.Units
 
         [HideInInspector]
         public int Resources = 0;
+
+        void OnEnable()
+        {
+            MoveUnitState.OnUnitMove += MoveUnitThroughPath;
+        }
+
+        void OnDestroy()
+        {
+            MoveUnitState.OnUnitMove -= MoveUnitThroughPath;
+        }
 
         void Awake()
         {
@@ -86,12 +97,10 @@ namespace Assets.Code.Entities.Units
         {
             CaptureCommand captureCommand = new CaptureCommand();
             AttackCommand attackCommand = new AttackCommand();
-            MoveCommand moveCommand = new MoveCommand();
             WaitCommand waitCommand = new WaitCommand();
 
             AddCommand(captureCommand);
             AddCommand(attackCommand);
-            AddCommand(moveCommand);
             AddCommand(waitCommand);
         }
 
@@ -124,14 +133,6 @@ namespace Assets.Code.Entities.Units
             }
 
             return null;
-        }
-
-        public void ExecuteMoveCommand(Unit unit, Tile tile)
-        {
-            UnitCommand moveCommand = GetCommand(UnitCommandType.Move);
-
-            if (unit.ActiveCommands.Contains(moveCommand))
-                moveCommand.Execute(unit.gameObject, tile.gameObject);
         }
 
         public void ExecuteCaptureCommand(Unit unit, Tile tile)
@@ -186,6 +187,14 @@ namespace Assets.Code.Entities.Units
         {
             foreach (Unit unit in Units)
                 DeactivateUnit(unit);
+        }
+
+        private void MoveUnitThroughPath(GameObject unitObj, List<Vector2> path)
+        {
+            Unit unit = unitObj.GetComponent<Unit>();
+
+            if (unit != null && path != null && Units.Contains(unit) && IsActive && unit.IsActive)
+                unit.Move(path);
         }
     }
 }

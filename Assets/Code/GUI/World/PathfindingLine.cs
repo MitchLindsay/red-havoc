@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Controllers.States;
 using Assets.Code.Entities.Pathfinding;
+using Assets.Code.Entities.Units;
 using Assets.Code.Libraries;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,12 +16,14 @@ namespace Assets.Code.GUI.World
         {
             SelectUnitState.OnStateEntry += Hide;
             Pathfinder.OnPathGenerateComplete += Generate;
+            SelectUnitCommandState.OnStateEntry += Hide;
         }
 
         void OnDestroy()
         {
             SelectUnitState.OnStateEntry -= Hide;
             Pathfinder.OnPathGenerateComplete -= Generate;
+            SelectUnitCommandState.OnStateEntry -= Hide;
         }
 
         void Start()
@@ -39,8 +42,8 @@ namespace Assets.Code.GUI.World
             if (path != null)
             {
                 Show();
-
                 pathfindingLine.Resize(path.Count);
+
                 for (int i = 0; i < path.Count; i++)
                 {
                     path[i] += new Vector2(0.5f, 0.5f);

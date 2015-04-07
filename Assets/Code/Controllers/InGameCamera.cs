@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Controllers.States;
 using Assets.Code.Entities.Tiles;
+using Assets.Code.Entities.Units;
 using Assets.Code.Libraries;
 using System.Collections;
 using UnityEngine;
@@ -30,6 +31,8 @@ namespace Assets.Code.Controllers
             TileMapFactory.OnGenerateComplete += SetMovementBounds;
             SelectUnitState.OnStateEntry += EnableDrag;
             SelectUnitState.OnUnitSelect += PanToGameObject;
+            Unit.OnMoveStart += PanToPosition;
+            Unit.OnMoveStop += EnableDrag;
         }
 
         void OnDestroy()
@@ -37,6 +40,8 @@ namespace Assets.Code.Controllers
             TileMapFactory.OnGenerateComplete -= SetMovementBounds;
             SelectUnitState.OnStateEntry -= EnableDrag;
             SelectUnitState.OnUnitSelect -= PanToGameObject;
+            Unit.OnMoveStart -= PanToPosition;
+            Unit.OnMoveStop -= EnableDrag;
         }
 
         void Start()
@@ -92,7 +97,12 @@ namespace Assets.Code.Controllers
 
         private void Pan(Vector2 destination, float speed)
         {
-            DisableDrag();
+            bool dragAlreadyDisabled = false;
+
+            if (!dragEnabled)
+                dragAlreadyDisabled = true;
+            else
+                DisableDrag();
 
             if (OnPanStart != null)
                 OnPanStart();
@@ -101,7 +111,8 @@ namespace Assets.Code.Controllers
 
             panJob.JobComplete += (wasKilled) =>
             {
-                EnableDrag();
+                if (!dragAlreadyDisabled)
+                    EnableDrag();
 
                 if (OnPanStop != null)
                     OnPanStop();
@@ -139,6 +150,22 @@ namespace Assets.Code.Controllers
                     if (OnPanStop != null)
                         OnPanStop();
                 }
+            }
+        }
+
+        private void PanToPosition(Vector2 position)
+        {
+            int x = (int)position.x;
+            int y = (int)position.y;
+
+            if (x != (int)Camera.main.transform.position.x || y != (int)Camera.main.transform.position.y)
+                Pan(new Vector2(x, y), PanSpeed);
+            else
+            {
+                DisableDrag();
+
+                if (OnPanStop != null)
+                    OnPanStop();
             }
         }
 
