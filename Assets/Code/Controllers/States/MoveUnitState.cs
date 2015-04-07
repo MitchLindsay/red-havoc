@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Controllers.Abstract;
 using Assets.Code.Entities.Pathfinding;
+using Assets.Code.Entities.Units;
 using Assets.Code.GUI.World;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,10 +16,10 @@ namespace Assets.Code.Controllers.States
         public delegate void DeselectUnitHandler();
         public static event DeselectUnitHandler OnUnitDeselect;
 
-        public delegate void MoveUnitHandler(GameObject selectedUnitObj, List<Vector2> path);
+        public delegate void MoveUnitHandler(List<Vector2> path);
         public static event MoveUnitHandler OnUnitMove;
 
-        private GameObject selectedUnitObj = null;
+        private Unit selectedUnit = null;
         private List<Vector2> path = null;
 
         public override void OnInitialized()
@@ -31,14 +32,14 @@ namespace Assets.Code.Controllers.States
             if (OnStateEntry != null)
                 OnStateEntry();
 
-            SelectUnitState.OnUnitSelect += SetSelectedUnitObj;
+            SelectUnitState.OnUnitSelect += SetSelectedUnit;
             Pathfinder.OnPathGenerateComplete += SetPath;
             MouseCursor.OnMouseClickNode += MoveUnitToNode;
         }
 
         public override void Reason()
         {
-            if (Input.GetKey(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape))
                 DeselectUnit();
         }
 
@@ -49,7 +50,7 @@ namespace Assets.Code.Controllers.States
 
         public override void OnExit()
         {
-            SelectUnitState.OnUnitSelect -= SetSelectedUnitObj;
+            SelectUnitState.OnUnitSelect -= SetSelectedUnit;
             Pathfinder.OnPathGenerateComplete -= SetPath;
             MouseCursor.OnMouseClickNode -= MoveUnitToNode;
 
@@ -65,10 +66,14 @@ namespace Assets.Code.Controllers.States
             stateMachine.FireTrigger(StateTrigger.UnitDeselected);
         }
 
-        private void SetSelectedUnitObj(GameObject gameObject)
+        private void SetSelectedUnit(GameObject gameObject)
         {
             if (gameObject != null)
-                selectedUnitObj = gameObject;
+            {
+                Unit unit = gameObject.GetComponent<Unit>();
+                if (unit != null)
+                    selectedUnit = unit;
+            }
         }
 
         private void SetPath(List<Vector2> path)
@@ -82,10 +87,10 @@ namespace Assets.Code.Controllers.States
             {
                 Node node = gameObject.GetComponent<Node>();
 
-                if (node != null && selectedUnitObj != null && path != null && path.Count > 0 && OnUnitMove != null)
+                if (node != null && selectedUnit != null && path != null && path.Count > 0 && OnUnitMove != null)
                 {
-                    OnUnitMove(selectedUnitObj, path);
                     stateMachine.FireTrigger(StateTrigger.UnitMoved);
+                    OnUnitMove(path);
                 }
             }
         }

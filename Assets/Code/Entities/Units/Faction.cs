@@ -30,16 +30,6 @@ namespace Assets.Code.Entities.Units
         [HideInInspector]
         public int Resources = 0;
 
-        void OnEnable()
-        {
-            MoveUnitState.OnUnitMove += MoveUnitThroughPath;
-        }
-
-        void OnDestroy()
-        {
-            MoveUnitState.OnUnitMove -= MoveUnitThroughPath;
-        }
-
         void Awake()
         {
             RemoveAllUnits();
@@ -187,14 +177,6 @@ namespace Assets.Code.Entities.Units
         {
             foreach (Unit unit in Units)
                 DeactivateUnit(unit);
-        }
-
-        private void MoveUnitThroughPath(GameObject unitObj, List<Vector2> path)
-        {
-            Unit unit = unitObj.GetComponent<Unit>();
-
-            if (unit != null && path != null && Units.Contains(unit) && IsActive && unit.IsActive)
-                unit.Move(path);
         }
     }
 }

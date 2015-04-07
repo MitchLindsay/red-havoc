@@ -1,4 +1,5 @@
-﻿using Assets.Code.Entities.Abstract;
+﻿using Assets.Code.Controllers.States;
+using Assets.Code.Entities.Abstract;
 using Assets.Code.Entities.Stats;
 using Assets.Code.Entities.Tiles;
 using Assets.Code.Libraries;
@@ -11,16 +12,19 @@ namespace Assets.Code.Entities.Units
 {
     public class Unit : Entity
     {
-        public delegate void MoveStartHandler(Vector2 destination);
-        public delegate void MoveStopHandler();
-        public static event MoveStartHandler OnMoveStart;
-        public static event MoveStopHandler OnMoveStop;
+        public delegate void MoveHandler();
+        public delegate void MoveCancelHandler(GameObject gameObject);
+        public static event MoveHandler OnMoveStart;
+        public static event MoveHandler OnMoveStop;
+        public static event MoveCancelHandler OnMoveCancel;
 
         public Faction Faction { get; private set; }
         public List<UnitCommand> ActiveCommands { get; private set; }
 
         [HideInInspector]
         public bool IsActive = false;
+        [HideInInspector]
+        public bool IsSelected = false;
         [HideInInspector]
         public int Health = 10;
 
@@ -39,6 +43,22 @@ namespace Assets.Code.Entities.Units
         public Stat AttackRange { get; private set; }
         public Stat Defense { get; private set; }
         public Stat Movement { get; private set; }
+
+        void OnEnable()
+        {
+            SelectUnitState.OnUnitSelect += SetToSelected;
+            SelectUnitState.OnUnitDeselect += SetToDeselected;
+            MoveUnitState.OnUnitMove += Move;
+            SelectUnitCommandState.OnMoveCancel += CancelMove;
+        }
+
+        void OnDestroy()
+        {
+            SelectUnitState.OnUnitSelect -= SetToSelected;
+            SelectUnitState.OnUnitDeselect -= SetToDeselected;
+            MoveUnitState.OnUnitMove -= Move;
+            SelectUnitCommandState.OnMoveCancel -= CancelMove;
+        }
 
         void Awake()
         {
@@ -71,13 +91,27 @@ namespace Assets.Code.Entities.Units
 
                 HealthRegen.AddModifier(tile.HealthRegenModifier);
                 Defense.AddModifier(tile.DefenseModifier);
-                Movement.AddModifier(tile.MovementModifier);
             }
         }
 
         public void SetFaction(Faction faction)
         {
             this.Faction = faction;
+        }
+
+        private void SetToSelected(GameObject selectedObject)
+        {
+            if (selectedObject != null)
+            {
+                Unit unit = selectedObject.GetComponent<Unit>();
+                if (unit == this && IsActive)
+                    IsSelected = true;
+            }
+        }
+
+        private void SetToDeselected()
+        {
+            IsSelected = false;
         }
 
         public void AddActiveCommand(UnitCommand command)
@@ -108,10 +142,10 @@ namespace Assets.Code.Entities.Units
 
         public void Move(List<Vector2> path)
         {
-            if (path != null)
+            if (path != null && IsSelected && IsActive)
             {
                 if (OnMoveStart != null)
-                    OnMoveStart(path[path.Count - 1]);
+                    OnMoveStart();
 
                 Job moveJob = Job.Make(MoveCoroutine(path, MoveSpeed), true);
 
@@ -146,5 +180,15 @@ namespace Assets.Code.Entities.Units
             yield return null;
         }
 
+        private void CancelMove(Vector2 start)
+        {
+            if (start != null && IsSelected && IsActive)
+            {
+                this.transform.position = start - new Vector2(0.5f, 0.5f);
+
+                if (OnMoveCancel != null)
+                    OnMoveCancel(this.gameObject);
+            }
+        }
     }
 }

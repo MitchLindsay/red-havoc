@@ -3,6 +3,7 @@ using Assets.Code.Entities.Tiles;
 using Assets.Code.Entities.Units;
 using Assets.Code.Libraries;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Code.Controllers
@@ -31,8 +32,9 @@ namespace Assets.Code.Controllers
             TileMapFactory.OnGenerateComplete += SetMovementBounds;
             SelectUnitState.OnStateEntry += EnableDrag;
             SelectUnitState.OnUnitSelect += PanToGameObject;
-            Unit.OnMoveStart += PanToPosition;
+            MoveUnitState.OnUnitMove += PanToLastPosition;
             Unit.OnMoveStop += EnableDrag;
+            SelectUnitCommandState.OnMoveCancel += PanToPosition;
         }
 
         void OnDestroy()
@@ -40,8 +42,9 @@ namespace Assets.Code.Controllers
             TileMapFactory.OnGenerateComplete -= SetMovementBounds;
             SelectUnitState.OnStateEntry -= EnableDrag;
             SelectUnitState.OnUnitSelect -= PanToGameObject;
-            Unit.OnMoveStart -= PanToPosition;
+            MoveUnitState.OnUnitMove -= PanToLastPosition;
             Unit.OnMoveStop -= EnableDrag;
+            SelectUnitCommandState.OnMoveCancel -= PanToPosition;
         }
 
         void Start()
@@ -95,14 +98,9 @@ namespace Assets.Code.Controllers
             Camera.main.transform.position = restrictedCameraPosition;
         }
 
-        private void Pan(Vector2 destination, float speed)
+        private void Pan(Vector2 destination, float speed, bool reenableDrag)
         {
-            bool dragAlreadyDisabled = false;
-
-            if (!dragEnabled)
-                dragAlreadyDisabled = true;
-            else
-                DisableDrag();
+            DisableDrag();
 
             if (OnPanStart != null)
                 OnPanStart();
@@ -111,7 +109,7 @@ namespace Assets.Code.Controllers
 
             panJob.JobComplete += (wasKilled) =>
             {
-                if (!dragAlreadyDisabled)
+                if (reenableDrag)
                     EnableDrag();
 
                 if (OnPanStop != null)
@@ -144,7 +142,7 @@ namespace Assets.Code.Controllers
                 int y = (int)gameObject.transform.position.y;
 
                 if (x != (int)Camera.main.transform.position.x || y != (int)Camera.main.transform.position.y)
-                    Pan(new Vector2(x, y), PanSpeed);
+                    Pan(new Vector2(x, y), PanSpeed, true);
                 else
                 {
                     if (OnPanStop != null)
@@ -159,13 +157,30 @@ namespace Assets.Code.Controllers
             int y = (int)position.y;
 
             if (x != (int)Camera.main.transform.position.x || y != (int)Camera.main.transform.position.y)
-                Pan(new Vector2(x, y), PanSpeed);
+                Pan(new Vector2(x, y), PanSpeed, true);
             else
             {
-                DisableDrag();
-
                 if (OnPanStop != null)
                     OnPanStop();
+            }
+        }
+
+        private void PanToLastPosition(List<Vector2> positions)
+        {
+            if (positions != null)
+            {
+                Vector2 position = positions[positions.Count - 1];
+
+                int x = (int)position.x;
+                int y = (int)position.y;
+
+                if (x != (int)Camera.main.transform.position.x || y != (int)Camera.main.transform.position.y)
+                    Pan(new Vector2(x, y), PanSpeed, false);
+                else
+                {
+                    if (OnPanStop != null)
+                        OnPanStop();
+                }
             }
         }
 

@@ -32,22 +32,24 @@ namespace Assets.Code.Entities.Pathfinding
 
         void OnEnable()
         {
-            SelectUnitState.OnUnitSelect += ShowArea;
+            SelectUnitState.OnUnitSelect += ShowMovementArea;
             MoveUnitState.OnStateEntry += EnablePathfinding;
             MoveUnitState.OnStateExit += DisablePathfinding;
             MoveUnitState.OnUnitDeselect += HideArea;
             MouseCursor.OnMouseOverNode += ShowPath;
             SelectUnitCommandState.OnStateEntry += HideArea;
+            Unit.OnMoveCancel += ShowMovementArea;
         }
 
         void OnDestroy()
         {
-            SelectUnitState.OnUnitSelect -= ShowArea;
+            SelectUnitState.OnUnitSelect -= ShowMovementArea;
             MoveUnitState.OnStateEntry -= EnablePathfinding;
             MoveUnitState.OnStateExit -= DisablePathfinding;
             MoveUnitState.OnUnitDeselect -= HideArea;
             MouseCursor.OnMouseOverNode -= ShowPath;
             SelectUnitCommandState.OnStateEntry -= HideArea;
+            Unit.OnMoveCancel -= ShowMovementArea;
         }
 
         private void EnablePathfinding()
@@ -60,42 +62,57 @@ namespace Assets.Code.Entities.Pathfinding
             pathfindingEnabled = false;
         }
 
-        private void ShowArea(GameObject startObject)
+        private void ShowMovementArea(GameObject startObject)
         {
             if (startObject != null)
             {
                 Unit unit = startObject.GetComponent<Unit>();
                 if (unit != null)
+                    ShowArea(unit, unit.Movement.ModifiedValue);
+            }
+        }
+        
+        private void ShowAttackArea(GameObject startObject)
+        {
+            if (startObject != null)
+            {
+                Unit unit = startObject.GetComponent<Unit>();
+                if (unit != null)
+                    ShowArea(unit, unit.AttackRange.ModifiedValue);
+            }
+        }
+
+        private void ShowArea(Unit unit, int distance)
+        {
+            if (unit != null)
+            {
+                startNode = GetNodeByPosition(unit.transform.position);
+
+                HashSet<Node> tempArea = BreadthFirstSearch(startNode, distance);
+                Node[] neighbors;
+
+                if (unit.IsActive)
                 {
-                    startNode = GetNodeByPosition(unit.transform.position);
-                    int distance = unit.Movement.ModifiedValue;
-
-                    HashSet<Node> tempArea = BreadthFirstSearch(startNode, distance);
-                    Node[] neighbors;
-
-                    if (unit.IsActive)
+                    foreach (Node node in tempArea)
                     {
-                        foreach (Node node in tempArea)
+                        node.SetColor(ColorTraversable);
+                        neighbors = Neighbors(node);
+                        foreach (Node neighbor in neighbors)
                         {
-                            node.SetColor(ColorTraversable);
-                            neighbors = Neighbors(node);
-                            foreach (Node neighbor in neighbors)
-                            {
-                                if (neighbor != null && !tempArea.Contains(neighbor))
-                                    neighbor.SetColor(ColorOutOfReach);
-                            }
+                            if (neighbor != null && !tempArea.Contains(neighbor))
+                                neighbor.SetColor(ColorOutOfReach);
                         }
-
-                        area = tempArea;
                     }
-                    else
-                    {
-                        foreach (Node node in tempArea)
-                            node.SetColor(ColorOutOfReach);
 
-                        startNode = null;
-                        area = null;
-                    }
+                    area = tempArea;
+                }
+                else
+                {
+                    foreach (Node node in tempArea)
+                        node.SetColor(ColorOutOfReach);
+
+                    startNode = null;
+                    area = null;
                 }
             }
         }
