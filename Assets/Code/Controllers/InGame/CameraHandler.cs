@@ -36,7 +36,7 @@ namespace Assets.Code.Controllers.InGame
             SelectUnitState.OnStateEntry += EnableDrag;
             SelectUnitState.OnUnitSelect += PanToGameObject;
             Pathfinder.OnPathGenerateComplete += SetNextPanLocation;
-            MoveUnitState.OnUnitMove += PanToNextLocation;
+            Unit.OnMoveStart += PanToNextLocation;
             Unit.OnMoveStop += EnableDrag;
             Unit.OnMoveCancel += PanToGameObject;
         }
@@ -47,7 +47,7 @@ namespace Assets.Code.Controllers.InGame
             SelectUnitState.OnStateEntry -= EnableDrag;
             SelectUnitState.OnUnitSelect -= PanToGameObject;
             Pathfinder.OnPathGenerateComplete -= SetNextPanLocation;
-            MoveUnitState.OnUnitMove -= PanToNextLocation;
+            Unit.OnMoveStart -= PanToNextLocation;
             Unit.OnMoveStop -= EnableDrag;
             Unit.OnMoveCancel -= PanToGameObject;
         }
@@ -162,7 +162,7 @@ namespace Assets.Code.Controllers.InGame
             int y = (int)position.y;
 
             if (x != (int)Camera.main.transform.position.x || y != (int)Camera.main.transform.position.y)
-                Pan(new Vector2(x, y), PanSpeed, true);
+                Pan(new Vector2(x, y), PanSpeed, false);
             else
             {
                 if (OnPanStop != null)

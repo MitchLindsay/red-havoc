@@ -65,9 +65,9 @@ namespace Assets.Code.Entities.Tiles
 
         private GameObject GetPrefab()
         {
-            if (tilePrefabs != null)
+            if (tilePrefabs != null && tilePrefabs.Length > 0)
             {
-                int random = Random.Range(0, 3);
+                int random = Random.Range(0, tilePrefabs.Length);
                 return tilePrefabs[random];
             }
 
