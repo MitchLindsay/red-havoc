@@ -1,4 +1,5 @@
-﻿using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.StateMachine.States;
+using Assets.Code.Entities.Pathfinding;
 using Assets.Code.Entities.Tiles;
 using Assets.Code.Entities.Units;
 using Assets.Code.Libraries;
@@ -6,16 +7,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Code.Controllers
+namespace Assets.Code.Controllers.InGame
 {
-    public class InGameCamera : MonoBehaviour
-    {   
-        public delegate void CameraDragHandler();
+    public class CameraHandler : MonoBehaviour
+    {
         public delegate void CameraPanHandler();
-        public static event CameraDragHandler OnCameraDragStart;
-        public static event CameraDragHandler OnCameraDragStop;
         public static event CameraPanHandler OnPanStart;
         public static event CameraPanHandler OnPanStop;
+
+        public delegate void CameraDragHandler();
+        public static event CameraDragHandler OnCameraDragStart;
+        public static event CameraDragHandler OnCameraDragStop;
 
         public float PanSpeed = 0.4f;
         public float DragSpeed = 0.4f;
@@ -26,15 +28,17 @@ namespace Assets.Code.Controllers
 
         private Rect movementBounds = new Rect();
         private Vector3 restrictedCameraPosition = Vector3.zero;
+        private Vector2 nextPanLocation = Vector2.zero;
 
         void OnEnable()
         {
             TileMapFactory.OnGenerateComplete += SetMovementBounds;
             SelectUnitState.OnStateEntry += EnableDrag;
             SelectUnitState.OnUnitSelect += PanToGameObject;
-            MoveUnitState.OnUnitMove += PanToLastPosition;
+            Pathfinder.OnPathGenerateComplete += SetNextPanLocation;
+            MoveUnitState.OnUnitMove += PanToNextLocation;
             Unit.OnMoveStop += EnableDrag;
-            SelectUnitCommandState.OnMoveCancel += PanToPosition;
+            Unit.OnMoveCancel += PanToGameObject;
         }
 
         void OnDestroy()
@@ -42,9 +46,10 @@ namespace Assets.Code.Controllers
             TileMapFactory.OnGenerateComplete -= SetMovementBounds;
             SelectUnitState.OnStateEntry -= EnableDrag;
             SelectUnitState.OnUnitSelect -= PanToGameObject;
-            MoveUnitState.OnUnitMove -= PanToLastPosition;
+            Pathfinder.OnPathGenerateComplete -= SetNextPanLocation;
+            MoveUnitState.OnUnitMove -= PanToNextLocation;
             Unit.OnMoveStop -= EnableDrag;
-            SelectUnitCommandState.OnMoveCancel -= PanToPosition;
+            Unit.OnMoveCancel -= PanToGameObject;
         }
 
         void Start()
@@ -165,23 +170,15 @@ namespace Assets.Code.Controllers
             }
         }
 
-        private void PanToLastPosition(List<Vector2> positions)
+        private void SetNextPanLocation(List<Vector2> positions)
         {
-            if (positions != null)
-            {
-                Vector2 position = positions[positions.Count - 1];
+            if (positions != null && positions.Count > 0)
+                nextPanLocation = positions[positions.Count - 1];
+        }
 
-                int x = (int)position.x;
-                int y = (int)position.y;
-
-                if (x != (int)Camera.main.transform.position.x || y != (int)Camera.main.transform.position.y)
-                    Pan(new Vector2(x, y), PanSpeed, false);
-                else
-                {
-                    if (OnPanStop != null)
-                        OnPanStop();
-                }
-            }
+        private void PanToNextLocation()
+        {
+            PanToPosition(nextPanLocation);
         }
 
         private void EnableDrag()

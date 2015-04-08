@@ -1,7 +1,6 @@
-﻿using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.StateMachine.States;
 using Assets.Code.Entities.Pathfinding;
 using Assets.Code.Entities.Units;
-using Assets.Code.Libraries;
 using System.Collections.Generic;
 using UnityEngine;
 using Vectrosity;
@@ -14,16 +13,16 @@ namespace Assets.Code.GUI.World
 
         void OnEnable()
         {
-            SelectUnitState.OnStateEntry += Hide;
             Pathfinder.OnPathGenerateComplete += Generate;
-            SelectUnitCommandState.OnStateEntry += Hide;
+            Unit.OnMoveStart += Hide;
+            MoveUnitState.OnUnitDeselect += Hide;
         }
 
         void OnDestroy()
         {
-            SelectUnitState.OnStateEntry -= Hide;
             Pathfinder.OnPathGenerateComplete -= Generate;
-            SelectUnitCommandState.OnStateEntry -= Hide;
+            Unit.OnMoveStart -= Hide;
+            MoveUnitState.OnUnitDeselect -= Hide;
         }
 
         void Start()

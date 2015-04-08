@@ -1,7 +1,6 @@
-﻿using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.StateMachine.States;
 using Assets.Code.Entities.Units;
 using Assets.Code.Generic.GUI.Abstract;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 

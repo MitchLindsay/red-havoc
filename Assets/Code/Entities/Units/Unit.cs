@@ -1,9 +1,9 @@
-﻿using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.StateMachine.States;
 using Assets.Code.Entities.Abstract;
+using Assets.Code.Entities.Pathfinding;
 using Assets.Code.Entities.Stats;
 using Assets.Code.Entities.Tiles;
 using Assets.Code.Libraries;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +20,8 @@ namespace Assets.Code.Entities.Units
 
         public Faction Faction { get; private set; }
         public List<UnitCommand> ActiveCommands { get; private set; }
+        public Vector2 lastPosition { get; private set; }
+        public List<Vector2> NextPath { get; private set; }
 
         [HideInInspector]
         public bool IsActive = false;
@@ -47,16 +49,18 @@ namespace Assets.Code.Entities.Units
         void OnEnable()
         {
             SelectUnitState.OnUnitSelect += SetToSelected;
-            SelectUnitState.OnUnitDeselect += SetToDeselected;
-            MoveUnitState.OnUnitMove += Move;
+            MoveUnitState.OnUnitDeselect += SetToDeselected;
+            Pathfinder.OnPathGenerateComplete += SetPath;
+            MoveUnitState.OnUnitMove += StartMove;
             SelectUnitCommandState.OnMoveCancel += CancelMove;
         }
 
         void OnDestroy()
         {
             SelectUnitState.OnUnitSelect -= SetToSelected;
-            SelectUnitState.OnUnitDeselect -= SetToDeselected;
-            MoveUnitState.OnUnitMove -= Move;
+            MoveUnitState.OnUnitDeselect -= SetToDeselected;
+            Pathfinder.OnPathGenerateComplete -= SetPath;
+            MoveUnitState.OnUnitMove -= StartMove;
             SelectUnitCommandState.OnMoveCancel -= CancelMove;
         }
 
@@ -64,6 +68,7 @@ namespace Assets.Code.Entities.Units
         {
             InitializeStats();
             RemoveAllActiveCommands();
+            lastPosition = gameObject.transform.position;
         }
 
         void Update()
@@ -140,17 +145,31 @@ namespace Assets.Code.Entities.Units
             return false;
         }
 
+        private void SetPath(List<Vector2> path)
+        {
+            if (IsSelected && IsActive)
+                NextPath = path;
+        }
+
+        private void StartMove()
+        {
+            Move(NextPath);
+            NextPath = null;
+        }
+
         public void Move(List<Vector2> path)
         {
-            if (path != null && IsSelected && IsActive)
+            if (path != null && path.Count > 0 && IsSelected && IsActive)
             {
                 if (OnMoveStart != null)
                     OnMoveStart();
 
-                Job moveJob = Job.Make(MoveCoroutine(path, MoveSpeed), true);
+                Job moveJob = Job.Make(MoveCoroutine(NextPath, MoveSpeed), true);
 
                 moveJob.JobComplete += (wasKilled) =>
                 {
+                    lastPosition = path[0] - new Vector2(0.5f, 0.5f);
+
                     if (OnMoveStop != null)
                         OnMoveStop();
                 };
@@ -180,11 +199,11 @@ namespace Assets.Code.Entities.Units
             yield return null;
         }
 
-        private void CancelMove(Vector2 start)
+        private void CancelMove()
         {
-            if (start != null && IsSelected && IsActive)
+            if (IsSelected && IsActive)
             {
-                this.transform.position = start - new Vector2(0.5f, 0.5f);
+                this.transform.position = lastPosition;
 
                 if (OnMoveCancel != null)
                     OnMoveCancel(this.gameObject);

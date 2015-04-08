@@ -1,4 +1,4 @@
-﻿using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.StateMachine.States;
 using Assets.Code.Entities.Abstract;
 using Assets.Code.Entities.Units;
 using Assets.Code.GUI.World;
@@ -33,22 +33,18 @@ namespace Assets.Code.Entities.Pathfinding
         void OnEnable()
         {
             SelectUnitState.OnUnitSelect += ShowMovementArea;
-            MoveUnitState.OnStateEntry += EnablePathfinding;
-            MoveUnitState.OnStateExit += DisablePathfinding;
             MoveUnitState.OnUnitDeselect += HideArea;
             MouseCursor.OnMouseOverNode += ShowPath;
-            SelectUnitCommandState.OnStateEntry += HideArea;
+            Unit.OnMoveStart += HideArea;
             Unit.OnMoveCancel += ShowMovementArea;
         }
 
         void OnDestroy()
         {
             SelectUnitState.OnUnitSelect -= ShowMovementArea;
-            MoveUnitState.OnStateEntry -= EnablePathfinding;
-            MoveUnitState.OnStateExit -= DisablePathfinding;
             MoveUnitState.OnUnitDeselect -= HideArea;
             MouseCursor.OnMouseOverNode -= ShowPath;
-            SelectUnitCommandState.OnStateEntry -= HideArea;
+            Unit.OnMoveStart -= HideArea;
             Unit.OnMoveCancel -= ShowMovementArea;
         }
 
@@ -105,9 +101,12 @@ namespace Assets.Code.Entities.Pathfinding
                     }
 
                     area = tempArea;
+                    EnablePathfinding();
                 }
                 else
                 {
+                    DisablePathfinding();
+
                     foreach (Node node in tempArea)
                         node.SetColor(ColorOutOfReach);
 
@@ -119,6 +118,8 @@ namespace Assets.Code.Entities.Pathfinding
 
         private void HideArea()
         {
+            DisablePathfinding();
+
             foreach (Node node in Nodes)
                 node.SetColor(ColorNeutral);
         }

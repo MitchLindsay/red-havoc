@@ -1,5 +1,4 @@
-﻿using Assets.Code.Controllers.States;
-using Assets.Code.Entities.Abstract;
+﻿using Assets.Code.Entities.Abstract;
 using UnityEngine;
 
 namespace Assets.Code.Entities.Tiles

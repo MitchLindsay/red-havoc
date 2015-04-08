@@ -1,5 +1,5 @@
-﻿using Assets.Code.Controllers;
-using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.InGame;
+using Assets.Code.Controllers.StateMachine.States;
 using Assets.Code.Entities.Abstract;
 using Assets.Code.Entities.Pathfinding;
 using Assets.Code.Entities.Tiles;
@@ -33,18 +33,18 @@ namespace Assets.Code.GUI.World
 
         void OnEnable()
         {
-            ChangeTurnState.OnStateEntry += DisableCursor;
+            CameraHandler.OnPanStart += DisableCursor;
+            CameraHandler.OnPanStop += EnableCursor;
+            ChangeTurnsState.OnStateEntry += DisableCursor;
             SelectUnitState.OnStateEntry += EnableCursor;
-            InGameCamera.OnPanStart += DisableCursor;
-            InGameCamera.OnPanStop += EnableCursor;
         }
 
         void OnDestroy()
         {
-            ChangeTurnState.OnStateEntry -= DisableCursor;
+            CameraHandler.OnPanStart -= DisableCursor;
+            CameraHandler.OnPanStop -= EnableCursor;
+            ChangeTurnsState.OnStateEntry -= DisableCursor;
             SelectUnitState.OnStateEntry -= EnableCursor;
-            InGameCamera.OnPanStart -= DisableCursor;
-            InGameCamera.OnPanStop -= EnableCursor;
         }
 
         void Awake()
@@ -121,7 +121,7 @@ namespace Assets.Code.GUI.World
             if (OnMouseOverNode != null)
                 OnMouseOverNode(collidedGameObject);
 
-            if (OnMouseClickNode != null && Input.GetMouseButton(0))
+            if (OnMouseClickNode != null && Input.GetMouseButtonDown(0))
                 OnMouseClickNode(collidedGameObject);
         }
 
@@ -130,7 +130,7 @@ namespace Assets.Code.GUI.World
             if (OnMouseOverTile != null)
                 OnMouseOverTile(collidedGameObject);
 
-            if (OnMouseClickTile != null && Input.GetMouseButton(0))
+            if (OnMouseClickTile != null && Input.GetMouseButtonDown(0))
                 OnMouseClickTile(collidedGameObject);
         }
 
@@ -139,7 +139,7 @@ namespace Assets.Code.GUI.World
             if (OnMouseOverUnit != null)
                 OnMouseOverUnit(collidedGameObject);
 
-            if (OnMouseClickUnit != null && Input.GetMouseButton(0))
+            if (OnMouseClickUnit != null && Input.GetMouseButtonDown(0))
                 OnMouseClickUnit(collidedGameObject);
 
             if (collidedGameObject != null)

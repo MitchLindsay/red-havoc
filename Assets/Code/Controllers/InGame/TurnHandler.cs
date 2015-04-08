@@ -1,10 +1,10 @@
-﻿using Assets.Code.Controllers.States;
+﻿using Assets.Code.Controllers.StateMachine.States;
 using Assets.Code.Entities.Units;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Code.Controllers
+namespace Assets.Code.Controllers.InGame
 {
     public class TurnHandler : MonoBehaviour
     {
@@ -19,13 +19,13 @@ namespace Assets.Code.Controllers
         void OnEnable()
         {
             StartBattleState.OnStateEntry += InitializeTurnCount;
-            ChangeTurnState.OnStateEntry += NextActiveFaction;
+            ChangeTurnsState.OnStateEntry += NextActiveFaction;
         }
 
         void OnDestroy()
         {
-            StartBattleState.OnStateExit -= InitializeTurnCount;
-            ChangeTurnState.OnStateEntry -= NextActiveFaction;
+            StartBattleState.OnStateEntry -= InitializeTurnCount;
+            ChangeTurnsState.OnStateEntry -= NextActiveFaction;
         }
 
         void Awake()
