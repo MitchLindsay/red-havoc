@@ -18,32 +18,44 @@ namespace Assets.Code.GUI.Screen.Command
         public Text AttackCommandText;
         public Text WaitCommandText;
 
+        private Unit selectedUnit = null;
+
         void OnEnable()
         {
             StartBattleState.OnStateEntry += Hide;
+            SelectUnitState.OnUnitSelect += SetSelectedUnit;
+            SelectUnitCommandState.OnStateEntry += OnWindow;
+            SelectUnitCommandState.OnStateExit += Hide;
         }
 
         void OnDestroy()
         {
             StartBattleState.OnStateEntry -= Hide;
+            SelectUnitState.OnUnitSelect -= SetSelectedUnit;
+            SelectUnitCommandState.OnStateEntry -= OnWindow;
+            SelectUnitCommandState.OnStateExit -= Hide;
         }
 
-        public override void DisplayGUI(GameObject unitObj)
+        public override void DisplayGUI()
         {
-            Unit unit = unitObj.GetComponent<Unit>();
-
-            if (unit != null && unit.ActiveCommands.Count > 0)
+            if (selectedUnit != null && selectedUnit.IsActive)
             {
-                SetButtonAvailability(CaptureCommandButton, CaptureCommandText, unit, UnitCommandType.Capture);
-                SetButtonAvailability(AttackCommandButton, AttackCommandText, unit, UnitCommandType.Attack);
-                SetButtonAvailability(WaitCommandButton, WaitCommandText, unit, UnitCommandType.Wait);
+                SetButtonAvailability(CaptureCommandButton, CaptureCommandText, selectedUnit, UnitCommandType.Capture);
+                SetButtonAvailability(AttackCommandButton, AttackCommandText, selectedUnit, UnitCommandType.Attack);
+                SetButtonAvailability(WaitCommandButton, WaitCommandText, selectedUnit, UnitCommandType.Wait);
 
-                AddButtonListener(CaptureCommandButton, unit, UnitCommandType.Capture);
-                AddButtonListener(AttackCommandButton, unit, UnitCommandType.Attack);
-                AddButtonListener(WaitCommandButton, unit, UnitCommandType.Wait);
+                AddButtonListener(CaptureCommandButton, selectedUnit, UnitCommandType.Capture);
+                AddButtonListener(AttackCommandButton, selectedUnit, UnitCommandType.Attack);
+                AddButtonListener(WaitCommandButton, selectedUnit, UnitCommandType.Wait);
             }
             else
                 Hide();
+        }
+
+        private void SetSelectedUnit(GameObject unitObj)
+        {
+            if (unitObj != null)
+                selectedUnit = unitObj.GetComponent<Unit>();
         }
 
         private void SetButtonAvailability(Button button, Text buttonText, Unit unit, UnitCommandType commandType)

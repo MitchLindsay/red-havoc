@@ -15,12 +15,9 @@ namespace Assets.Code.Controllers.InGame
         void OnEnable()
         {
             CameraHandler.OnPanStart += DisableInput;
-            StartBattleState.OnStateEntry += DisableInput;
-            ChangeTurnsState.OnStateEntry += DisableInput;
-            SelectUnitState.OnStateEntry += DisableInput;
             MoveUnitState.OnStateEntry += EnableInput;
-            Unit.OnMoveStart += DisableInput;
             MoveUnitState.OnUnitDeselect += DisableInput;
+            Unit.OnMoveStart += DisableInput;
             SelectUnitCommandState.OnStateEntry += EnableInput;
             SelectUnitCommandState.OnMoveCancel += DisableInput;
         }
@@ -28,14 +25,12 @@ namespace Assets.Code.Controllers.InGame
         void OnDestroy()
         {
             CameraHandler.OnPanStart -= DisableInput;
-            StartBattleState.OnStateEntry -= DisableInput;
-            ChangeTurnsState.OnStateEntry -= DisableInput;
             SelectUnitState.OnStateEntry -= DisableInput;
             MoveUnitState.OnStateEntry -= EnableInput;
             Unit.OnMoveStart -= DisableInput;
             MoveUnitState.OnUnitDeselect -= DisableInput;
-            SelectUnitCommandState.OnStateEntry += EnableInput;
-            SelectUnitCommandState.OnMoveCancel += DisableInput;
+            SelectUnitCommandState.OnStateEntry -= EnableInput;
+            SelectUnitCommandState.OnMoveCancel -= DisableInput;
         }
 
         void Update()
@@ -49,11 +44,13 @@ namespace Assets.Code.Controllers.InGame
 
         private void EnableInput()
         {
+            Debug.Log("Input enabled");
             inputEnabled = true;
         }
 
         private void DisableInput()
         {
+            Debug.Log("Input disabled");
             inputEnabled = false;
         }
     }

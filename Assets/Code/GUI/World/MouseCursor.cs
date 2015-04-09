@@ -30,6 +30,7 @@ namespace Assets.Code.GUI.World
 
         private VectorLine cursorHighlight = null;
         private Color cursorHighlightColor = Color.white;
+        private Sprite defaultSprite = null;
 
         void OnEnable()
         {
@@ -50,6 +51,7 @@ namespace Assets.Code.GUI.World
         void Awake()
         {
             InitializeCursorHighlight();
+            defaultSprite = this.gameObject.GetComponent<SpriteRenderer>().sprite;
         }
 
         void Update()

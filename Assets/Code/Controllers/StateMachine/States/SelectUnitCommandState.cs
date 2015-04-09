@@ -13,6 +13,8 @@ namespace Assets.Code.Controllers.StateMachine.States
         public delegate void CancelMoveHandler();
         public static event CancelMoveHandler OnMoveCancel;
 
+        private bool moveCancelled = false;
+
         public SelectUnitCommandState(StateID id) : base(id) { }
 
         public override void OnEntry()
@@ -22,16 +24,21 @@ namespace Assets.Code.Controllers.StateMachine.States
             if (OnStateEntry != null)
                 OnStateEntry();
 
+            moveCancelled = false;
             InputHandler.OnBackButtonPress += CancelMove;
-            CameraHandler.OnPanStop += CancelMoveComplete;
+            Unit.OnMoveCancel += CancelMoveComplete;
         }
 
-        public override void Update(float deltaTime) { }
+        public override void Update(float deltaTime)
+        {
+            if (moveCancelled)
+                stateMachine.Fire(StateTrigger.UnitMoveCancelled);
+        }
 
         public override void OnExit()
         {
             InputHandler.OnBackButtonPress -= CancelMove;
-            CameraHandler.OnPanStop -= CancelMoveComplete;
+            Unit.OnMoveCancel -= CancelMoveComplete;
 
             if (OnStateExit != null)
                 OnStateExit();
@@ -45,9 +52,9 @@ namespace Assets.Code.Controllers.StateMachine.States
                 OnMoveCancel();
         }
 
-        private void CancelMoveComplete()
+        private void CancelMoveComplete(GameObject unitObj)
         {
-            stateMachine.Fire(StateTrigger.UnitMoveCancelled);
+            moveCancelled = true;
         }
     }
 }
