@@ -51,10 +51,9 @@ namespace Assets.Code.States.States
                 selectingUnit.AddEvent(panCameraToGameObjectEvent, CoroutineID.Execute);
 
                 // 6. Enable Input
+                // 7. Enable Camera Drag
                 EnableInputEvent enableInputEvent = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
                 selectingUnit.AddEvent(enableInputEvent, CoroutineID.Execute);
-
-                // 7. Enable Camera Drag
             }
         }
 

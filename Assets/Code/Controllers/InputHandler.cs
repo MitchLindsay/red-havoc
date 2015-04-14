@@ -6,6 +6,13 @@ namespace Assets.Code.Controllers
     {
         public bool InputEnabled { get; private set; }
         public Actors.Cursor MouseCursor;
+        public CameraHandler CameraHandler;
+
+        void Awake()
+        {
+            if (CameraHandler == null)
+                CameraHandler = CameraHandler.Instance;
+        }
 
         public void EnableInput()
         {
@@ -14,6 +21,9 @@ namespace Assets.Code.Controllers
 
             if (MouseCursor != null)
                 MouseCursor.CursorEnabled = true;
+
+            if (CameraHandler != null)
+                CameraHandler.DragEnabled = true;
         }
 
         public void DisableInput()
@@ -23,6 +33,9 @@ namespace Assets.Code.Controllers
 
             if (MouseCursor != null)
                 MouseCursor.CursorEnabled = false;
+
+            if (CameraHandler != null)
+                CameraHandler.DragEnabled = false;
         }
     }
 }

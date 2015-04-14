@@ -44,7 +44,7 @@ namespace Assets.Code.Events.Events
             float timeElapsed = 0.0f;
             while (timeElapsed < panDuration)
             {
-                timeElapsed += Time.deltaTime * (Time.timeScale / cameraHandler.moveSpeed);
+                timeElapsed += Time.deltaTime * (Time.timeScale / cameraHandler.MoveSpeed);
                 cameraHandler.SetCameraPosition(Vector2.Lerp(origin, destination, timeElapsed));
                 yield return null;
             }
@@ -60,7 +60,7 @@ namespace Assets.Code.Events.Events
             float timeElapsed = 0.0f;
             while (timeElapsed < 1.0f)
             {
-                timeElapsed += Time.deltaTime * (Time.timeScale / cameraHandler.moveSpeed);
+                timeElapsed += Time.deltaTime * (Time.timeScale / cameraHandler.MoveSpeed);
                 cameraHandler.SetCameraPosition(Vector2.Lerp(destination, origin, timeElapsed));
                 yield return null;
             }

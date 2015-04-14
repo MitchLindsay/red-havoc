@@ -6,7 +6,9 @@ namespace Assets.Code.Controllers
 {
     public class CameraHandler : Singleton<CameraHandler>
     {
-        public float moveSpeed = 0.4f;
+        public bool DragEnabled { get; set; }
+        public float MoveSpeed = 0.4f;
+        public float DragSpeed = 0.4f;
         public Vector3 CameraPositionWithinBounds { get; private set; }
         private Rect cameraBounds = new Rect();
 
@@ -23,6 +25,17 @@ namespace Assets.Code.Controllers
         void Start()
         {
             SetCameraPosition(Camera.main.transform.position);
+        }
+
+        void Update()
+        {
+            if (DragEnabled)
+            {
+                if (Input.GetMouseButton(1))
+                    DragCamera();
+            }
+
+            RestrictCameraPositionToBounds();
         }
 
         public void SetCameraPosition(Vector2 newPosition)
@@ -49,6 +62,15 @@ namespace Assets.Code.Controllers
 
             CameraPositionWithinBounds = new Vector3(newPosition.x, newPosition.y, -10.0f);
             Camera.main.transform.position = CameraPositionWithinBounds;
+        }
+
+        private void DragCamera()
+        {
+            float dragAmountX = Input.GetAxis("Mouse X") * DragSpeed;
+            float dragAmountY = Input.GetAxis("Mouse Y") * DragSpeed;
+            Vector3 dragAmount = new Vector3(dragAmountX, dragAmountY, 0.0f);
+
+            CameraPositionWithinBounds -= dragAmount;
         }
     }
 }
