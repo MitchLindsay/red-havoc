@@ -7,8 +7,14 @@ namespace Assets.Code.Events
     {
         Null,
         Wait,
+        ShowSplashScreen,
+        ShowTurnIndicator,
+        ChangeActiveFaction,
         PanCameraToPosition,
         PanCameraToGameObject,
+        PanCameraToNearestActiveUnit,
+        EnableInput,
+        DisableInput,
     }
 
     public enum CoroutineID
