@@ -13,6 +13,7 @@ namespace Assets.Code.States
         ChangeTurns,
         SelectUnit,
         MoveUnit,
+        SelectBackMenuOption,
         SelectUnitAction,
         ConfirmUnitAction,
         ExecuteUnitAction,

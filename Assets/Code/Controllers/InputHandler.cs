@@ -1,12 +1,17 @@
 ﻿using Assets.Code.Generic;
+using UnityEngine;
 
 namespace Assets.Code.Controllers
 {
     public class InputHandler : Singleton<InputHandler>
     {
+        public delegate void BackButtonHandler();
+        public static event BackButtonHandler OnBackButtonPress;
+
         public bool InputEnabled { get; private set; }
         public Actors.Cursor MouseCursor;
         public CameraHandler CameraHandler;
+        public KeyCode BackButton = KeyCode.Escape;
 
         void Awake()
         {
@@ -14,10 +19,23 @@ namespace Assets.Code.Controllers
                 CameraHandler = CameraHandler.Instance;
         }
 
+        void Update()
+        {
+            CheckForInput();
+        }
+
+        public void CheckForInput()
+        {
+            if (InputEnabled)
+            {
+                if (Input.GetKey(BackButton) && OnBackButtonPress != null)
+                    OnBackButtonPress();
+            }
+        }
+
         public void EnableInput()
         {
             InputEnabled = true;
-            UnityEngine.Cursor.visible = true;
 
             if (MouseCursor != null)
                 MouseCursor.CursorEnabled = true;
@@ -29,7 +47,6 @@ namespace Assets.Code.Controllers
         public void DisableInput()
         {
             InputEnabled = false;
-            UnityEngine.Cursor.visible = false;
 
             if (MouseCursor != null)
                 MouseCursor.CursorEnabled = false;

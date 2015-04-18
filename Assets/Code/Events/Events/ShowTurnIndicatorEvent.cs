@@ -1,6 +1,6 @@
 ﻿using Assets.Code.Actors;
 using Assets.Code.Controllers;
-using Assets.Code.UI;
+using Assets.Code.UI.Static;
 using System.Collections;
 using UnityEngine;
 
@@ -20,21 +20,21 @@ namespace Assets.Code.Events.Events
 
         public override IEnumerator Execute()
         {
-            if (activeFaction == null)
-                this.activeFaction = TurnHandler.Instance.ActiveFaction;
-
+            this.activeFaction = TurnHandler.Instance.ActiveFaction;
             Debug.Log("Displaying Turn Indicator for " + showDuration + " seconds.");
 
             if (activeFaction != null)
             {
-                turnIndicator.SetPanelColor(
+                Debug.Log("Active Faction: " + activeFaction.Name);
+
+                turnIndicator.SetColor(turnIndicator.Panel,
                     new Color(
                         activeFaction.UnitColor.r,
                         activeFaction.UnitColor.g,
                         activeFaction.UnitColor.b,
                         0.75f));
 
-                turnIndicator.SetText(activeFaction.Name.ToUpper() + " TURN");
+                turnIndicator.SetText(turnIndicator.Text, activeFaction.Name.ToUpper() + " TURN");
                 turnIndicator.Show();
             }
             else

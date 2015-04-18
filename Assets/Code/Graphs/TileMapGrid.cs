@@ -3,7 +3,7 @@ using Assets.Code.Generic;
 using UnityEngine;
 using Vectrosity;
 
-namespace Assets.Code.UI
+namespace Assets.Code.Graphs
 {
     public class TileMapGrid : MonoBehaviour
     {

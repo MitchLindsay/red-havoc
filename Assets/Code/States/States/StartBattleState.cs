@@ -1,7 +1,7 @@
 ﻿using Assets.Code.Controllers;
 using Assets.Code.Events;
 using Assets.Code.Events.Events;
-using Assets.Code.UI;
+using Assets.Code.UI.Static;
 using UnityEngine;
 
 namespace Assets.Code.States.States

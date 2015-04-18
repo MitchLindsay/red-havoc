@@ -1,4 +1,4 @@
-﻿using Assets.Code.UI;
+﻿using Assets.Code.UI.Static;
 using System.Collections;
 using UnityEngine;
 

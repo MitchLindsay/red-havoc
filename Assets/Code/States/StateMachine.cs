@@ -38,6 +38,7 @@ namespace Assets.Code.States
             StartBattleState startingBattle = new StartBattleState(StateID.StartBattle);
             ChangeTurnState changingTurns = new ChangeTurnState(StateID.ChangeTurns);
             SelectUnitState selectingUnit = new SelectUnitState(StateID.SelectUnit);
+            SelectBackMenuOptionState selectingBackMenuOption = new SelectBackMenuOptionState(StateID.SelectBackMenuOption);
             MoveUnitState movingUnit = new MoveUnitState(StateID.MoveUnit);
             SelectUnitActionState selectingUnitAction = new SelectUnitActionState(StateID.SelectUnitAction);
             ConfirmUnitActionState confirmingUnitAction = new ConfirmUnitActionState(StateID.ConfirmUnitAction);
@@ -47,6 +48,7 @@ namespace Assets.Code.States
             AddState(startingBattle);
             AddState(changingTurns);
             AddState(selectingUnit);
+            AddState(selectingBackMenuOption);
             AddState(movingUnit);
             AddState(selectingUnitAction);
             AddState(confirmingUnitAction);

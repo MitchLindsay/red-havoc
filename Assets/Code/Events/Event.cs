@@ -15,6 +15,8 @@ namespace Assets.Code.Events
         PanCameraToNearestActiveUnit,
         EnableInput,
         DisableInput,
+        ShowWindow,
+        HideWindow,
     }
 
     public enum CoroutineID

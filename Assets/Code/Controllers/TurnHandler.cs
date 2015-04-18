@@ -17,6 +17,7 @@ namespace Assets.Code.Controllers
             CurrentFactionIndex = 0;
 
             AddExistingFactions();
+            DeactivateAllFactions();
         }
 
         private void AddExistingFactions()
@@ -69,15 +70,16 @@ namespace Assets.Code.Controllers
 
             Debug.Log("Turn " + TurnCount);
 
+            DeactivateAllFactions();
+
             if (CurrentFactionIndex >= Factions.GetLength(0))
                 CurrentFactionIndex = 0;
 
             if (Factions.GetLength(0) > 0)
             {
+                Debug.Log(Factions[CurrentFactionIndex] + "'s Turn");
                 ActivateFaction(Factions[CurrentFactionIndex]);
                 CurrentFactionIndex++;
-
-                Debug.Log(Factions[CurrentFactionIndex] + "'s Turn");
             }
         }
     }
