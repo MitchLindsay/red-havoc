@@ -35,5 +35,10 @@ namespace Assets.Code.Actors
             if (tile != null)
                 MoveCost = tile.MovementCost;
         }
+
+        public void SetColor(Color color)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = color;
+        }
     }
 }

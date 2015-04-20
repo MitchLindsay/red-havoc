@@ -7,6 +7,17 @@ namespace Assets.Code.Actors
 {
     public class Cursor : Actor
     {
+        public delegate void UnitHandler(GameObject gameObject);
+        public delegate void NodeHandler(GameObject gameObject);
+        public delegate void TileHandler(GameObject gameObject);
+
+        public static event UnitHandler OnMouseOverUnit;
+        public static event UnitHandler OnMouseClickUnit;
+        public static event NodeHandler OnMouseOverNode;
+        public static event NodeHandler OnMouseClickNode;
+        public static event TileHandler OnMouseOverTile;
+        public static event TileHandler OnMouseClickTile;
+
         public bool CursorEnabled { get; set; }
         public float LineWidth = 4.0f;
         public Color IdleLineColor = Color.white;
@@ -78,24 +89,53 @@ namespace Assets.Code.Actors
 
         public override void HandleCollision<T>(GameObject collidedObject)
         {
+            if (typeof(T) == typeof(Unit))
+                HandleUnitCollision(collidedObject);
+
+            if (typeof(T) == typeof(PathfindingNode))
+                HandleNodeCollisions(collidedObject);
+
+            if (typeof(T) == typeof(Tile))
+                HandleTileCollision(collidedObject);
+        }
+
+        private void HandleUnitCollision(GameObject collidedObject)
+        {
+            if (OnMouseOverUnit != null)
+                OnMouseOverUnit(collidedObject);
+
+            if (OnMouseClickUnit != null && Input.GetMouseButtonDown(0))
+                OnMouseClickUnit(collidedObject);
+
             if (collidedObject != null)
             {
-                /*
-                // Handle Tile Collisions
-                if (typeof(T) == typeof(Tile))
-                */
+                Unit unit = collidedObject.GetComponent<Unit>();
 
-                // Handle Unit Collisions
-                if (typeof(T) == typeof(Unit))
+                if (unit != null)
                     lineColor = HoverLineColor;
                 else
                     lineColor = IdleLineColor;
-                    
-                /*
-                // Handle Pathfinding Collisions
-                if (typeof(T) == typeof(PathfindingNode))
-                */
             }
+            else
+                lineColor = IdleLineColor;
+        }
+
+        private void HandleNodeCollisions(GameObject collidedObject)
+        {
+            if (OnMouseOverNode != null)
+                OnMouseOverNode(collidedObject);
+
+            if (OnMouseClickNode != null && Input.GetMouseButtonDown(0))
+                OnMouseClickNode(collidedObject);
+        }
+
+        private void HandleTileCollision(GameObject collidedObject)
+        {
+            if (OnMouseOverTile != null)
+                OnMouseOverTile(collidedObject);
+
+            if (OnMouseClickTile != null && Input.GetMouseButtonDown(0))
+                OnMouseClickTile(collidedObject);
         }
 
         private void InitializeLine()

@@ -23,10 +23,7 @@ namespace Assets.Code.UI.Static
 
             Transform parentTransform = gameObject.transform;
             foreach (Transform childTransform in parentTransform)
-            {
                 elements.Add(childTransform.gameObject);
-                Debug.Log("Added " + childTransform.gameObject.name);
-            }
         }
 
         public void Show()
@@ -34,13 +31,8 @@ namespace Assets.Code.UI.Static
             if (elements != null && elements.Count > 0)
             {
                 foreach (GameObject element in elements)
-                {
                     element.SetActive(true);
-                    Debug.Log("Showing " + element);
-                }
             }
-            else
-                Debug.Log("No window children found!");
         }
 
         public void Hide()

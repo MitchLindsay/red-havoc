@@ -111,8 +111,11 @@ namespace Assets.Code.Actors
         {
             IsActive = false;
 
-            foreach (Unit unit in Units)
-                DeactivateUnit(unit);
+            if (Units != null)
+            {
+                foreach (Unit unit in Units)
+                    DeactivateUnit(unit);
+            }
         }
     }
 }
