@@ -10,6 +10,7 @@ namespace Assets.Code.Events
         ShowSplashScreen,
         ShowTurnIndicator,
         ShowUnitWindow,
+        HideUnitWindow,
         ChangeActiveFaction,
         PanCameraToPosition,
         PanCameraToGameObject,
@@ -21,6 +22,12 @@ namespace Assets.Code.Events
         HideWindow,
         ShowMovementArea,
         HideMovementArea,
+        ShowTurnInfo,
+        HideTurnInfo,
+        ShowFactionInfo,
+        HideFactionInfo,
+        ShowCursorInfo,
+        HideCursorInfo,
     }
 
     public enum CoroutineID

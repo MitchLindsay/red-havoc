@@ -34,12 +34,23 @@ namespace Assets.Code.States.States
             if (backMenuObject != null)
                 backMenu = backMenuObject.GetComponent<BackMenu>();
 
-
             StateTransition cancellingBackMenu = GetTransitionByID(TransitionID.Previous);
             if (cancellingBackMenu != null)
             {
                 HideWindowEvent hideWindow = new HideWindowEvent(EventID.HideWindow, this, new EventArgs<Window>(backMenu));
                 cancellingBackMenu.AddEvent(hideWindow, CoroutineID.Execute);
+
+                CursorInfo cursorInfo = GameObject.Find("Cursor Info").GetComponent<CursorInfo>();
+                ShowWindowEvent showCursorInfoEvent = new ShowWindowEvent(EventID.ShowCursorInfo, this, new EventArgs<Window>(cursorInfo));
+                cancellingBackMenu.AddEvent(showCursorInfoEvent, CoroutineID.Execute);
+
+                TurnInfo turnInfo = GameObject.Find("Turn Info").GetComponent<TurnInfo>();
+                ShowWindowEvent showTurnInfoEvent = new ShowWindowEvent(EventID.ShowTurnInfo, this, new EventArgs<Window>(turnInfo));
+                cancellingBackMenu.AddEvent(showTurnInfoEvent, CoroutineID.Execute);
+
+                FactionInfo factionInfo = GameObject.Find("Faction Info").GetComponent<FactionInfo>();
+                ShowWindowEvent showFactionInfoEvent = new ShowWindowEvent(EventID.ShowFactionInfo, this, new EventArgs<Window>(factionInfo));
+                cancellingBackMenu.AddEvent(showFactionInfoEvent, CoroutineID.Execute);
 
                 EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
                 cancellingBackMenu.AddEvent(enableInput, CoroutineID.Execute);
@@ -60,26 +71,28 @@ namespace Assets.Code.States.States
         {
             base.OnEntry();
 
-            BackMenu.OnEndTurnClick += ProceedToNextTurn;
-            BackMenu.OnCancelClick += ProceedToPreviousTurn;
+            BackMenu.OnEndTurnClick += ProceedToNextState;
+            BackMenu.OnCancelClick += ProceedToPreviousState;
+            InputHandler.OnBackButtonPress += ProceedToPreviousState;
         }
 
         public override void Update(float deltaTime) { }
 
         public override void OnExit()
         {
-            BackMenu.OnEndTurnClick -= ProceedToNextTurn;
-            BackMenu.OnCancelClick -= ProceedToPreviousTurn;
+            BackMenu.OnEndTurnClick -= ProceedToNextState;
+            BackMenu.OnCancelClick -= ProceedToPreviousState;
+            InputHandler.OnBackButtonPress -= ProceedToPreviousState;
 
             base.OnExit();
         }
 
-        private void ProceedToNextTurn()
+        private void ProceedToNextState()
         {
             RunEventsByTransitionID(TransitionID.Next);
         }
 
-        private void ProceedToPreviousTurn()
+        private void ProceedToPreviousState()
         {
             RunEventsByTransitionID(TransitionID.Previous);
         }

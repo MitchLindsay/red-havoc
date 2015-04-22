@@ -51,8 +51,23 @@ namespace Assets.Code.States.States
                     new EventArgs<CameraHandler, GameObject, float>(cameraHandler, nearestActiveUnitObject, 1.0f));
                 selectingUnit.AddEvent(panCameraToGameObjectEvent, CoroutineID.Execute);
 
-                // 6. Enable Input
-                // 7. Enable Camera Drag
+                // 6. Show Cursor Info
+                CursorInfo cursorInfo = GameObject.Find("Cursor Info").GetComponent<CursorInfo>();
+                ShowWindowEvent showCursorInfoEvent = new ShowWindowEvent(EventID.ShowCursorInfo, this, new EventArgs<Window>(cursorInfo));
+                selectingUnit.AddEvent(showCursorInfoEvent, CoroutineID.Execute);
+
+                // 7. Show Turn Info
+                TurnInfo turnInfo = GameObject.Find("Turn Info").GetComponent<TurnInfo>();
+                ShowWindowEvent showTurnInfoEvent = new ShowWindowEvent(EventID.ShowTurnInfo, this, new EventArgs<Window>(turnInfo));
+                selectingUnit.AddEvent(showTurnInfoEvent, CoroutineID.Execute);
+
+                // 8. Show Faction Info
+                FactionInfo factionInfo = GameObject.Find("Faction Info").GetComponent<FactionInfo>();
+                ShowWindowEvent showFactionInfoEvent = new ShowWindowEvent(EventID.ShowFactionInfo, this, new EventArgs<Window>(factionInfo));
+                selectingUnit.AddEvent(showFactionInfoEvent, CoroutineID.Execute);
+
+                // 9. Enable Input
+                // 10. Enable Camera Drag
                 EnableInputEvent enableInputEvent = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
                 selectingUnit.AddEvent(enableInputEvent, CoroutineID.Execute);
             }

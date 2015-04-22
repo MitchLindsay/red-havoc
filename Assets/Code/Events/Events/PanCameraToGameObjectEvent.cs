@@ -34,7 +34,7 @@ namespace Assets.Code.Events.Events
             }
 
             if (destination == origin)
-                yield return null;
+                panDuration = 0.0f;
 
             Debug.Log("Panning camera to " + targetGameObject + " at " + destination + " from " + origin);
 

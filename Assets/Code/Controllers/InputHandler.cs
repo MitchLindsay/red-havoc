@@ -5,7 +5,9 @@ namespace Assets.Code.Controllers
 {
     public class InputHandler : Singleton<InputHandler>
     {
+        public delegate void InputDisableHandler();
         public delegate void BackButtonHandler();
+        public static event InputDisableHandler OnInputDisabled;
         public static event BackButtonHandler OnBackButtonPress;
 
         public bool InputEnabled { get; private set; }
@@ -26,11 +28,8 @@ namespace Assets.Code.Controllers
 
         public void CheckForInput()
         {
-            if (InputEnabled)
-            {
-                if (Input.GetKey(BackButton) && OnBackButtonPress != null)
-                    OnBackButtonPress();
-            }
+            if (Input.GetKey(BackButton) && OnBackButtonPress != null)
+                OnBackButtonPress();
         }
 
         public void EnableInput()
@@ -53,6 +52,9 @@ namespace Assets.Code.Controllers
 
             if (CameraHandler != null)
                 CameraHandler.DragEnabled = false;
+
+            if (OnInputDisabled != null)
+                OnInputDisabled();
         }
     }
 }

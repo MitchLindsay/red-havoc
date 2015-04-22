@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Actors;
+using Assets.Code.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,11 +19,13 @@ namespace Assets.Code.UI.Static
         void OnEnable()
         {
             Actors.Cursor.OnMouseOverTile += SetTileInfo;
+            InputHandler.OnInputDisabled += Hide;
         }
 
         void OnDestroy()
         {
             Actors.Cursor.OnMouseOverTile -= SetTileInfo;
+            InputHandler.OnInputDisabled -= Hide;
         }
 
         private void SetTileInfo(GameObject tileObject)

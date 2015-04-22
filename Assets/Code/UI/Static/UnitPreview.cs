@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Actors;
+using Assets.Code.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,11 +21,13 @@ namespace Assets.Code.UI.Static
         void OnEnable()
         {
             Actors.Cursor.OnMouseOverUnit += SetUnitInfo;
+            InputHandler.OnInputDisabled += Hide;
         }
 
         void OnDestroy()
         {
             Actors.Cursor.OnMouseOverUnit -= SetUnitInfo;
+            InputHandler.OnInputDisabled -= Hide;
         }
 
         private void SetUnitInfo(GameObject unitObject)

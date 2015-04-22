@@ -11,11 +11,13 @@ namespace Assets.Code.Graphs
         void OnEnable()
         {
             Pathfinder.OnPathGenerateComplete += Generate;
+            Pathfinder.OnPathfindingDisabled += Hide;
         }
 
         void OnDestroy()
         {
             Pathfinder.OnPathGenerateComplete -= Generate;
+            Pathfinder.OnPathfindingDisabled -= Hide;
         }
 
         void Start()
@@ -26,7 +28,7 @@ namespace Assets.Code.Graphs
             VectorLine.canvas3D.sortingLayerName = "Pathfinding";
             VectorLine.canvas3D.sortingOrder = 2;
 
-            pathfindingLine.SetColor(Color.white);
+            pathfindingLine.SetColor(new Color(238.0f, 238.0f, 107.0f));
         }
 
         private void Generate(List<Vector2> path)

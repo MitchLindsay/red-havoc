@@ -8,7 +8,9 @@ namespace Assets.Code.Graphs
     public class Pathfinder : Graph<PathfindingNode>
     {
         public delegate void PathGenerateHandler(List<Vector2> path);
+        public delegate void PathfindingDisableHandler();
         public static event PathGenerateHandler OnPathGenerateComplete;
+        public static event PathfindingDisableHandler OnPathfindingDisabled;
 
         public Color32 ColorTraversable = new Color32(61, 118, 229, 150);
         public Color32 ColorOutOfReach = new Color32(229, 61, 61, 150);
@@ -45,6 +47,9 @@ namespace Assets.Code.Graphs
         private void DisablePathfinding()
         {
             pathfindingEnabled = false;
+
+            if (OnPathfindingDisabled != null)
+                OnPathfindingDisabled();
         }
 
         public void ShowArea(Unit unit, int distance)

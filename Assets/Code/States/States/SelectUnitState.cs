@@ -38,6 +38,21 @@ namespace Assets.Code.States.States
             StateTransition selectingBackMenuOption = GetTransitionByID(TransitionID.Previous);
             if (selectingBackMenuOption != null)
             {
+                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
+                selectingBackMenuOption.AddEvent(disableInput, CoroutineID.Execute);
+
+                CursorInfo cursorInfo = GameObject.Find("Cursor Info").GetComponent<CursorInfo>();
+                HideWindowEvent hideCursorInfoEvent = new HideWindowEvent(EventID.HideCursorInfo, this, new EventArgs<Window>(cursorInfo));
+                selectingBackMenuOption.AddEvent(hideCursorInfoEvent, CoroutineID.Execute);
+
+                TurnInfo turnInfo = GameObject.Find("Turn Info").GetComponent<TurnInfo>();
+                HideWindowEvent hideTurnInfoEvent = new HideWindowEvent(EventID.HideTurnInfo, this, new EventArgs<Window>(turnInfo));
+                selectingBackMenuOption.AddEvent(hideTurnInfoEvent, CoroutineID.Execute);
+
+                FactionInfo factionInfo = GameObject.Find("Faction Info").GetComponent<FactionInfo>();
+                HideWindowEvent hideFactionInfoEvent = new HideWindowEvent(EventID.HideFactionInfo, this, new EventArgs<Window>(factionInfo));
+                selectingBackMenuOption.AddEvent(hideFactionInfoEvent, CoroutineID.Execute);
+
                 GameObject backMenuObject = GameObject.Find("Back Menu");
                 BackMenu backMenu = null;
 
@@ -46,9 +61,6 @@ namespace Assets.Code.States.States
 
                 ShowWindowEvent showWindow = new ShowWindowEvent(EventID.ShowWindow, this, new EventArgs<Window>(backMenu));
                 selectingBackMenuOption.AddEvent(showWindow, CoroutineID.Execute);
-
-                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
-                selectingBackMenuOption.AddEvent(disableInput, CoroutineID.Execute);
             }
 
             StateTransition movingUnit = GetTransitionByID(TransitionID.Next);

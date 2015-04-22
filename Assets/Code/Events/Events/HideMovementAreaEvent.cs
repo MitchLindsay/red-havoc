@@ -9,7 +9,7 @@ namespace Assets.Code.Events.Events
     {
         private Pathfinder pathfinder;
 
-        public HideMovementAreaEvent(EventID eventID, object sender, EventArgs<Pathfinder, Actors.Cursor> e) : base(eventID, sender, e)
+        public HideMovementAreaEvent(EventID eventID, object sender, EventArgs<Pathfinder> e) : base(eventID, sender, e)
         {
             this.pathfinder = e.Value;
         }
