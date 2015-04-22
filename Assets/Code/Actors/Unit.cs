@@ -14,7 +14,7 @@ namespace Assets.Code.Actors
         public int BaseMovement = 6;
 
         public bool IsActive { get; set; }
-        public int Health { get; private set; }
+        public int Health;
         public Stat MaxHealth { get; private set; }
         public Stat HealthRegen { get; private set; }
         public Stat Attack { get; private set; }

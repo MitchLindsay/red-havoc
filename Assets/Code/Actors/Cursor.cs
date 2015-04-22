@@ -23,6 +23,7 @@ namespace Assets.Code.Actors
         public Color IdleLineColor = Color.white;
         public Color HoverLineColor = Color.yellow;
         public Vector2 CursorPosition { get; private set; }
+        public GameObject LastClickedUnitObject { get; private set; }
         private Rect cursorBounds = new Rect();
         private Color lineColor = Color.white;
         private VectorLine line;
@@ -40,6 +41,7 @@ namespace Assets.Code.Actors
         void Awake()
         {
             InitializeLine();
+            LastClickedUnitObject = null;
         }
 
         void Update()
@@ -105,7 +107,16 @@ namespace Assets.Code.Actors
                 OnMouseOverUnit(collidedObject);
 
             if (OnMouseClickUnit != null && Input.GetMouseButtonDown(0))
+            {
                 OnMouseClickUnit(collidedObject);
+
+                if (collidedObject != null)
+                {
+                    Unit unit = collidedObject.GetComponent<Unit>();
+                    if (unit != null)
+                        LastClickedUnitObject = collidedObject;
+                }
+            }
 
             if (collidedObject != null)
             {

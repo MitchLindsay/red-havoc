@@ -4,30 +4,25 @@ using UnityEngine.UI;
 
 namespace Assets.Code.UI.Static
 {
-    public class UnitPreview : StatWindow
+    public class UnitWindow : StatWindow
     {
         public Text UnitName;
+        public Text HealthBarValue;
         public Text HealthPercent;
         public Text AttackValue;
+        public Text AttackRangeValue;
         public Text DefenseValue;
         public Text MovementValue;
+        public Text HealthRegenValue;
         public Image UnitImage;
         public Image HealthBar;
         public Image AttackIcon;
+        public Image AttackRangeIcon;
         public Image DefenseIcon;
         public Image MovementIcon;
+        public Image HealthRegenIcon;
 
-        void OnEnable()
-        {
-            Actors.Cursor.OnMouseOverUnit += SetUnitInfo;
-        }
-
-        void OnDestroy()
-        {
-            Actors.Cursor.OnMouseOverUnit -= SetUnitInfo;
-        }
-
-        private void SetUnitInfo(GameObject unitObject)
+        public void SetUnitInfo(GameObject unitObject)
         {
             if (unitObject != null)
             {
@@ -45,16 +40,20 @@ namespace Assets.Code.UI.Static
                     SetImage(UnitImage, sprite);
 
                     SetStatColorByModifier(AttackValue, AttackIcon, unit.Attack.BaseValue, unit.Attack.ModifiedValue);
+                    SetStatColorByModifier(AttackRangeValue, AttackRangeIcon, unit.AttackRange.BaseValue, unit.AttackRange.ModifiedValue);
                     SetStatColorByModifier(DefenseValue, DefenseIcon, unit.Defense.BaseValue, unit.Defense.ModifiedValue);
                     SetStatColorByModifier(MovementValue, MovementIcon, unit.Movement.BaseValue, unit.Movement.ModifiedValue);
+                    SetStatColorByModifier(HealthRegenValue, HealthRegenIcon, unit.HealthRegen.BaseValue, unit.HealthRegen.ModifiedValue);
 
                     SetText(UnitName, unit.Name.ToUpper());
-                    SetText(AttackValue, unit.Attack.ModifiedValue.ToString());
-                    SetText(DefenseValue, unit.Defense.ModifiedValue.ToString());
-                    SetText(MovementValue, unit.Movement.ModifiedValue.ToString());
+                    SetText(AttackValue, unit.Attack.ModifiedValue.ToString() + " ATTACK");
+                    SetText(AttackRangeValue, unit.AttackRange.ModifiedValue.ToString() + " ATK RANGE");
+                    SetText(DefenseValue, unit.Defense.ModifiedValue.ToString() + " DEFENSE");
+                    SetText(MovementValue, unit.Movement.ModifiedValue.ToString() + " MOVEMENT");
+                    SetText(HealthRegenValue, unit.HealthRegen.ModifiedValue.ToString() + " HP REGEN");
 
                     SetColor(UnitImage, unitColor);
-                    SetHealthBar(HealthPercent, HealthBar, unit.Health, unit.MaxHealth.ModifiedValue);
+                    SetHealthBar(HealthBarValue, HealthPercent, HealthBar, unit.Health, unit.MaxHealth.ModifiedValue);
                 }
                 else
                     Hide();
@@ -63,9 +62,11 @@ namespace Assets.Code.UI.Static
                 Hide();
         }
 
-        private void SetHealthBar(Text healthBarPercent, Image healthBar, int healthValue, int totalHealthValue)
+        private void SetHealthBar(Text healthBarValue, Text healthBarPercent, Image healthBar, int healthValue, int totalHealthValue)
         {
             int healthPercent = (int)(((float)healthValue / (float)totalHealthValue) * 100);
+
+            healthBarValue.text = (healthValue.ToString() + "/" + totalHealthValue.ToString() + " HP");
             healthBarPercent.text = (healthPercent.ToString() + "%");
 
             float width = (float)healthPercent;

@@ -2,6 +2,7 @@
 using Assets.Code.Controllers;
 using Assets.Code.Events;
 using Assets.Code.Events.Events;
+using Assets.Code.Graphs;
 using Assets.Code.UI.Interactable;
 using Assets.Code.UI.Static;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace Assets.Code.States.States
     {
         private InputHandler inputHandler;
         private CameraHandler cameraHandler;
+        private Pathfinder pathfinder;
+        private Actors.Cursor cursor;
 
         public SelectUnitState(StateID currentStateID) : base(currentStateID) { }
 
@@ -29,6 +32,8 @@ namespace Assets.Code.States.States
             // Get Controllers
             inputHandler = InputHandler.Instance;
             cameraHandler = CameraHandler.Instance;
+            pathfinder = GameObject.Find("Pathfinder").GetComponent<Pathfinder>();
+            cursor = GameObject.Find("Mouse Cursor").GetComponent<Actors.Cursor>();
 
             StateTransition selectingBackMenuOption = GetTransitionByID(TransitionID.Previous);
             if (selectingBackMenuOption != null)
@@ -53,16 +58,26 @@ namespace Assets.Code.States.States
                 DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
                 movingUnit.AddEvent(disableInput, CoroutineID.Execute);
 
-                // 2. Get Selected Unit
-                // 3. Pan Camera to Selected Unit
-                PanCameraToGameObjectEvent panCameraToGameObjectEvent = new PanCameraToGameObjectEvent(
-                    EventID.PanCameraToGameObject, this, new EventArgs<CameraHandler, GameObject, float>(cameraHandler, null, 1.0f));
-                movingUnit.AddEvent(panCameraToGameObjectEvent, CoroutineID.Execute);
+                // 2. Show Expanded Unit GUI
+                UnitWindow unitWindow = GameObject.Find("Unit Window").GetComponent<UnitWindow>();
+                ShowUnitWindowEvent showUnitWindow = new ShowUnitWindowEvent
+                    (EventID.ShowUnitWindow, this, new EventArgs<UnitWindow, Actors.Cursor>(unitWindow, cursor));
+                movingUnit.AddEvent(showUnitWindow, CoroutineID.Execute);
 
-                // Show Movement Area of Selected Unit
-                // Show Movement Line within Movement Area
-                // Show Expanded Unit GUI
-                // Enable Input
+                // 3. Pan Camera to Selected Unit
+                PanCameraToSelectedUnitObjectEvent panCameraToSelectedUnitObject = new PanCameraToSelectedUnitObjectEvent(
+                    EventID.PanCameraToSelectedUnitObject, this, new EventArgs<CameraHandler, Actors.Cursor, float>(cameraHandler, cursor, 1.0f));
+                movingUnit.AddEvent(panCameraToSelectedUnitObject, CoroutineID.Execute);
+
+                // 4. Show Movement Area of Selected Unit
+                // 5. Show Movement Line within Movement Area
+                ShowMovementAreaEvent showMovementArea = new ShowMovementAreaEvent(
+                    EventID.ShowMovementArea, this, new EventArgs<Pathfinder, Actors.Cursor>(pathfinder, cursor));
+                movingUnit.AddEvent(showMovementArea, CoroutineID.Execute);
+
+                // 6. Enable Input
+                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
+                movingUnit.AddEvent(enableInput, CoroutineID.Execute);
             }
         }
 
@@ -91,9 +106,11 @@ namespace Assets.Code.States.States
 
         private void ProceedToNextState(GameObject collidedObject)
         {
-            // SOMEHOW SET SELECTED UNIT?
-            
-            RunEventsByTransitionID(TransitionID.Next);
+            if (collidedObject != null)
+            {
+                if (collidedObject.GetComponent<Unit>() != null)
+                    RunEventsByTransitionID(TransitionID.Next);
+            }
         }
     }
 }

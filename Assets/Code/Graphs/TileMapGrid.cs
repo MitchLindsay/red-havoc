@@ -43,7 +43,7 @@ namespace Assets.Code.Graphs
             }
 
             VectorLine.canvas3D.pixelPerfect = true;
-            VectorLine.canvas3D.sortingLayerName = "Tiles";
+            VectorLine.canvas3D.sortingLayerName = "Pathfinding";
             VectorLine.canvas3D.sortingOrder = 1;
 
             line.SetColor(new Color(0.0f, 0.0f, 0.0f, GridOpacity));
