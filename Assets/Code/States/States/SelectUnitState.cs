@@ -100,16 +100,11 @@ namespace Assets.Code.States.States
 
         public override void Update(float deltaTime) { }
 
-        public override void OnExit()
+        private void ProceedToPreviousState()
         {
             InputHandler.OnBackButtonPress -= ProceedToPreviousState;
             Actors.Cursor.OnMouseClickUnit -= ProceedToNextState;
 
-            base.OnExit();
-        }
-
-        private void ProceedToPreviousState()
-        {
             RunEventsByTransitionID(TransitionID.Previous);
         }
 
@@ -118,7 +113,12 @@ namespace Assets.Code.States.States
             if (collidedObject != null)
             {
                 if (collidedObject.GetComponent<Unit>() != null)
+                {
+                    InputHandler.OnBackButtonPress -= ProceedToPreviousState;
+                    Actors.Cursor.OnMouseClickUnit -= ProceedToNextState;
+
                     RunEventsByTransitionID(TransitionID.Next);
+                }
             }
         }
     }

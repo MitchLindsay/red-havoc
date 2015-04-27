@@ -75,22 +75,21 @@ namespace Assets.Code.States.States
 
         public override void Update(float deltaTime) { }
 
-        public override void OnExit()
+        private void ProceedToNextState()
         {
             BackMenu.OnEndTurnClick -= ProceedToNextState;
             BackMenu.OnCancelClick -= ProceedToPreviousState;
             InputHandler.OnBackButtonPress -= ProceedToPreviousState;
 
-            base.OnExit();
-        }
-
-        private void ProceedToNextState()
-        {
             RunEventsByTransitionID(TransitionID.Next);
         }
 
         private void ProceedToPreviousState()
         {
+            BackMenu.OnEndTurnClick -= ProceedToNextState;
+            BackMenu.OnCancelClick -= ProceedToPreviousState;
+            InputHandler.OnBackButtonPress -= ProceedToPreviousState;
+
             RunEventsByTransitionID(TransitionID.Previous);
         }
     }

@@ -63,15 +63,10 @@ namespace Assets.Code.States.States
 
         public override void Update(float deltaTime) { }
 
-        public override void OnExit()
+        private void ProceedToPreviousState()
         {
             InputHandler.OnBackButtonPress -= ProceedToPreviousState;
 
-            base.OnExit();
-        }
-
-        private void ProceedToPreviousState()
-        {
             RunEventsByTransitionID(TransitionID.Previous);
         }
     }

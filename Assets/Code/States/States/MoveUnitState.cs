@@ -44,11 +44,9 @@ namespace Assets.Code.States.States
                 deselectingUnit.AddEvent(hideMovementArea, CoroutineID.Execute);
 
                 // 5. Deselect Unit
-                /*
                 DeselectUnitEvent deselectUnit = new DeselectUnitEvent(EventID.DeselectUnit, this,
                     new EventArgs<Actors.Cursor>(stateMachine.MouseCursor));
                 deselectingUnit.AddEvent(deselectUnit, CoroutineID.Execute);
-                */
 
                 // 6. Enable Input
                 EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, 
@@ -100,9 +98,6 @@ namespace Assets.Code.States.States
 
         public override void OnExit()
         {
-            InputHandler.OnBackButtonPress -= ProceedToPreviousState;
-            Actors.Cursor.OnMouseClickNode -= ProceedToNextState;
-
             base.OnExit();
         }
 
@@ -119,8 +114,13 @@ namespace Assets.Code.States.States
                 if (targetNode != null)
                 {
                     HashSet<PathfindingNode> area = stateMachine.Pathfinder.LastAreaGenerated;
-                    if (area.Contains(targetNode))
+                    if (area.Contains(targetNode) && stateMachine.MouseCursor.SelectedUnit.IsActive)
+                    {
+                        InputHandler.OnBackButtonPress -= ProceedToPreviousState;
+                        Actors.Cursor.OnMouseClickNode -= ProceedToNextState;
+
                         RunEventsByTransitionID(TransitionID.Next);
+                    }
                 }
             }
         }
