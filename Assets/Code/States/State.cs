@@ -38,7 +38,6 @@ namespace Assets.Code.States
 
         public virtual void OnEntry()
         {
-            Debug.Log("Entered " + StateID);
             RemoveAllTransitions();
             SetTransitions();
             SetTransitionEvents();
@@ -46,7 +45,6 @@ namespace Assets.Code.States
 
         public virtual void OnExit()
         {
-            Debug.Log("Exited " + StateID);
             RemoveAllTransitions();
         }
 

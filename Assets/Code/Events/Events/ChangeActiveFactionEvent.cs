@@ -16,7 +16,6 @@ namespace Assets.Code.Events.Events
         public override IEnumerator Execute()
         {
             turnHandler.ChangeTurns();
-            Debug.Log("Changed turns");
             yield return new WaitForSeconds(1.0f);
         }
 

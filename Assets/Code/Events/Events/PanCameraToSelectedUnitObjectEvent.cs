@@ -10,7 +10,7 @@ namespace Assets.Code.Events.Events
     {
         private CameraHandler cameraHandler;
         private Actors.Cursor cursor;
-        private GameObject targetGameObject;
+        private Unit unit;
         private Vector2 origin;
         private Vector2 destination;
         private float panDuration;
@@ -25,16 +25,14 @@ namespace Assets.Code.Events.Events
 
         public override IEnumerator Execute()
         {
-            if (targetGameObject == null)
+            if (unit == null)
             {
-                targetGameObject = cursor.LastClickedUnitObject;
-                destination = targetGameObject.transform.position;
+                unit = cursor.SelectedUnit;
+                destination = unit.gameObject.transform.position;
             }
 
             if (destination == origin)
                 panDuration = 0.0f;
-
-            Debug.Log("Panning camera to " + targetGameObject + " at " + destination + " from " + origin);
 
             cameraHandler.SetCameraPosition(Camera.main.transform.position);
             origin = cameraHandler.CameraPositionWithinBounds;
@@ -53,10 +51,10 @@ namespace Assets.Code.Events.Events
             if (destination == origin)
                 yield return null;
 
-            if (targetGameObject == null)
+            if (unit == null)
             {
-                targetGameObject = cursor.LastClickedUnitObject;
-                destination = targetGameObject.transform.position;
+                unit = cursor.SelectedUnit;
+                destination = unit.gameObject.transform.position;
             }
 
             cameraHandler.SetCameraPosition(Camera.main.transform.position);

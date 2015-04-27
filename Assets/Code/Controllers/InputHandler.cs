@@ -10,6 +10,7 @@ namespace Assets.Code.Controllers
         public static event InputDisableHandler OnInputDisabled;
         public static event BackButtonHandler OnBackButtonPress;
 
+        public bool CursorEnabled { get; private set; }
         public bool InputEnabled { get; private set; }
         public Actors.Cursor MouseCursor;
         public CameraHandler CameraHandler;
@@ -23,7 +24,8 @@ namespace Assets.Code.Controllers
 
         void Update()
         {
-            CheckForInput();
+            if (InputEnabled)
+                CheckForInput();
         }
 
         public void CheckForInput()
@@ -35,6 +37,18 @@ namespace Assets.Code.Controllers
         public void EnableInput()
         {
             InputEnabled = true;
+            EnableCursor();
+        }
+
+        public void DisableInput()
+        {
+            InputEnabled = false;
+            DisableCursor();
+        }
+
+        public void EnableCursor()
+        {
+            CursorEnabled = true;
 
             if (MouseCursor != null)
                 MouseCursor.CursorEnabled = true;
@@ -43,9 +57,9 @@ namespace Assets.Code.Controllers
                 CameraHandler.DragEnabled = true;
         }
 
-        public void DisableInput()
+        public void DisableCursor()
         {
-            InputEnabled = false;
+            CursorEnabled = false;
 
             if (MouseCursor != null)
                 MouseCursor.CursorEnabled = false;

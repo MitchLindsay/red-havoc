@@ -15,15 +15,7 @@ namespace Assets.Code.Events.Events
         public override IEnumerator Execute()
         {
             for (float i = waitTime; i > 0; i--)
-            {
-                Debug.Log("Waiting for " + i + " seconds.");
                 yield return new WaitForSeconds(1.0f);
-            }
-        }
-
-        public override IEnumerator Undo()
-        {
-            yield return null;
         }
     }
 }

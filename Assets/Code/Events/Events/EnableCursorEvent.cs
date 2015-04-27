@@ -5,18 +5,18 @@ using UnityEngine;
 
 namespace Assets.Code.Events.Events
 {
-    public class DisableInputEvent : Event
+    public class EnableCursorEvent : Event
     {
         private InputHandler inputHandler;
 
-        public DisableInputEvent(EventID eventID, object sender, EventArgs<InputHandler> e) : base(eventID, sender, e)
+        public EnableCursorEvent(EventID eventID, object sender, EventArgs<InputHandler> e) : base(eventID, sender, e)
         {
             this.inputHandler = e.Value;
         }
 
         public override IEnumerator Execute()
         {
-            inputHandler.DisableInput();
+            inputHandler.EnableCursor();
             yield return null;
         }
 

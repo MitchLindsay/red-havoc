@@ -24,6 +24,7 @@ namespace Assets.Code.Actors
         public Color HoverLineColor = Color.yellow;
         public Vector2 CursorPosition { get; private set; }
         public GameObject LastClickedUnitObject { get; private set; }
+        public Unit SelectedUnit { get; private set; }
         private Rect cursorBounds = new Rect();
         private Color lineColor = Color.white;
         private VectorLine line;
@@ -176,6 +177,17 @@ namespace Assets.Code.Actors
         {
             if (line != null)
                 line.active = false;
+        }
+
+        public void SelectUnit(Unit unit)
+        {
+            if (unit != null)
+                SelectedUnit = unit;
+        }
+
+        public void DeselectUnit()
+        {
+            SelectedUnit = null;
         }
     }
 }

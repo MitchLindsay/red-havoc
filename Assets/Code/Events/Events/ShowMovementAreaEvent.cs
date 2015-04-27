@@ -9,7 +9,7 @@ namespace Assets.Code.Events.Events
     {
         private Pathfinder pathfinder;
         private Actors.Cursor cursor;
-        private GameObject unitObject;
+        private Unit unit;
 
         public ShowMovementAreaEvent(EventID eventID, object sender, EventArgs<Pathfinder, Actors.Cursor> e) : base(eventID, sender, e)
         {
@@ -21,24 +21,14 @@ namespace Assets.Code.Events.Events
         {
             if (pathfinder != null)
             {
-                if (unitObject == null)
+                if (unit == null)
                 {
-                    unitObject = cursor.LastClickedUnitObject;
-                    Unit unit = unitObject.GetComponent<Unit>();
+                    unit = cursor.SelectedUnit;
 
                     if (unit != null)
-                    {
-                        Debug.Log("Displaying Movement Area: " + unitObject);
                         pathfinder.ShowArea(unit, unit.Movement.ModifiedValue);
-                    }
-                else
-                    Debug.Log("Can't display movement area, unit is null!");
                 }
-                else
-                    Debug.Log("Can't display movement area, unit object is null!");
             }
-            else
-                Debug.Log("Pathfinder is null!");
 
             yield return null;
         }

@@ -21,11 +21,9 @@ namespace Assets.Code.Events.Events
         public override IEnumerator Execute()
         {
             this.activeFaction = TurnHandler.Instance.ActiveFaction;
-            Debug.Log("Displaying Turn Indicator for " + showDuration + " seconds.");
 
             if (activeFaction != null)
             {
-                Debug.Log("Active Faction: " + activeFaction.Name);
 
                 turnIndicator.SetColor(turnIndicator.Panel,
                     new Color(
@@ -37,8 +35,6 @@ namespace Assets.Code.Events.Events
                 turnIndicator.SetText(turnIndicator.Text, activeFaction.Name.ToUpper() + " TURN");
                 turnIndicator.Show();
             }
-            else
-                Debug.Log("No faction to display!");
 
             yield return new WaitForSeconds(showDuration);
 

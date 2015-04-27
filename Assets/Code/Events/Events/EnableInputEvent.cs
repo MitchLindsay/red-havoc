@@ -17,7 +17,6 @@ namespace Assets.Code.Events.Events
         public override IEnumerator Execute()
         {
             inputHandler.EnableInput();
-            Debug.Log("Input enabled");
             yield return null;
         }
 

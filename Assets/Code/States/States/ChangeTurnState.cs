@@ -9,10 +9,6 @@ namespace Assets.Code.States.States
 {
     public class ChangeTurnState : State
     {
-        private TurnHandler turnHandler;
-        private CameraHandler cameraHandler;
-        private InputHandler inputHandler;
-
         public ChangeTurnState(StateID currentStateID) : base(currentStateID) { }
 
         public override void SetTransitions()
@@ -26,16 +22,11 @@ namespace Assets.Code.States.States
             StateTransition selectingUnit = GetTransitionByID(TransitionID.Next);
             if (selectingUnit != null)
             {
-                // Get Controllers
-                turnHandler = TurnHandler.Instance;
-                cameraHandler = CameraHandler.Instance;
-                inputHandler = InputHandler.Instance;
-
                 // 1. Change active factions
                 // 2. Change active units
                 // 3. Increment turn counter
                 ChangeActiveFactionEvent changeActiveFactionEvent = new ChangeActiveFactionEvent
-                    (EventID.ChangeActiveFaction, this, new EventArgs<TurnHandler>(turnHandler));
+                    (EventID.ChangeActiveFaction, this, new EventArgs<TurnHandler>(stateMachine.TurnHandler));
                 selectingUnit.AddEvent(changeActiveFactionEvent, CoroutineID.Execute);
             
                 // 4. Display turn GUI
@@ -48,7 +39,7 @@ namespace Assets.Code.States.States
                 GameObject nearestActiveUnitObject = null;
                 PanCameraToGameObjectEvent panCameraToGameObjectEvent = new PanCameraToGameObjectEvent
                     (EventID.PanCameraToNearestActiveUnit, this, 
-                    new EventArgs<CameraHandler, GameObject, float>(cameraHandler, nearestActiveUnitObject, 1.0f));
+                    new EventArgs<CameraHandler, GameObject, float>(stateMachine.CameraHandler, nearestActiveUnitObject, 1.0f));
                 selectingUnit.AddEvent(panCameraToGameObjectEvent, CoroutineID.Execute);
 
                 // 6. Show Cursor Info
@@ -68,7 +59,7 @@ namespace Assets.Code.States.States
 
                 // 9. Enable Input
                 // 10. Enable Camera Drag
-                EnableInputEvent enableInputEvent = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
+                EnableInputEvent enableInputEvent = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(stateMachine.InputHandler));
                 selectingUnit.AddEvent(enableInputEvent, CoroutineID.Execute);
             }
         }

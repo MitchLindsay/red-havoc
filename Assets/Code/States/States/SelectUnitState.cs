@@ -11,11 +11,6 @@ namespace Assets.Code.States.States
 {
     public class SelectUnitState : State
     {
-        private InputHandler inputHandler;
-        private CameraHandler cameraHandler;
-        private Pathfinder pathfinder;
-        private Actors.Cursor cursor;
-
         public SelectUnitState(StateID currentStateID) : base(currentStateID) { }
 
         public override void SetTransitions()
@@ -29,17 +24,12 @@ namespace Assets.Code.States.States
 
         public override void SetTransitionEvents()
         {
-            // Get Controllers
-            inputHandler = InputHandler.Instance;
-            cameraHandler = CameraHandler.Instance;
-            pathfinder = GameObject.Find("Pathfinder").GetComponent<Pathfinder>();
-            cursor = GameObject.Find("Mouse Cursor").GetComponent<Actors.Cursor>();
-
             StateTransition selectingBackMenuOption = GetTransitionByID(TransitionID.Previous);
             if (selectingBackMenuOption != null)
             {
-                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
-                selectingBackMenuOption.AddEvent(disableInput, CoroutineID.Execute);
+                DisableCursorEvent disableCursor = new DisableCursorEvent(EventID.DisableCursor, this, 
+                    new EventArgs<InputHandler>(stateMachine.InputHandler));
+                selectingBackMenuOption.AddEvent(disableCursor, CoroutineID.Execute);
 
                 CursorInfo cursorInfo = GameObject.Find("Cursor Info").GetComponent<CursorInfo>();
                 HideWindowEvent hideCursorInfoEvent = new HideWindowEvent(EventID.HideCursorInfo, this, new EventArgs<Window>(cursorInfo));
@@ -67,28 +57,35 @@ namespace Assets.Code.States.States
             if (movingUnit != null)
             {
                 // 1. Disable Input
-                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
+                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, 
+                    new EventArgs<InputHandler>(stateMachine.InputHandler));
                 movingUnit.AddEvent(disableInput, CoroutineID.Execute);
 
-                // 2. Show Expanded Unit GUI
+                // 2. Select Unit
+                SelectUnitEvent selectUnit = new SelectUnitEvent(EventID.SelectUnit, this, 
+                    new EventArgs<Actors.Cursor>(stateMachine.MouseCursor));
+                movingUnit.AddEvent(selectUnit, CoroutineID.Execute);
+
+                // 3. Show Expanded Unit GUI
                 UnitWindow unitWindow = GameObject.Find("Unit Window").GetComponent<UnitWindow>();
                 ShowUnitWindowEvent showUnitWindow = new ShowUnitWindowEvent
-                    (EventID.ShowUnitWindow, this, new EventArgs<UnitWindow, Actors.Cursor>(unitWindow, cursor));
+                    (EventID.ShowUnitWindow, this, new EventArgs<UnitWindow, Actors.Cursor>(unitWindow, stateMachine.MouseCursor));
                 movingUnit.AddEvent(showUnitWindow, CoroutineID.Execute);
 
-                // 3. Pan Camera to Selected Unit
+                // 4. Pan Camera to Selected Unit
                 PanCameraToSelectedUnitObjectEvent panCameraToSelectedUnitObject = new PanCameraToSelectedUnitObjectEvent(
-                    EventID.PanCameraToSelectedUnitObject, this, new EventArgs<CameraHandler, Actors.Cursor, float>(cameraHandler, cursor, 1.0f));
+                    EventID.PanCameraToSelectedUnitObject, this, 
+                    new EventArgs<CameraHandler, Actors.Cursor, float>(stateMachine.CameraHandler, stateMachine.MouseCursor, 1.0f));
                 movingUnit.AddEvent(panCameraToSelectedUnitObject, CoroutineID.Execute);
 
-                // 4. Show Movement Area of Selected Unit
-                // 5. Show Movement Line within Movement Area
+                // 5. Show Movement Area of Selected Unit
+                // 6. Show Movement Line within Movement Area
                 ShowMovementAreaEvent showMovementArea = new ShowMovementAreaEvent(
-                    EventID.ShowMovementArea, this, new EventArgs<Pathfinder, Actors.Cursor>(pathfinder, cursor));
+                    EventID.ShowMovementArea, this, new EventArgs<Pathfinder, Actors.Cursor>(stateMachine.Pathfinder, stateMachine.MouseCursor));
                 movingUnit.AddEvent(showMovementArea, CoroutineID.Execute);
 
-                // 6. Enable Input
-                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
+                // 7. Enable Input
+                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(stateMachine.InputHandler));
                 movingUnit.AddEvent(enableInput, CoroutineID.Execute);
             }
         }

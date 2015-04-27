@@ -17,7 +17,6 @@ namespace Assets.Code.Events.Events
 
         public override IEnumerator Execute()
         {
-            Debug.Log("Displaying Splash Screen for " + showDuration + " seconds.");
             splashScreen.Show();
 
             yield return new WaitForSeconds(showDuration);

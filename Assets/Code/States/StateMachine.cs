@@ -1,4 +1,6 @@
-﻿using Assets.Code.Generic;
+﻿using Assets.Code.Controllers;
+using Assets.Code.Generic;
+using Assets.Code.Graphs;
 using Assets.Code.States.States;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +9,14 @@ namespace Assets.Code.States
 {
     public class StateMachine : Singleton<StateMachine>
     {
+        public CameraHandler CameraHandler;
+        public InputHandler InputHandler;
+        public TurnHandler TurnHandler;
+        public JobManager JobManager;
+        public LayerMaskLibrary LayerMaskLibrary;
+        public Actors.Cursor MouseCursor;
+        public Pathfinder Pathfinder { get; private set; }
+
         public State CurrentState { get; private set; }
         public StateID CurrentStateID { get; private set; }
         private List<State> states;
@@ -23,12 +33,37 @@ namespace Assets.Code.States
 
         void Start()
         {
+            SetControllers();
             MapStates();
         }
 
         void Update()
         {
             CurrentState.Update(Time.deltaTime);
+        }
+
+        private void SetControllers()
+        {
+            if (CameraHandler == null)
+                CameraHandler = CameraHandler.Instance;
+
+            if (InputHandler == null)
+                InputHandler = InputHandler.Instance;
+
+            if (TurnHandler == null)
+                TurnHandler = TurnHandler.Instance;
+
+            if (JobManager == null)
+                JobManager = JobManager.Instance;
+
+            if (LayerMaskLibrary == null)
+                LayerMaskLibrary = LayerMaskLibrary.Instance;
+
+            if (MouseCursor == null)
+                MouseCursor = GameObject.Find("Mouse Cursor").GetComponent<Actors.Cursor>();
+
+            if (Pathfinder == null)
+                Pathfinder = GameObject.Find("Pathfinder").GetComponent<Pathfinder>();
         }
 
         private void MapStates()
@@ -107,8 +142,6 @@ namespace Assets.Code.States
         {
             if (CurrentState != null)
                 CurrentState.OnExit();
-
-            Debug.Log("Changing from " + CurrentStateID + " to " + nextStateID);
 
             CurrentState = nextState;
             CurrentStateID = nextStateID;

@@ -66,7 +66,6 @@ namespace Assets.Code.States
                 Job eventJob = Job.Make(ParentEvent(), false);
                 eventJob.JobComplete += (wasKilled) =>
                 {
-                    Debug.Log("Events completed");
                     EventsRunning = false;
 
                     if (OnEventsComplete != null)
@@ -98,14 +97,11 @@ namespace Assets.Code.States
             switch (coroutineID)
             {
                 case CoroutineID.Execute:
-                    Debug.Log("Executing " + e.EventID);
                     return e.Execute();
                 case CoroutineID.Undo:
-                    Debug.Log("Undoing " + e.EventID);
                     return e.Undo();
                 case CoroutineID.Null:
                 default:
-                    Debug.Log("Doing nothing");
                     return null;
             }
         }

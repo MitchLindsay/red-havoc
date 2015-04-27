@@ -29,6 +29,9 @@ namespace Assets.Code.Graphs
         private int newCost;
         private int priority;
 
+        public List<Vector2> LastPathGenerated { get; private set; }
+        public HashSet<PathfindingNode> LastAreaGenerated { get; private set; }
+
         void OnEnable()
         {
             Actors.Cursor.OnMouseOverNode += ShowPath;
@@ -37,6 +40,12 @@ namespace Assets.Code.Graphs
         void OnDestroy()
         {
             Actors.Cursor.OnMouseOverNode -= ShowPath;
+        }
+
+        void Start()
+        {
+            LastPathGenerated = new List<Vector2>();
+            LastAreaGenerated = new HashSet<PathfindingNode>();
         }
 
         private void EnablePathfinding()
@@ -75,6 +84,7 @@ namespace Assets.Code.Graphs
                     }
 
                     area = tempArea;
+                    LastAreaGenerated = area;
                     EnablePathfinding();
                 }
                 else
@@ -115,6 +125,9 @@ namespace Assets.Code.Graphs
 
                 if (OnPathGenerateComplete != null)
                     OnPathGenerateComplete(pathPositions);
+
+                if (pathPositions != null)
+                    LastPathGenerated = pathPositions;
             }
         }
 

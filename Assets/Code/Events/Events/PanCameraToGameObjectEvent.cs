@@ -36,8 +36,6 @@ namespace Assets.Code.Events.Events
             if (destination == origin)
                 panDuration = 0.0f;
 
-            Debug.Log("Panning camera to " + targetGameObject + " at " + destination + " from " + origin);
-
             cameraHandler.SetCameraPosition(Camera.main.transform.position);
             origin = cameraHandler.CameraPositionWithinBounds;
 

@@ -6,6 +6,7 @@ namespace Assets.Code.Graphs
 {
     public class PathfindingLine : MonoBehaviour
     {
+        public Color LineColor = Color.yellow;
         private VectorLine pathfindingLine;
 
         void OnEnable()
@@ -27,8 +28,6 @@ namespace Assets.Code.Graphs
             VectorLine.canvas3D.pixelPerfect = true;
             VectorLine.canvas3D.sortingLayerName = "Pathfinding";
             VectorLine.canvas3D.sortingOrder = 2;
-
-            pathfindingLine.SetColor(new Color(238.0f, 238.0f, 107.0f));
         }
 
         private void Generate(List<Vector2> path)
@@ -44,6 +43,7 @@ namespace Assets.Code.Graphs
                     pathfindingLine.points3[i] = path[i];
                 }
 
+                pathfindingLine.SetColor(LineColor);
                 pathfindingLine.Draw3DAuto();
             }
             else

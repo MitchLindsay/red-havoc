@@ -8,8 +8,6 @@ namespace Assets.Code.States.States
 {
     public class StartBattleState : State
     {
-        private InputHandler inputHandler;
-
         public StartBattleState(StateID currentStateID) : base(currentStateID) { }
 
         public override void SetTransitions()
@@ -23,11 +21,9 @@ namespace Assets.Code.States.States
             StateTransition changingTurns = GetTransitionByID(TransitionID.Next);
             if (changingTurns != null)
             {
-                // Get Controllers
-                inputHandler = InputHandler.Instance;
-
                 // 1. Disable Input
-                DisableInputEvent disableInputEvent = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
+                DisableInputEvent disableInputEvent = new DisableInputEvent(EventID.DisableInput, this, 
+                    new EventArgs<InputHandler>(stateMachine.InputHandler));
                 changingTurns.AddEvent(disableInputEvent, CoroutineID.Execute);
 
                 // 2. Show "Start Battle" Splash Screen

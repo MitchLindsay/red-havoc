@@ -9,8 +9,6 @@ namespace Assets.Code.States.States
 {
     public class SelectBackMenuOptionState : State
     {
-        private InputHandler inputHandler;
-
         public SelectBackMenuOptionState(StateID currentStateID) : base(currentStateID) { }
 
         public override void SetTransitions()
@@ -24,9 +22,6 @@ namespace Assets.Code.States.States
 
         public override void SetTransitionEvents()
         {
-            // Get Controllers
-            inputHandler = InputHandler.Instance;
-
             // Get Back Menu
             GameObject backMenuObject = GameObject.Find("Back Menu");
             BackMenu backMenu = null;
@@ -52,8 +47,9 @@ namespace Assets.Code.States.States
                 ShowWindowEvent showFactionInfoEvent = new ShowWindowEvent(EventID.ShowFactionInfo, this, new EventArgs<Window>(factionInfo));
                 cancellingBackMenu.AddEvent(showFactionInfoEvent, CoroutineID.Execute);
 
-                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, new EventArgs<InputHandler>(inputHandler));
-                cancellingBackMenu.AddEvent(enableInput, CoroutineID.Execute);
+                EnableCursorEvent enableCursor = new EnableCursorEvent(EventID.EnableCursor, this, 
+                    new EventArgs<InputHandler>(stateMachine.InputHandler));
+                cancellingBackMenu.AddEvent(enableCursor, CoroutineID.Execute);
             }
 
             StateTransition endingTurn = GetTransitionByID(TransitionID.Next);
@@ -62,7 +58,8 @@ namespace Assets.Code.States.States
                 HideWindowEvent hideWindow = new HideWindowEvent(EventID.HideWindow, this, new EventArgs<Window>(backMenu));
                 endingTurn.AddEvent(hideWindow, CoroutineID.Execute);
 
-                DisableInputEvent disableInputEvent = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(inputHandler));
+                DisableInputEvent disableInputEvent = 
+                    new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(stateMachine.InputHandler));
                 endingTurn.AddEvent(disableInputEvent, CoroutineID.Execute);
             }
         }

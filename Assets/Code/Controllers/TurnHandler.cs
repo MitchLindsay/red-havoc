@@ -68,8 +68,6 @@ namespace Assets.Code.Controllers
         {
             TurnCount++;
 
-            Debug.Log("Turn " + TurnCount);
-
             DeactivateAllFactions();
 
             if (CurrentFactionIndex >= Factions.GetLength(0))
@@ -77,7 +75,6 @@ namespace Assets.Code.Controllers
 
             if (Factions.GetLength(0) > 0)
             {
-                Debug.Log(Factions[CurrentFactionIndex] + "'s Turn");
                 ActivateFaction(Factions[CurrentFactionIndex]);
                 CurrentFactionIndex++;
             }

@@ -9,7 +9,7 @@ namespace Assets.Code.Events.Events
     public class ShowUnitWindowEvent : Event
     {
         private UnitWindow window;
-        private GameObject unitObject;
+        private Unit unit;
         private Actors.Cursor cursor;
 
         public ShowUnitWindowEvent(EventID eventID, object sender, EventArgs<UnitWindow, Actors.Cursor> e) : base(eventID, sender, e)
@@ -22,15 +22,11 @@ namespace Assets.Code.Events.Events
         {
             if (window != null)
             {
-                Debug.Log("Displaying Window: " + window);
+                if (unit == null)
+                    unit = cursor.SelectedUnit;
 
-                if (unitObject == null)
-                    unitObject = cursor.LastClickedUnitObject;
-
-                window.SetUnitInfo(unitObject);
+                window.SetUnitInfo(unit.gameObject);
             }
-            else
-                Debug.Log("Window is null!");
 
             yield return null;
         }

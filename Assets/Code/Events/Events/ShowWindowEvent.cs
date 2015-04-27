@@ -18,12 +18,7 @@ namespace Assets.Code.Events.Events
         public override IEnumerator Execute()
         {
             if (window != null)
-            {
-                Debug.Log("Displaying Window: " + window);
                 window.Show();
-            }
-            else
-                Debug.Log("Window is null!");
 
             yield return null;
         }
