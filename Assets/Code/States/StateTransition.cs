@@ -20,7 +20,7 @@ namespace Assets.Code.States
 
         public TransitionID TransitionID { get; private set; }
         public StateID NextStateID { get; private set; }
-        public Dictionary<Events.Event, CoroutineID> EventToCoroutineIDMap { get; private set; }
+        public List<KeyValuePair<Events.Event, CoroutineID>> EventToCoroutineIDMap { get; private set; }
         public bool EventsRunning { get; private set; }
 
         public StateTransition(TransitionID transitionID, StateID nextStateID)
@@ -34,19 +34,29 @@ namespace Assets.Code.States
 
         public void AddEvent(Events.Event e, CoroutineID coroutineID)
         {
-            if (e != null && coroutineID != CoroutineID.Null && !EventToCoroutineIDMap.ContainsKey(e))
-                EventToCoroutineIDMap.Add(e, coroutineID);
+            if (e != null && coroutineID != CoroutineID.Null)
+            {
+                KeyValuePair<Events.Event, CoroutineID> eventPair = new KeyValuePair<Events.Event, CoroutineID>(e, coroutineID);
+
+                if (!EventToCoroutineIDMap.Contains(eventPair))
+                    EventToCoroutineIDMap.Add(eventPair);
+            }
         }
 
-        public void RemoveEvent(Events.Event e)
+        public void RemoveEvent(Events.Event e, CoroutineID coroutineID)
         {
-            if (e != null && EventToCoroutineIDMap.ContainsKey(e))
-                EventToCoroutineIDMap.Remove(e);
+            if (e != null && coroutineID != CoroutineID.Null)
+            {
+                KeyValuePair<Events.Event, CoroutineID> eventPair = new KeyValuePair<Events.Event, CoroutineID>(e, coroutineID);
+
+                if (EventToCoroutineIDMap.Contains(eventPair))
+                    EventToCoroutineIDMap.Remove(eventPair);
+            }
         }
 
         public void RemoveAllEvents()
         {
-            EventToCoroutineIDMap = new Dictionary<Events.Event, CoroutineID>();
+            EventToCoroutineIDMap = new List<KeyValuePair<Events.Event, CoroutineID>>();
         }
 
         public void RunEvents()
@@ -56,16 +66,19 @@ namespace Assets.Code.States
                 Job eventJob = Job.Make(ParentEvent(), false);
                 eventJob.JobComplete += (wasKilled) =>
                 {
-                    Debug.Log("Events completed");
                     EventsRunning = false;
 
                     if (OnEventsComplete != null)
                         OnEventsComplete(NextStateID);
                 };
 
-                foreach (KeyValuePair<Events.Event, CoroutineID> e in EventToCoroutineIDMap)
+                KeyValuePair<Events.Event, CoroutineID> eventPair;
+                IEnumerator coroutine;
+
+                for (int i = (EventToCoroutineIDMap.Count - 1); i >= 0; i--)
                 {
-                    IEnumerator coroutine = GetCoroutine(e.Key, e.Value);
+                    eventPair = EventToCoroutineIDMap[i];
+                    coroutine = GetCoroutine(eventPair.Key, eventPair.Value);
                     eventJob.CreateAndAddChildJob(coroutine);
                 }
 
@@ -84,14 +97,11 @@ namespace Assets.Code.States
             switch (coroutineID)
             {
                 case CoroutineID.Execute:
-                    Debug.Log("Executing " + e.EventID);
                     return e.Execute();
                 case CoroutineID.Undo:
-                    Debug.Log("Undoing " + e.EventID);
                     return e.Undo();
                 case CoroutineID.Null:
                 default:
-                    Debug.Log("Doing nothing");
                     return null;
             }
         }

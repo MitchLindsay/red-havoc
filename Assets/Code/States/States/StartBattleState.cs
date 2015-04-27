@@ -1,5 +1,8 @@
-﻿using Assets.Code.Events;
+﻿using Assets.Code.Controllers;
+using Assets.Code.Events;
 using Assets.Code.Events.Events;
+using Assets.Code.UI.Static;
+using UnityEngine;
 
 namespace Assets.Code.States.States
 {
@@ -18,8 +21,16 @@ namespace Assets.Code.States.States
             StateTransition changingTurns = GetTransitionByID(TransitionID.Next);
             if (changingTurns != null)
             {
-                WaitEvent waitEvent = new WaitEvent(EventID.Wait, this, new EventArgs<float>(3.0f));
-                changingTurns.AddEvent(waitEvent, CoroutineID.Execute);
+                // 1. Disable Input
+                DisableInputEvent disableInputEvent = new DisableInputEvent(EventID.DisableInput, this, 
+                    new EventArgs<InputHandler>(stateMachine.InputHandler));
+                changingTurns.AddEvent(disableInputEvent, CoroutineID.Execute);
+
+                // 2. Show "Start Battle" Splash Screen
+                SplashScreen splashScreen = GameObject.Find("Start Battle").GetComponent<SplashScreen>();
+                ShowSplashScreenEvent showSplashScreenEvent = new ShowSplashScreenEvent
+                    (EventID.ShowSplashScreen, this, new EventArgs<SplashScreen, float>(splashScreen, 3.0f));
+                changingTurns.AddEvent(showSplashScreenEvent, CoroutineID.Execute);
             }
         }
 

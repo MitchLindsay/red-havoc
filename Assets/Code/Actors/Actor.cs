@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Code.Controllers;
+using UnityEngine;
 
 namespace Assets.Code.Actors
 {
@@ -7,21 +8,27 @@ namespace Assets.Code.Actors
     public abstract class Actor : MonoBehaviour
     {
         public string Name = "Actor";
-        public LayerMask LayerMask = 0;
         public Vector3 RaycastOffset = new Vector3(0.5f, 0.0f, 0.0f);
+        public LayerMaskLibrary layerMasks;
         private RaycastHit2D raycastHit;
 
-        public void CheckForCollisions<TActor>(LayerMask layerMaskToCheck)
+        void Awake()
+        {
+            if (layerMasks == null)
+                layerMasks = LayerMaskLibrary.Instance;
+        }
+
+        public void CheckForCollisions<T>(LayerMask layerMaskToCheck)
         {
             Vector3 raycastPosition = transform.position + RaycastOffset;
             raycastHit = Physics2D.Raycast(raycastPosition, Vector2.up, 1.0f, layerMaskToCheck);
             
             if (raycastHit.collider != null)
-                HandleCollision<TActor>(raycastHit.collider.gameObject);
+                HandleCollision<T>(raycastHit.collider.gameObject);
             else
-                HandleCollision<TActor>(null);
+                HandleCollision<T>(null);
         }
 
-        public virtual void HandleCollision<TActor>(GameObject collidedObject) { }
+        public virtual void HandleCollision<T>(GameObject collidedObject) { }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Assets.Code.Entities.Stats;
+﻿using Assets.Code.Controllers;
+using Assets.Code.Entities.Stats;
 using UnityEngine;
 
 namespace Assets.Code.Actors
@@ -12,7 +13,8 @@ namespace Assets.Code.Actors
         public int BaseDefense = 3;
         public int BaseMovement = 6;
 
-        public int Health { get; private set; }
+        public bool IsActive { get; set; }
+        public int Health;
         public Stat MaxHealth { get; private set; }
         public Stat HealthRegen { get; private set; }
         public Stat Attack { get; private set; }
@@ -27,7 +29,7 @@ namespace Assets.Code.Actors
 
         void Update()
         {
-            CheckForCollisions<Tile>(new LayerMask()); // REPLACE WITH TILE LAYER MASK
+            CheckForCollisions<Tile>(layerMasks.TileMask);
         }
 
         private void SetStats()
@@ -42,12 +44,12 @@ namespace Assets.Code.Actors
             Health = MaxHealth.ModifiedValue;
         }
 
-        public override void HandleCollision<TActor>(GameObject collidedObject)
+        public override void HandleCollision<T>(GameObject collidedObject)
         {
             if (collidedObject != null)
             {
                 // Handle Tile Collisions
-                if (typeof(TActor) == typeof(Tile))
+                if (typeof(T) == typeof(Tile))
                     ApplyTileStatModifiers(collidedObject.GetComponent<Tile>());
             }
         }

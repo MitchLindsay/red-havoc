@@ -7,8 +7,32 @@ namespace Assets.Code.Events
     {
         Null,
         Wait,
+        ShowSplashScreen,
+        ShowTurnIndicator,
+        ShowUnitWindow,
+        HideUnitWindow,
+        ChangeActiveFaction,
         PanCameraToPosition,
         PanCameraToGameObject,
+        PanCameraToNearestActiveUnit,
+        PanCameraToSelectedUnitObject,
+        EnableInput,
+        DisableInput,
+        ShowWindow,
+        HideWindow,
+        ShowMovementArea,
+        HideMovementArea,
+        ShowTurnInfo,
+        HideTurnInfo,
+        ShowFactionInfo,
+        HideFactionInfo,
+        ShowCursorInfo,
+        HideCursorInfo,
+        SelectUnit,
+        DeselectUnit,
+        MoveUnit,
+        EnableCursor,
+        DisableCursor,
     }
 
     public enum CoroutineID
@@ -21,8 +45,15 @@ namespace Assets.Code.Events
     public abstract class Event
     {
         public EventID EventID;
-        public Event(EventID eventID, object sender, EventArgs e) { this.EventID = eventID;  }
+        public Event(EventID eventID, object sender, EventArgs e)
+        {
+            this.EventID = eventID;
+        }
+
         public abstract IEnumerator Execute();
-        public abstract IEnumerator Undo();
+        public virtual IEnumerator Undo()
+        {
+            yield return null;
+        }
     }
 }
