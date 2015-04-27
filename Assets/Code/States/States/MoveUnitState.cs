@@ -114,7 +114,7 @@ namespace Assets.Code.States.States
                 if (targetNode != null)
                 {
                     HashSet<PathfindingNode> area = stateMachine.Pathfinder.LastAreaGenerated;
-                    if (area.Contains(targetNode) && stateMachine.MouseCursor.SelectedUnit.IsActive)
+                    if (area.Contains(targetNode) && stateMachine.MouseCursor.SelectedUnit != null && stateMachine.MouseCursor.SelectedUnit.IsActive)
                     {
                         InputHandler.OnBackButtonPress -= ProceedToPreviousState;
                         Actors.Cursor.OnMouseClickNode -= ProceedToNextState;
