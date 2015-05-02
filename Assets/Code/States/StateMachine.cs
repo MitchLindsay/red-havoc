@@ -12,6 +12,7 @@ namespace Assets.Code.States
         public CameraHandler CameraHandler;
         public InputHandler InputHandler;
         public TurnHandler TurnHandler;
+        public UnitActionHandler UnitActionHandler;
         public JobManager JobManager;
         public LayerMaskLibrary LayerMaskLibrary;
         public Actors.Cursor MouseCursor;
@@ -52,6 +53,9 @@ namespace Assets.Code.States
 
             if (TurnHandler == null)
                 TurnHandler = TurnHandler.Instance;
+
+            if (UnitActionHandler == null)
+                UnitActionHandler = UnitActionHandler.Instance;
 
             if (JobManager == null)
                 JobManager = JobManager.Instance;

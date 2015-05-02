@@ -70,7 +70,12 @@ namespace Assets.Code.States.States
             if (confirmingUnitAction != null)
             {
                 // 1. Disable Input
-                // 2. 
+                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, 
+                    new EventArgs<InputHandler>(stateMachine.InputHandler));
+                confirmingUnitAction.AddEvent(disableInput, CoroutineID.Execute);
+                
+                // 2. Set Selected Unit Action
+                // 3. Show Confirm Unit Action UI
             }
         }
 
@@ -79,6 +84,7 @@ namespace Assets.Code.States.States
             base.OnEntry();
 
             InputHandler.OnBackButtonPress += ProceedToPreviousState;
+            UnitActionMenu.OnButtonClick
         }
 
         public override void Update(float deltaTime) { }
