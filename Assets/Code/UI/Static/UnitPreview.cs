@@ -21,13 +21,13 @@ namespace Assets.Code.UI.Static
         void OnEnable()
         {
             Actors.Cursor.OnMouseOverUnit += SetUnitInfo;
-            InputHandler.OnInputDisabled += Hide;
+            InputHandler.OnCursorDisabled += Hide;
         }
 
         void OnDestroy()
         {
             Actors.Cursor.OnMouseOverUnit -= SetUnitInfo;
-            InputHandler.OnInputDisabled -= Hide;
+            InputHandler.OnCursorDisabled -= Hide;
         }
 
         private void SetUnitInfo(GameObject unitObject)

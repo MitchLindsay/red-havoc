@@ -33,6 +33,11 @@ namespace Assets.Code.Events
         MoveUnit,
         EnableCursor,
         DisableCursor,
+        UnitWait,
+        UnitAttack,
+        UnitCapture,
+        EnableKeyboard,
+        DisableKeyboard
     }
 
     public enum CoroutineID

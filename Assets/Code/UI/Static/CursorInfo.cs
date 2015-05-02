@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Actors;
+using Assets.Code.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,13 @@ namespace Assets.Code.UI.Static
         void OnEnable()
         {
             Actors.Cursor.OnMouseOverNode += SetCursorInfo;
+            InputHandler.OnCursorDisabled += Hide;
         }
 
         void OnDestroy()
         {
             Actors.Cursor.OnMouseOverNode -= SetCursorInfo;
+            InputHandler.OnCursorDisabled -= Hide;
         }
 
         private void SetCursorInfo(GameObject pathfindingNodeObject)

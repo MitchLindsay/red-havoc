@@ -22,6 +22,9 @@ namespace Assets.Code.States.States
             StateTransition selectingUnit = GetTransitionByID(TransitionID.Next);
             if (selectingUnit != null)
             {
+                DisableInputEvent disableInputEvent = new DisableInputEvent(EventID.DisableInput, this, new EventArgs<InputHandler>(stateMachine.InputHandler));
+                selectingUnit.AddEvent(disableInputEvent, CoroutineID.Execute);
+
                 // 1. Change active factions
                 // 2. Change active units
                 // 3. Increment turn counter

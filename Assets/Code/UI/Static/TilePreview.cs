@@ -19,13 +19,13 @@ namespace Assets.Code.UI.Static
         void OnEnable()
         {
             Actors.Cursor.OnMouseOverTile += SetTileInfo;
-            InputHandler.OnInputDisabled += Hide;
+            InputHandler.OnCursorDisabled += Hide;
         }
 
         void OnDestroy()
         {
             Actors.Cursor.OnMouseOverTile -= SetTileInfo;
-            InputHandler.OnInputDisabled -= Hide;
+            InputHandler.OnCursorDisabled -= Hide;
         }
 
         private void SetTileInfo(GameObject tileObject)

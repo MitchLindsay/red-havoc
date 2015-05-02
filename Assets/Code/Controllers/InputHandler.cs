@@ -7,11 +7,11 @@ namespace Assets.Code.Controllers
     {
         public delegate void InputDisableHandler();
         public delegate void BackButtonHandler();
-        public static event InputDisableHandler OnInputDisabled;
+        public static event InputDisableHandler OnCursorDisabled;
         public static event BackButtonHandler OnBackButtonPress;
 
         public bool CursorEnabled { get; private set; }
-        public bool InputEnabled { get; private set; }
+        public bool KeyboardEnabled { get; private set; }
         public Actors.Cursor MouseCursor;
         public CameraHandler CameraHandler;
         public KeyCode BackButton = KeyCode.Escape;
@@ -24,26 +24,38 @@ namespace Assets.Code.Controllers
 
         void Update()
         {
-            if (InputEnabled)
-                CheckForInput();
+            CheckForInput();
         }
 
         public void CheckForInput()
         {
-            if (Input.GetKey(BackButton) && OnBackButtonPress != null)
-                OnBackButtonPress();
+            if (KeyboardEnabled)
+            {
+                if (Input.GetKey(BackButton) && OnBackButtonPress != null)
+                    OnBackButtonPress();
+            }
         }
 
         public void EnableInput()
         {
-            InputEnabled = true;
             EnableCursor();
+            EnableKeyboard();
         }
 
         public void DisableInput()
         {
-            InputEnabled = false;
             DisableCursor();
+            DisableKeyboard();
+        }
+
+        public void EnableKeyboard()
+        {
+            KeyboardEnabled = true;
+        }
+
+        public void DisableKeyboard()
+        {
+            KeyboardEnabled = false;
         }
 
         public void EnableCursor()
@@ -67,8 +79,8 @@ namespace Assets.Code.Controllers
             if (CameraHandler != null)
                 CameraHandler.DragEnabled = false;
 
-            if (OnInputDisabled != null)
-                OnInputDisabled();
+            if (OnCursorDisabled != null)
+                OnCursorDisabled();
         }
     }
 }

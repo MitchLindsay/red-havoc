@@ -2,6 +2,8 @@
 using Assets.Code.Events;
 using Assets.Code.Events.Events;
 using Assets.Code.Graphs;
+using Assets.Code.UI.Interactable;
+using Assets.Code.UI.Static;
 using UnityEngine;
 
 namespace Assets.Code.States.States
@@ -20,7 +22,14 @@ namespace Assets.Code.States.States
         }
 
         public override void SetTransitionEvents()
-        {   
+        {
+            // Get Unit Action Menu
+            GameObject unitActionMenuObject = GameObject.Find("Unit Action Menu");
+            UnitActionMenu unitActionMenu = null;
+
+            if (unitActionMenuObject != null)
+                unitActionMenu = unitActionMenuObject.GetComponent<UnitActionMenu>();
+
             StateTransition cancellingUnitMove = GetTransitionByID(TransitionID.Previous);
             if (cancellingUnitMove != null)
             {
@@ -29,28 +38,39 @@ namespace Assets.Code.States.States
                     new EventArgs<InputHandler>(stateMachine.InputHandler));
                 cancellingUnitMove.AddEvent(disableInput, CoroutineID.Execute);
 
-                // 2. Move unit back to original location
+                // 2. Hide Unit Action Menu
+                HideWindowEvent hideWindow = new HideWindowEvent(EventID.HideWindow, this, new EventArgs<Window>(unitActionMenu));
+                cancellingUnitMove.AddEvent(hideWindow, CoroutineID.Execute);
+
+                // 3. Move unit back to original location
                 MoveUnitEvent moveUnit = new MoveUnitEvent(EventID.MoveUnit, this,
                     new EventArgs<Actors.Cursor, Pathfinder, float>(stateMachine.MouseCursor, stateMachine.Pathfinder, 0.1f));
                 cancellingUnitMove.AddEvent(moveUnit, CoroutineID.Undo);
 
-                // 3. Move camera to selected unit
+                // 4. Move camera to selected unit
                 PanCameraToSelectedUnitObjectEvent panCameraToSelectedUnitObject = new PanCameraToSelectedUnitObjectEvent(
                     EventID.PanCameraToSelectedUnitObject, this, 
                     new EventArgs<CameraHandler, Actors.Cursor, float>(stateMachine.CameraHandler, stateMachine.MouseCursor, 1.0f));
                 cancellingUnitMove.AddEvent(panCameraToSelectedUnitObject, CoroutineID.Execute);
 
-                // 4. Enable Movement Area
-                // 5. Enable Movement Line
+                // 5. Enable Movement Area
+                // 6. Enable Movement Line
                 ShowMovementAreaEvent showMovementArea = new ShowMovementAreaEvent(
                     EventID.ShowMovementArea, this, 
                     new EventArgs<Pathfinder, Actors.Cursor>(stateMachine.Pathfinder, stateMachine.MouseCursor));
                 cancellingUnitMove.AddEvent(showMovementArea, CoroutineID.Execute);
 
-                // 6. Enable Input
+                // 7. Enable Input
                 EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, 
                     new EventArgs<InputHandler>(stateMachine.InputHandler));
                 cancellingUnitMove.AddEvent(enableInput, CoroutineID.Execute);
+            }
+
+            StateTransition confirmingUnitAction = GetTransitionByID(TransitionID.Next);
+            if (confirmingUnitAction != null)
+            {
+                // 1. Disable Input
+                // 2. 
             }
         }
 

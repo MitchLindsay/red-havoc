@@ -3,6 +3,7 @@ using Assets.Code.Controllers;
 using Assets.Code.Events;
 using Assets.Code.Events.Events;
 using Assets.Code.Graphs;
+using Assets.Code.UI.Interactable;
 using Assets.Code.UI.Static;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,13 @@ namespace Assets.Code.States.States
 
         public override void SetTransitionEvents()
         {
+            // Get Unit Action Menu
+            GameObject unitActionMenuObject = GameObject.Find("Unit Action Menu");
+            UnitActionMenu unitActionMenu = null;
+
+            if (unitActionMenuObject != null)
+                unitActionMenu = unitActionMenuObject.GetComponent<UnitActionMenu>();
+
             StateTransition deselectingUnit = GetTransitionByID(TransitionID.Previous);
             if (deselectingUnit != null)
             {   
@@ -73,16 +81,19 @@ namespace Assets.Code.States.States
                     new EventArgs<Actors.Cursor, Pathfinder, float>(stateMachine.MouseCursor, stateMachine.Pathfinder, 0.1f));
                 confirmingUnitMove.AddEvent(moveUnit, CoroutineID.Execute);
 
-                // 5. Pan Camera to Selected Unit
+                // 4. Pan Camera to Selected Unit
                 PanCameraToSelectedUnitObjectEvent panCameraToSelectedUnitObject = new PanCameraToSelectedUnitObjectEvent(
                     EventID.PanCameraToSelectedUnitObject, this, 
                     new EventArgs<CameraHandler, Actors.Cursor, float>(stateMachine.CameraHandler, stateMachine.MouseCursor, 1.0f));
                 confirmingUnitMove.AddEvent(panCameraToSelectedUnitObject, CoroutineID.Execute);
 
-                // 6. Enable input
-                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, 
-                    new EventArgs<InputHandler>(stateMachine.InputHandler));
-                confirmingUnitMove.AddEvent(enableInput, CoroutineID.Execute);
+                // 5. Show Unit Action Menu
+                ShowWindowEvent showWindow = new ShowWindowEvent(EventID.ShowWindow, this, new EventArgs<Window>(unitActionMenu));
+                confirmingUnitMove.AddEvent(showWindow, CoroutineID.Execute);
+
+                // 6. Enable Keyboard
+                EnableKeyboardEvent enableKeyboard = new EnableKeyboardEvent(EventID.EnableKeyboard, this, new EventArgs<InputHandler>(stateMachine.InputHandler));
+                confirmingUnitMove.AddEvent(enableKeyboard, CoroutineID.Execute);
             }
         }
 
