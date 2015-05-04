@@ -1,3 +1,4 @@
+using Assets.Code.Events;
 using Assets.Code.Events.UnitActions;
 using Assets.Code.Generic;
 using Assets.Code.UI.Interactable;
@@ -10,17 +11,18 @@ namespace Assets.Code.Controllers
 		
 		void OnEnable()
 		{
-			UnitActionMenu.OnButtonClick += SetLastSelectedUnitAction;
+            UnitActionMenu.OnActionClick += SetActionToCapture;
 		}
 		
 		void OnDestroy()
-		{
-			UnitActionMenu.OnButtonClick -= SetLastSelectedUnitAction;
+        {
+            UnitActionMenu.OnActionClick -= SetActionToCapture;
 		}
 		
-		private void SetActionToCapture()
+		private void SetActionToCapture(EventID eventID)
 		{
-			LastSelectedUnitAction = Unit;
+            if (eventID != EventID.Null)
+                LastSelectedUnitAction = eventID;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Events;
+using UnityEngine;
 
 namespace Assets.Code.States.States
 {
@@ -12,6 +13,16 @@ namespace Assets.Code.States.States
 
         public override void SetTransitionEvents()
         {
+            EventID unitActionID = stateMachine.UnitActionHandler.LastSelectedUnitAction;
+            if (unitActionID == EventID.UnitWait)
+            {
+
+            }
+        }
+
+        public override void OnEntry()
+        {
+            base.OnEntry();
         }
 
         public override void Update(float deltaTime)

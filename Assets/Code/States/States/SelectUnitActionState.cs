@@ -30,6 +30,14 @@ namespace Assets.Code.States.States
             if (unitActionMenuObject != null)
                 unitActionMenu = unitActionMenuObject.GetComponent<UnitActionMenu>();
 
+            // Get Confirm Action Menu
+
+            GameObject confirmActionMenuObject = GameObject.Find("Confirm Action Menu");
+            ConfirmUnitActionMenu confirmActionMenu = null;
+
+            if (confirmActionMenuObject != null)
+                confirmActionMenu = confirmActionMenuObject.GetComponent<ConfirmUnitActionMenu>();
+
             StateTransition cancellingUnitMove = GetTransitionByID(TransitionID.Previous);
             if (cancellingUnitMove != null)
             {
@@ -73,9 +81,18 @@ namespace Assets.Code.States.States
                 DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, 
                     new EventArgs<InputHandler>(stateMachine.InputHandler));
                 confirmingUnitAction.AddEvent(disableInput, CoroutineID.Execute);
-                
-                // 2. Set Selected Unit Action
-                // 3. Show Confirm Unit Action UI
+
+                // 2. Hide Unit Action Menu
+                HideWindowEvent hideWindow = new HideWindowEvent(EventID.HideWindow, this, new EventArgs<Window>(unitActionMenu));
+                confirmingUnitAction.AddEvent(hideWindow, CoroutineID.Execute);
+
+                // 3. Show Confirm Unit Action UI (only if capture/wait command)
+                ShowWindowEvent showWindow = new ShowWindowEvent(EventID.ShowWindow, this, new EventArgs<Window>(confirmActionMenu));
+                confirmingUnitAction.AddEvent(showWindow, CoroutineID.Execute);
+
+                // 4. Enable Keyboard
+                EnableKeyboardEvent enableKeyboard = new EnableKeyboardEvent(EventID.EnableKeyboard, this, new EventArgs<InputHandler>(stateMachine.InputHandler));
+                confirmingUnitAction.AddEvent(enableKeyboard, CoroutineID.Execute);
             }
         }
 
@@ -84,7 +101,8 @@ namespace Assets.Code.States.States
             base.OnEntry();
 
             InputHandler.OnBackButtonPress += ProceedToPreviousState;
-            UnitActionMenu.OnButtonClick
+            UnitActionMenu.OnCancelClick += ProceedToPreviousState;
+            UnitActionMenu.OnActionClick += ProceedToNextState;
         }
 
         public override void Update(float deltaTime) { }
@@ -92,8 +110,19 @@ namespace Assets.Code.States.States
         private void ProceedToPreviousState()
         {
             InputHandler.OnBackButtonPress -= ProceedToPreviousState;
+            UnitActionMenu.OnCancelClick -= ProceedToPreviousState;
+            UnitActionMenu.OnActionClick -= ProceedToNextState;
 
             RunEventsByTransitionID(TransitionID.Previous);
+        }
+
+        private void ProceedToNextState(EventID eventID)
+        {
+            InputHandler.OnBackButtonPress -= ProceedToPreviousState;
+            UnitActionMenu.OnCancelClick -= ProceedToPreviousState;
+            UnitActionMenu.OnActionClick -= ProceedToNextState;
+
+            RunEventsByTransitionID(TransitionID.Next);
         }
     }
 }

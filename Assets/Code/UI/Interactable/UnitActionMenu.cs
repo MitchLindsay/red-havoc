@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Actors;
+using Assets.Code.Events;
 using Assets.Code.Events.UnitActions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,11 +8,10 @@ namespace Assets.Code.UI.Interactable
 {
     public class UnitActionMenu : InteractableWindow
     {
-        public delegate void ButtonHandler();
-        public static event ButtonHandler OnCaptureClick;
-        public static event ButtonHandler OnAttackClick;
-        public static event ButtonHandler OnWatiClick;
-        public static event ButtonHandler OnCancelClick;
+        public delegate void ActionButtonHandler(EventID eventID);
+        public delegate void CancelButtonHandler();
+        public static event ActionButtonHandler OnActionClick;
+        public static event CancelButtonHandler OnCancelClick;
 
         public Button CaptureButton;
         public Button AttackButton;
@@ -32,20 +32,20 @@ namespace Assets.Code.UI.Interactable
 
             CaptureButton.onClick.AddListener(() =>
             {
-                if (OnCaptureClick != null)
-                    OnCaptureClick();
+                if (OnActionClick != null)
+                    OnActionClick(EventID.UnitCapture);
             });
 
             AttackButton.onClick.AddListener(() =>
             {
-                if (OnAttackClick != null)
-                    OnAttackClick();
+                if (OnActionClick != null)
+                    OnActionClick(EventID.UnitAttack);
             });
 
             WaitButton.onClick.AddListener(() =>
             {
-                if (OnWatiClick != null)
-                    OnWatiClick();
+                if (OnActionClick != null)
+                    OnActionClick(EventID.UnitWait);
             });
 
             CancelButton.onClick.AddListener(() =>
