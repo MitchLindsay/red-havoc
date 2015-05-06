@@ -52,6 +52,12 @@ namespace Assets.Code.Controllers
             faction.ActivateAllUnits();
         }
 
+        public void ActivateAllFactions()
+        {
+            foreach (Faction faction in Factions)
+                ActivateFaction(faction);
+        }
+
         public void DeactivateFaction(Faction faction)
         {
             faction.IsActive = false;
@@ -68,6 +74,7 @@ namespace Assets.Code.Controllers
         {
             TurnCount++;
 
+            ActivateAllFactions();
             DeactivateAllFactions();
 
             if (CurrentFactionIndex >= Factions.GetLength(0))

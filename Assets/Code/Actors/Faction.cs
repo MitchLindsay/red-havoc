@@ -117,5 +117,16 @@ namespace Assets.Code.Actors
                     DeactivateUnit(unit);
             }
         }
+
+        public int ActiveUnitCount()
+        {
+            int activeUnits = 0;
+
+            foreach (Unit unit in Units)
+                if (unit.IsActive)
+                    activeUnits++;
+
+            return activeUnits;
+        }
     }
 }

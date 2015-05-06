@@ -37,7 +37,8 @@ namespace Assets.Code.Events
         UnitAttack,
         UnitCapture,
         EnableKeyboard,
-        DisableKeyboard
+        DisableKeyboard,
+        DeactivateUnit,
     }
 
     public enum CoroutineID
