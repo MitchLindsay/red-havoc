@@ -1,10 +1,10 @@
-﻿using Assets.Code.Events;
+using Assets.Code.Events;
 
 namespace Assets.Code.States.States
 {
-    public class EndBattleState : State
+    public class TargetActorState : State
     {
-        public EndBattleState(StateID currentStateID) : base(currentStateID) { }
+        public TargetActorState(StateID currentStateID) : base(currentStateID) { }
 
         public override void SetTransitions()
         {

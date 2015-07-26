@@ -15,6 +15,7 @@ namespace Assets.Code.States
         MoveUnit,
         SelectBackMenuOption,
         SelectUnitAction,
+        TargetActor,
         ConfirmUnitAction,
         ExecuteUnitAction,
         EndBattle

@@ -31,7 +31,7 @@ namespace Assets.Code.States.States
                 ChangeActiveFactionEvent changeActiveFactionEvent = new ChangeActiveFactionEvent
                     (EventID.ChangeActiveFaction, this, new EventArgs<TurnHandler>(stateMachine.TurnHandler));
                 selectingUnit.AddEvent(changeActiveFactionEvent, CoroutineID.Execute);
-            
+
                 // 4. Display turn GUI
                 TurnIndicator turnIndicator = GameObject.Find("Turn Indicator").GetComponent<TurnIndicator>();
                 ShowTurnIndicatorEvent showTurnIndicatorEvent = new ShowTurnIndicatorEvent
@@ -41,7 +41,7 @@ namespace Assets.Code.States.States
                 // 5. Pan to nearest active unit
                 GameObject nearestActiveUnitObject = null;
                 PanCameraToGameObjectEvent panCameraToGameObjectEvent = new PanCameraToGameObjectEvent
-                    (EventID.PanCameraToNearestActiveUnit, this, 
+                    (EventID.PanCameraToNearestActiveUnit, this,
                     new EventArgs<CameraHandler, GameObject, float>(stateMachine.CameraHandler, nearestActiveUnitObject, 1.0f));
                 selectingUnit.AddEvent(panCameraToGameObjectEvent, CoroutineID.Execute);
 

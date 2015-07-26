@@ -42,7 +42,7 @@ namespace Assets.Code.States.States
             if (cancellingUnitMove != null)
             {
                 // 1. Disable Input
-                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, 
+                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this,
                     new EventArgs<InputHandler>(stateMachine.InputHandler));
                 cancellingUnitMove.AddEvent(disableInput, CoroutineID.Execute);
 
@@ -57,19 +57,19 @@ namespace Assets.Code.States.States
 
                 // 4. Move camera to selected unit
                 PanCameraToSelectedUnitObjectEvent panCameraToSelectedUnitObject = new PanCameraToSelectedUnitObjectEvent(
-                    EventID.PanCameraToSelectedUnitObject, this, 
+                    EventID.PanCameraToSelectedUnitObject, this,
                     new EventArgs<CameraHandler, Actors.Cursor, float>(stateMachine.CameraHandler, stateMachine.MouseCursor, 1.0f));
                 cancellingUnitMove.AddEvent(panCameraToSelectedUnitObject, CoroutineID.Execute);
 
                 // 5. Enable Movement Area
                 // 6. Enable Movement Line
                 ShowMovementAreaEvent showMovementArea = new ShowMovementAreaEvent(
-                    EventID.ShowMovementArea, this, 
+                    EventID.ShowMovementArea, this,
                     new EventArgs<Pathfinder, Actors.Cursor>(stateMachine.Pathfinder, stateMachine.MouseCursor));
                 cancellingUnitMove.AddEvent(showMovementArea, CoroutineID.Execute);
 
                 // 7. Enable Input
-                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this, 
+                EnableInputEvent enableInput = new EnableInputEvent(EventID.EnableInput, this,
                     new EventArgs<InputHandler>(stateMachine.InputHandler));
                 cancellingUnitMove.AddEvent(enableInput, CoroutineID.Execute);
             }
@@ -78,7 +78,7 @@ namespace Assets.Code.States.States
             if (confirmingUnitAction != null)
             {
                 // 1. Disable Input
-                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this, 
+                DisableInputEvent disableInput = new DisableInputEvent(EventID.DisableInput, this,
                     new EventArgs<InputHandler>(stateMachine.InputHandler));
                 confirmingUnitAction.AddEvent(disableInput, CoroutineID.Execute);
 

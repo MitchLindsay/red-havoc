@@ -80,6 +80,7 @@ namespace Assets.Code.States
             SelectBackMenuOptionState selectingBackMenuOption = new SelectBackMenuOptionState(StateID.SelectBackMenuOption);
             MoveUnitState movingUnit = new MoveUnitState(StateID.MoveUnit);
             SelectUnitActionState selectingUnitAction = new SelectUnitActionState(StateID.SelectUnitAction);
+            TargetActorState targetingActor = new TargetActorState(StateID.TargetActor);
             ConfirmUnitActionState confirmingUnitAction = new ConfirmUnitActionState(StateID.ConfirmUnitAction);
             ExecuteUnitActionState executingUnitAction = new ExecuteUnitActionState(StateID.ExecuteUnitAction);
             EndBattleState endingBattle = new EndBattleState(StateID.EndBattle);
@@ -90,6 +91,7 @@ namespace Assets.Code.States
             AddState(selectingBackMenuOption);
             AddState(movingUnit);
             AddState(selectingUnitAction);
+            AddState(targetingActor);
             AddState(confirmingUnitAction);
             AddState(executingUnitAction);
             AddState(endingBattle);
